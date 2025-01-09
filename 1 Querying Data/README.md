@@ -265,6 +265,7 @@ FROM customer;
 ```
 
 Kueri ini menetapkan `surname` sebagai alias dari kolom `last_name`:
+
 ![image](https://github.com/user-attachments/assets/8dc0a58f-8746-46e5-a5b5-2d2e60f471d3)
 
 Atau Anda bisa membuatnya lebih pendek dengan menghapus kata kunci AS seperti berikut:
