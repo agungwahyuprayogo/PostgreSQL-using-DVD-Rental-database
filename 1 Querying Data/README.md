@@ -277,7 +277,7 @@ SELECT
 FROM customer;
 ```
 
-## 2) Memberikan alias kolom untuk ekspresi
+### 2) Memberikan alias kolom untuk ekspresi
 Kueri berikut akan mengembalikan nama lengkap semua pelanggan di table `customer` dengan menggabungkan nama depan, spasi, dan nama belakang:
 
 ```
@@ -304,7 +304,7 @@ FROM
 
 ![image](https://github.com/user-attachments/assets/ad649137-0e9e-4416-917e-6f9aef6c1710)
 
-## 3) Alias kolom yang mengandung spasi
+### 3) Alias kolom yang mengandung spasi
 
 Jika ingin nama alias kolom mengandung satu atau lebih spasi, Anda perlu mengapitnya dengan tanda kutip ganda seperti ini:
 
