@@ -276,7 +276,7 @@ SELECT
 FROM customer;
 ```
 
-2) Memberikan alias kolom untuk ekspresi
+## 2) Memberikan alias kolom untuk ekspresi
 Kueri berikut akan mengembalikan nama lengkap semua pelanggan di table `customer` dengan menggabungkan nama depan, spasi, dan nama belakang:
 
 ```
