@@ -74,7 +74,7 @@ first_name
 ...
 ```
 
-Perhatikan bahwa kita menambahkan tanda titik koma (;) di akhir pernyataan SELECT. Tanda titik koma bukanlah bagian dari pernyataan SQL; melainkan, ini berfungsi sebagai sinyal bagi PostgreSQL bahwa pernyataan SQL telah selesai. Selain itu, tanda titik koma digunakan untuk memisahkan dua atau lebih pernyataan SQL.
+Perhatikan bahwa kita menambahkan tanda titik koma (`;`) di akhir pernyataan SELECT. Tanda titik koma bukanlah bagian dari pernyataan SQL; melainkan, ini berfungsi sebagai sinyal bagi PostgreSQL bahwa pernyataan SQL telah selesai. Selain itu, tanda titik koma digunakan untuk memisahkan dua atau lebih pernyataan SQL.
 
 ### 2) Menggunakan pernyataan PostgreSQL SELECT untuk mengambil data dari beberapa kolom
 Kueri berikut menggunakan pernyataan `SELECT` untuk mengambil nama depan, nama belakang, dan email pelanggan dari tabel `customer`:
