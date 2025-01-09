@@ -205,3 +205,123 @@ Dalam contoh ini, kita menggunakan fungsi `NOW()` dalam pernyataan `SELECT`. Ini
 - PostgreSQL mengevaluasi klausa `FROM` sebelum klausa `SELECT`.
 - Gunakan alias kolom untuk memberikan nama sementara pada kolom atau ekspresi dalam sebuah kueri.
 - Dalam PostgreSQL, klausa `FROM` bersifat opsional.
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+# Column Aliases PostgreSQL
+
+## Pengenalan kolom alias di PostgreSQL
+Kolom alias memungkinkan Anda untuk memberikan nama sementara pada kolom atau ekspresi dalam daftar pilih pernyataan `SELECT`. Alias kolom ini ada sementara selama eksekusi kueri.
+
+Berikut ini adalah sintaks penggunaan alias kolom:
+
+```
+SELECT column_name AS alias_name
+FROM table_name;
+```
+
+Dalam sintaks ini, `column_name` diberikan alias `alias_name`. Kata kunci `AS` bersifat opsional, sehingga Anda dapat menghilangkannya seperti ini:
+
+```
+SELECT column_name alias_name
+FROM table_name;
+```
+
+Sintaks berikut menunjukkan cara menetapkan alias untuk ekspresi dalam klausa `SELECT`:
+
+```
+SELECT expression AS alias_name
+FROM table_name;
+```
+
+Tujuan utama dari alias kolom adalah untuk membuat heading output dari kueri menjadi lebih bermakna.
+
+## Contoh alias kolom PostgreSQL
+
+Kita akan menggunakan tabel `customer` dari database sampel untuk menunjukkan cara bekerja dengan alias kolom.
+
+![image](https://github.com/user-attachments/assets/9fbc1adb-05f7-49f9-9dda-e1a1f8451e9d)
+
+### 1) Menetapkan alias kolom ke contoh kolom
+Kueri berikut mengembalikan nama depan dan nama belakang semua `customers` dari tabel customer:
+
+```
+SELECT
+   first_name,
+   last_name
+FROM customer;
+```
+
+![image](https://github.com/user-attachments/assets/76fabe41-25c0-40f8-b25d-78676e226c70)
+
+Jika Anda ingin mengganti nama heading `last_name`, Anda dapat memberikan nama baru menggunakan alias kolom seperti ini:
+
+```
+SELECT
+   first_name,
+   last_name AS surname
+FROM customer;
+```
+
+Kueri ini menetapkan `surname` sebagai alias dari kolom `last_name`:
+![image](https://github.com/user-attachments/assets/8dc0a58f-8746-46e5-a5b5-2d2e60f471d3)
+
+Atau Anda bisa membuatnya lebih pendek dengan menghapus kata kunci AS seperti berikut:
+
+```
+SELECT
+   first_name,
+   last_name surname
+FROM customer;
+```
+
+2) Memberikan alias kolom untuk ekspresi
+Kueri berikut akan mengembalikan nama lengkap semua pelanggan di table `customer` dengan menggabungkan nama depan, spasi, dan nama belakang:
+
+```
+SELECT
+   first_name || ' ' || last_name
+FROM
+   customer;
+```
+
+Perlu dicatat bahwa di PostgreSQL, Anda menggunakan `||` sebagai operator penggabungan yang menggabungkan satu atau lebih string menjadi satu string.
+
+![image](https://github.com/user-attachments/assets/d676edb7-3fbf-42ab-92f9-fb4539c54b6c)
+
+Seperti yang bisa Anda lihat dari output, heading dari kolom tersebut tidak bermakna `?column?`.
+
+Untuk mengatasi ini, Anda dapat memberikan ekspresi `first_name || ' ' || last_name` sebuah alias kolom, misalnya `full_name`:
+
+```
+SELECT
+    first_name || ' ' || last_name AS full_name
+FROM
+    customer;
+```
+
+![image](https://github.com/user-attachments/assets/ad649137-0e9e-4416-917e-6f9aef6c1710)
+
+## 3) Alias kolom yang mengandung spasi
+
+Jika ingin nama alias kolom mengandung satu atau lebih spasi, Anda perlu mengapitnya dengan tanda kutip ganda seperti ini:
+
+```
+column_name AS "column alias"
+```
+
+Contohnya:
+
+```
+SELECT
+    first_name || ' ' || last_name "full name"
+FROM
+    customer;
+```
+
+![image](https://github.com/user-attachments/assets/ea0736ef-c998-434f-bc60-58b1f3899a9e)
+
+### Ringkasan
+- Tetapkan sebuah kolom atau ekspresi dengan alias kolom menggunakan sintaks `column_name AS alias_name` atau `expression AS alias_name`. Kata kunci `AS` bersifat opsional.
+- Gunakan tanda kutip ganda (`"`) untuk mengapit alias kolom yang mengandung spasi.
