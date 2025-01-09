@@ -1,60 +1,34 @@
-/* ilustrasi : 
- * 
- * select nama_kolom
- * from nama_data
- * 
- * 
- * jadi 'select' query buat nampilin kolom yang ada di data
- * 'nama_kolom' , kalo semua cukup make *. kalo lebih dari satu make tanda pisah koma
- * query 'from' nyambung sama nama database yang pengen kita lihat data2nya 
- * 
- * contoh ngeliat semua kolom make *
- * */
+select * from actor a 
 
-select * from customer
+select * from customer c 
 
-select * from address
+select * from country c 
 
-select * from actor
+-------------------------------------
+select a.first_name, a.last_name from actor a 
 
-/* di atas keliatan, kalo make *, semua nama kolom disuatu data bisa keliatan semua
- * sebagai contoh dari table customer, semua kolom mulai dari customer_id, store_id, first_name dll ada
- * 
- * sekarang kita pen nyoba kalo cuman kolom tertentu aja,
- * satu kolom dulu deh :
- */*/
- 
-select first_name from customer c 
+select c.first_name, c.last_name, c.email from customer c 
 
-select last_name from customer
+select c.country, c.country_id  from country c 
 
-select address from address a 
+-------------------------------------
+SELECT
+   first_name || ' ' || last_name, -- nama kolom masih `?`
+   email
+FROM
+   customer;
 
-select last_name from actor 
+SELECT
+   first_name || ' ' || last_name as full_name, -- nama kolom yang sebelumnya ? jadi full name
+   email
+FROM
+   customer;
 
-/* diatas adalah contoh nampilin hanya satu kolom dari table
- * jadi beda sama sebelumnya yang make *, ini langsung nama kolomnya
- * 
- * kalo pengen lebih dari 1 kolom, bisa 2 atau lebih, tanda pemisahnya koma
- */
+SELECT
+   first_name || ' ' || last_name nama_lengkap, -- ga make as 
+   email
+FROM
+   customer;
 
-select first_name , last_name , email from customer
-
-select last_name , first_name from customer c
-
-/* kalo soal urutan, ga ada aturan baku ya
- * misal kalo mau last name dulu baru first name juga gapapa
- * 
- * kalo nama depan dan nama belakang dipisah kek rada anu nih
- * 2 kolom bisa di gabung jadi satu, dengan cara :
- */
- 
- select first_name ||' '|| last_name as nama_lengkap from customer c 
- 
- /* sebelumnya kan kalo nampilin 2 kolom make koma
-  * ini beda, make ||' '||
-  * fungsinya ya buat gabungin 2 kolom berbeda dan 
-  * di dalam tanda petik itu ada karakter spasi
-  * as itu buat nama gabungan 2 kolom sebelumnya jadi nama_lengkap
-  *  */
- 
+------------------------------------
+SELECT NOW(); -- untuk liat jam dan hari ini
