@@ -4,7 +4,13 @@
 - [PostgreSQL SELECT](#postgresql-select)
 - [PostgreSQL Column Aliases](#postgresql-column-aliases)
 - [PostgreSQL ORDER BY](#postgresql-order-by)
+- [PostgreSQL SELECT DISTINCT](postgresql-select-distinct)
 
+---------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL SELECT
 
@@ -214,8 +220,12 @@ Dalam contoh ini, kita menggunakan fungsi `NOW()` dalam pernyataan `SELECT`. Ini
 - Gunakan alias kolom untuk memberikan nama sementara pada kolom atau ekspresi dalam sebuah kueri.
 - Dalam PostgreSQL, klausa `FROM` bersifat opsional.
 
+---------------------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------
+
 
 # PostgreSQL Column Aliases
 
@@ -335,7 +345,12 @@ FROM
 - Tetapkan sebuah kolom atau ekspresi dengan alias kolom menggunakan sintaks `column_name AS alias_name` atau `expression AS alias_name`. Kata kunci `AS` bersifat opsional.
 - Gunakan tanda kutip ganda (`"`) untuk mengapit alias kolom yang mengandung spasi.
   
----------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------
+
 
 # PostgreSQL ORDER BY
 
@@ -608,3 +623,205 @@ num
 - Gunakan opsi `ASC` untuk mengurutkan baris dalam urutan naik dan opsi `DESC` untuk mengurutkan baris dalam urutan turun.
 - Klausa `ORDER BY` menggunakan opsi `ASC` secara default.
 - Gunakan opsi `NULLS FIRST` dan `NULLS LAST` untuk secara eksplisit menentukan urutan `NULL` dengan nilai lain yang tidak null.
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+Tentu, berikut terjemahannya ke dalam bahasa Indonesia dengan bahasa yang mudah dimengerti:
+
+# PostgreSQL SELECT DISTINCT
+
+## Pengenalan klausa PostgreSQL SELECT DISTINCT
+`SELECT DISTINCT` menghilangkan baris duplikat dari hasil kueri. Klausa `SELECT DISTINCT` mempertahankan satu baris untuk setiap grup duplikat.
+
+Klausa `SELECT DISTINCT` dapat diterapkan pada satu atau lebih kolom dalam daftar pilih pernyataan `SELECT`.
+
+Berikut adalah sintaks penggunaan klausa `DISTINCT`:
+
+```
+SELECT
+  DISTINCT column1
+FROM
+  table_name;
+```
+
+Dalam sintaks ini, `SELECT DISTINCT` menggunakan nilai dalam kolom `column1` untuk mengevaluasi duplikat.
+
+Jika Anda menentukan beberapa kolom, klausa `SELECT DISTINCT` akan mengevaluasi duplikat berdasarkan kombinasi nilai-nilai dalam kolom-kolom tersebut. Contohnya:
+
+```
+SELECT
+   DISTINCT column1, column2
+FROM
+   table_name;
+```
+
+Dalam sintaks ini, `SELECT DISTINCT` menggunakan kombinasi nilai dalam kolom `column1` dan `column2` untuk mengevaluasi duplikat.
+
+Perhatikan bahwa PostgreSQL juga menawarkan klausa `DISTINCT ON` yang mempertahankan entri unik pertama dari sebuah kolom atau kombinasi kolom dalam hasil kueri.
+
+Jika Anda ingin menemukan nilai unik dari semua kolom dalam tabel, Anda dapat menggunakan `SELECT DISTINCT *`:
+
+```
+SELECT DISTINCT *
+FROM table_name;
+```
+
+Tanda bintang (`*`) berarti semua kolom dari `table_name`.
+
+# Contoh PostgreSQL SELECT DISTINCT
+
+Mari kita buat tabel baru untuk latihan menggunakan klausa `SELECT DISTINCT`.
+
+Perhatikan bahwa Anda akan belajar cara membuat tabel dan memasukkan data ke dalamnya dalam tutorial selanjutnya. Dalam tutorial ini, Anda perlu menjalankan pernyataan di psql atau pgAdmin untuk menjalankan pernyataan.
+
+Pertama, buat tabel `colors` yang memiliki tiga kolom: `id`, `bcolor` dan `fcolor` menggunakan pernyataan `CREATE TABLE` berikut:
+
+```
+CREATE TABLE colors(
+  id SERIAL PRIMARY KEY,
+  bcolor VARCHAR,
+  fcolor VARCHAR
+);
+```
+
+Kedua, masukkan beberapa baris ke dalam tabel `colors`:
+
+```
+INSERT INTO
+  colors (bcolor, fcolor)
+VALUES
+  ('red', 'red'),
+  ('red', 'red'),
+  ('red', NULL),
+  (NULL, 'red'),
+  (NULL, NULL),
+  ('green', 'green'),
+  ('blue', 'blue'),
+  ('blue', 'blue');
+```
+
+Ketiga, ambil data dari tabel `colors` menggunakan pernyataan `SELECT`:
+
+```
+SELECT
+  id,
+  bcolor,
+  fcolor
+FROM
+  colors;
+```
+
+Output:
+
+```
+id | bcolor | fcolor
+----+--------+--------
+  1 | red    | red
+  2 | red    | red
+  3 | red    | null
+  4 | null   | red
+  5 | null   | null
+  6 | green  | green
+  7 | blue   | blue
+  8 | blue   | blue
+(8 rows)
+```
+
+### 1) Contoh PostgreSQL SELECT DISTINCT satu kolom
+Pernyataan berikut memilih nilai unik dari kolom `bcolor` dari tabel `t1` dan mengurutkan hasil kueri dalam urutan alfabetis menggunakan klausa `ORDER BY`.
+
+```
+SELECT
+  DISTINCT bcolor
+FROM
+  colors
+ORDER BY
+  bcolor;
+```
+
+Output:
+
+```
+bcolor
+--------
+ blue
+ green
+ red
+ null
+(4 rows)
+```
+
+Kolom `bcolor` memiliki 3 nilai red, dua NULL, 1 nilai green, dan dua nilai blue. DISTINCT menghilangkan dua nilai red, 1 NULL, dan satu blue.
+
+Perhatikan bahwa PostgreSQL menganggap `NULL` sebagai duplikat sehingga mempertahankan satu `NULL` untuk semua `NULL` ketika Anda menerapkan klausa `SELECT DISTINCT`.
+
+### 2) SELECT DISTINCT pada beberapa kolom
+
+Pernyataan berikut menerapkan klausa `SELECT DISTINCT` pada kolom `bcolor` dan `fcolor`:
+
+```
+SELECT
+  DISTINCT bcolor, fcolor
+FROM
+  colors
+ORDER BY
+  bcolor,
+  fcolor;
+```
+
+Output:
+
+```
+bcolor | fcolor
+--------+--------
+ blue   | blue
+ green  | green
+ red    | red
+ red    | null
+ null   | red
+ null   | null
+(6 rows)
+```
+
+Dalam contoh ini, kueri menggunakan nilai dari kolom `bcolor` dan `fcolor` untuk mengevaluasi keunikan baris.
+
+### 3) Menggunakan klausa SELECT DISTINCT dalam praktik
+
+Dalam praktiknya, Anda sering menggunakan klausa `SELECT DISTINCT` untuk menganalisis keunikan nilai dalam sebuah kolom.
+
+Misalnya, Anda mungkin ingin mengetahui berapa banyak tarif sewa untuk film dari tabel `film`:
+
+![image](https://github.com/user-attachments/assets/3f578cbf-d4f5-4771-9039-72a68e504134)
+
+Untuk mencapainya, Anda bisa menentukan kolom `rental_rate` dalam klausa `SELECT DISTINCT` sebagai berikut:
+
+```
+SELECT DISTINCT
+  rental_rate
+FROM
+  film
+ORDER BY
+  rental_rate;
+```
+
+Output:
+
+```
+rental_rate
+-------------
+        0.99
+        2.99
+        4.99
+(3 rows)
+```
+
+Output menunjukkan bahwa hanya ada tiga tarif sewa yang unik yaitu 0.99, 2.99, dan 4.99.
+
+### Ringkasan
+- Gunakan `SELECT DISTINCT` untuk menghilangkan baris duplikat dari hasil kueri.
