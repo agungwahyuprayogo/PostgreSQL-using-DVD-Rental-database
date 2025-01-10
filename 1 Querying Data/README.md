@@ -209,7 +209,7 @@ Dalam contoh ini, kita menggunakan fungsi `NOW()` dalam pernyataan `SELECT`. Ini
 
 ---------------------------------------------------------------------------------------------------------------------
 
-# Column Aliases PostgreSQL
+# PostgreSQL Column Aliases 
 
 ## Pengenalan kolom alias di PostgreSQL
 Kolom alias memungkinkan Anda untuk memberikan nama sementara pada kolom atau ekspresi dalam daftar pilih pernyataan `SELECT`. Alias kolom ini ada sementara selama eksekusi kueri.
@@ -326,3 +326,277 @@ FROM
 ### Ringkasan
 - Tetapkan sebuah kolom atau ekspresi dengan alias kolom menggunakan sintaks `column_name AS alias_name` atau `expression AS alias_name`. Kata kunci `AS` bersifat opsional.
 - Gunakan tanda kutip ganda (`"`) untuk mengapit alias kolom yang mengandung spasi.
+  
+---------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL ORDER BY
+
+Ketika Anda mengambil data dari sebuah tabel, pernyataan `SELECT` mengembalikan baris dalam urutan yang tidak ditentukan. Untuk mengurutkan baris hasil kueri, Anda menggunakan klausa `ORDER BY` dalam pernyataan `SELECT`.
+
+Klausa `ORDER BY` memungkinkan Anda mengurutkan baris yang dikembalikan oleh klausa `SELECT` dalam urutan naik atau turun berdasarkan ekspresi urutan.
+
+Berikut adalah sintaks klausa `ORDER BY`:
+
+```
+SELECT
+  select_list
+FROM
+  table_name
+ORDER BY
+  sort_expression1 [ASC | DESC],
+  sort_expression2 [ASC | DESC],
+  ...;
+```
+
+Dalam sintaks ini:
+
+- Pertama, tentukan ekspresi urutan, yang bisa berupa kolom atau ekspresi, yang ingin Anda urutkan setelah kata kunci `ORDER BY`. Jika Anda ingin mengurutkan hasil kueri berdasarkan beberapa kolom atau ekspresi, Anda perlu menempatkan koma (`,`) antara dua kolom atau ekspresi untuk memisahkannya.
+- Kedua, Anda menggunakan opsi `ASC` untuk mengurutkan baris dalam urutan naik dan opsi `DESC` untuk mengurutkan baris dalam urutan turun. Jika Anda menghilangkan opsi `ASC` atau `DESC`, `ORDER BY` menggunakan `ASC` secara default.
+
+PostgreSQL mengevaluasi klausa dalam pernyataan `SELECT` dalam urutan berikut: `FROM`, `SELECT`, dan `ORDER BY`.
+
+Karena urutan evaluasi, jika Anda memiliki alias kolom dalam klausa `SELECT`, Anda bisa menggunakannya dalam klausa `ORDER BY`.
+
+Mari kita ambil beberapa contoh penggunaan klausa `ORDER BY` di PostgreSQL.
+
+## Contoh ORDER BY PostgreSQL
+
+Kita akan menggunakan tabel `customer` dalam database sampel untuk demonstrasi.
+
+### 1) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan satu kolom
+
+Kueri berikut menggunakan klausa `ORDER BY` untuk mengurutkan pelanggan berdasarkan nama depan mereka dalam urutan naik:
+
+```
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+ORDER BY
+  first_name ASC;
+```
+
+Karena opsi `ASC` adalah default, Anda bisa menghilangkannya dalam klausa `ORDER BY` seperti ini:
+
+```
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+ORDER BY
+  first_name;
+```
+
+### 2) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan satu kolom dalam urutan turun
+
+Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nilai di kolom nama belakang dalam urutan turun:
+
+```
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+ORDER BY
+  last_name DESC;
+```
+
+### 3) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan beberapa kolom
+
+Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nama depan dalam urutan naik dan nama belakang dalam urutan turun:
+
+```
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+ORDER BY
+  first_name ASC,
+  last_name DESC;
+```
+
+Dalam contoh ini, klausa `ORDER BY` mengurutkan baris berdasarkan nilai di kolom nama depan terlebih dahulu. Kemudian mengurutkan baris yang sudah diurutkan berdasarkan nilai di kolom nama belakang.
+
+### 4) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan ekspresi
+
+Fungsi `LENGTH()` menerima string dan mengembalikan panjang string tersebut.
+
+Pernyataan berikut memilih nama depan dan panjangnya. Mengurutkan baris berdasarkan panjang nama depan:
+
+```
+SELECT
+  first_name,
+  LENGTH(first_name) len
+FROM
+  customer
+ORDER BY
+  len DESC;
+```
+
+Karena klausa `ORDER BY` dievaluasi setelah klausa `SELECT`, alias kolom `len` tersedia dan bisa digunakan dalam klausa `ORDER BY`.
+
+## PostgreSQL ORDER BY dan NULL
+Dalam dunia database, `NULL` adalah penanda yang menunjukkan data yang hilang atau data yang tidak diketahui pada saat pencatatan.
+
+Ketika Anda mengurutkan baris yang mengandung `NULL`, Anda bisa menentukan urutan `NULL` dengan nilai lain yang tidak null menggunakan opsi `NULLS FIRST` atau `NULLS LAST` dalam klausa `ORDER BY`:
+
+```
+ORDER BY sort_expresssion [ASC | DESC] [NULLS FIRST | NULLS LAST]
+```
+
+Opsi `NULLS FIRST` menempatkan `NULL` sebelum nilai lain yang tidak null dan opsi `NULLS LAST` menempatkan `NULL` setelah nilai lain yang tidak null.
+
+Mari kita buat tabel untuk demonstrasi.
+
+```
+-- membuat tabel baru
+CREATE TABLE sort_demo(num INT);
+
+-- memasukkan beberapa data
+INSERT INTO sort_demo(num)
+VALUES
+  (1),
+  (2),
+  (3),
+  (null);
+```
+
+Jika Anda belum familiar dengan pernyataan `CREATE TABLE` dan `INSERT`, Anda bisa mengeksekusinya dari `pgAdmin` atau `psql` untuk membuat tabel `sort_demo` dan memasukkan data ke dalamnya.
+
+Kueri berikut mengembalikan data dari tabel `sort_demo`:
+
+```
+SELECT
+  num
+FROM
+  sort_demo
+ORDER BY
+  num;
+```
+
+```
+num
+------
+    1
+    2
+    3
+ null
+(4 rows)
+```
+
+Dalam contoh ini, klausa `ORDER BY` mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan naik. Ini menempatkan `NULL` setelah nilai lainnya.
+
+Perlu dicatat bahwa psql menampilkan null sebagai string kosong secara default. Untuk membuat null lebih jelas, Anda bisa mengeksekusi perintah berikut untuk mengubah string kosong menjadi null:
+
+```
+\pset null null
+```
+
+Output:
+
+```
+Null display is "null".
+```
+
+Jika Anda menggunakan opsi `ASC`, klausa `ORDER BY` menggunakan opsi `NULLS LAST` secara default. Oleh karena itu, kueri berikut mengembalikan hasil yang sama:
+
+```
+SELECT
+  num
+FROM
+  sort_demo
+ORDER BY
+  num NULLS LAST;
+```
+
+Output:
+
+```
+num
+------
+    1
+    2
+    3
+ null
+(4 rows)
+```
+
+Untuk menempatkan `NULL` sebelum nilai lain yang tidak null, gunakan opsi `NULLS FIRST`:
+
+```
+SELECT
+  num
+FROM
+  sort_demo
+ORDER BY
+  num NULLS FIRST;
+```
+
+Output:
+
+```
+num
+------
+ null
+    1
+    2
+    3
+(4 rows)
+```
+
+Pernyataan berikut mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan turun:
+
+```
+SELECT
+  num
+FROM
+  sort_demo
+ORDER BY
+  num DESC;
+```
+
+Output:
+
+```
+num
+------
+ null
+    3
+    2
+    1
+(4 rows)
+```
+
+Output menunjukkan bahwa klausa `ORDER BY` dengan opsi `DESC` menggunakan `NULLS FIRST` secara default.
+
+Untuk membalikkan urutan, gunakan opsi `NULLS LAST`:
+
+```
+SELECT
+  num
+FROM
+  sort_demo
+ORDER BY
+  num DESC NULLS LAST;
+```
+
+Output:
+
+```
+num
+------
+    3
+    2
+    1
+ null
+(4 rows)
+```
+
+### Ringkasan
+- Gunakan klausa `ORDER BY` dalam pernyataan `SELECT` untuk mengurutkan baris dalam kumpulan kueri.
+- Gunakan opsi `ASC` untuk mengurutkan baris dalam urutan naik dan opsi `DESC` untuk mengurutkan baris dalam urutan turun.
+- Klausa `ORDER BY` menggunakan opsi `ASC` secara default.
+- Gunakan opsi `NULLS FIRST` dan `NULLS LAST` untuk secara eksplisit menentukan urutan `NULL` dengan nilai lain yang tidak null.
