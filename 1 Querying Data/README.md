@@ -1,18 +1,9 @@
-# Panduan PostgreSQL
+# Panduan PostgreSQL Querying Data
 
 ## Daftar Isi
-- [Pengantar](#pengantar)
-- [Bagian Tentang SELECT Clause](#bagian-tentang-select-clause)
-- [Bagian Tentang ORDER BY Clause](#bagian-tentang-order-by-clause)
-
-## Pengantar
-Teks pengantar...
-
-## Bagian Tentang SELECT Clause
-Teks untuk SELECT Clause...
-
-## Bagian Tentang ORDER BY Clause
-Teks untuk ORDER BY Clause...
+- [PostgreSQL SELECT](#postgresql-select)
+- [PostgreSQL Column Aliases](#postgresql-column-aliases)
+- [PostgreSQL ORDER BY](#postgresql-order-by)
 
 
 # PostgreSQL SELECT
@@ -226,7 +217,7 @@ Dalam contoh ini, kita menggunakan fungsi `NOW()` dalam pernyataan `SELECT`. Ini
 
 ---------------------------------------------------------------------------------------------------------------------
 
-# PostgreSQL Column Aliases 
+# PostgreSQL Column Aliases
 
 ## Pengenalan kolom alias di PostgreSQL
 Kolom alias memungkinkan Anda untuk memberikan nama sementara pada kolom atau ekspresi dalam daftar pilih pernyataan `SELECT`. Alias kolom ini ada sementara selama eksekusi kueri.
