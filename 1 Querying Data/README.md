@@ -632,7 +632,7 @@ num
 
 
 ---------------------------------------------------------------------------------------------------------------------------------
-Tentu, berikut terjemahannya ke dalam bahasa Indonesia dengan bahasa yang mudah dimengerti:
+
 
 # PostgreSQL SELECT DISTINCT
 
