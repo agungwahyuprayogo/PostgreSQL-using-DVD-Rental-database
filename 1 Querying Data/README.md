@@ -4,7 +4,7 @@
 - [PostgreSQL SELECT](#postgresql-select)
 - [PostgreSQL Column Aliases](#postgresql-column-aliases)
 - [PostgreSQL ORDER BY](#postgresql-order-by)
-- [PostgreSQL SELECT DISTINCT](postgresql-select-distinct)
+- [PostgreSQL SELECT DISTINCT](#postgresql-select-distinct)
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
