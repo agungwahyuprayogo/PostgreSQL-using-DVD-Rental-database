@@ -1,79 +1,38 @@
-/* biasanya setelah kita menggunakan query 'select',
- * hasil yang di tampilkan acak dan 
- * data tanpil apa adanya dari database ketika dibuat
- * 
- * tapi kita bisa membuatnya menjadi terurut, menggunakan 'order by'
- * 
- * SELECT nama_kolom FROM nama_table ORDER BY nama_kolom asc | desc
- * 
- * untuk tampil dari abjad, terkecil bisa make 
- * tapi kalo gamau susah ngurutinnya make berdasarkan nama kolom gpp
- * 
- * kalo mau dari abjad paling akhir atau dari angka terbesar bisa make desc
- */
+select c.first_name, c.last_name from customer c order by c.last_name 
+-- menampilkan first name dan last name, namun dengan urutan A - Z dari last name
 
-select first_name from customer order by first_name 
+select c.first_name, c.last_name from customer c order by c.first_name desc
+-- menampilkan first dan last name, dan mengurutkan first name dari Z - A
 
-/* dalam default, kalo ga dimasukin asc atau desc kaya diatas, default asc
- * jadi kalo misalkan query diatas di tambahin asc di belakang, sama aja hasilnya
- */*/
- 
-select first_name from customer order by first_name asc
+-- kita kombinasikan
+select c.first_name, c.last_name from customer c order by c.first_name asc, c.last_name desc
 
-/* maka hasil query diatas bakal sama aja
- * sekarang kita nyoba desc, urutin dari abjad terakhir atau dari angka terbesar
- * */
+/* PostgreSQL null 
 
-select first_name from customer order by first_name desc
+Dalam dunia database, NULL adalah penanda yang menunjukkan data yang hilang atau data yang tidak 
+diketahui pada saat pencatatan.
 
-/* bisa ga gunain asc dan desc berbarengan? 
- * bisa dong. 
- * */
+Ketika Anda mengurutkan baris yang mengandung NULL, Anda bisa menentukan urutan NULL dengan nilai 
+lain yang tidak null menggunakan opsi NULLS FIRST atau NULLS LAST dalam klausa ORDER BY:
+*/
 
-select first_name , last_name from customer c order by first_name asc, last_name desc
+-- membuat tabel baru
+CREATE TABLE sort_demo(num INT);
 
-/* mungkin hasilnya sekilas ga keliatan, 
- * tapi kalo dilihat dari data ke 327 sama 328 keliatan
- * disitu sama sama kelly, tapi last name desc keliatan bedanya yg tampil torres dulu
- * baru knott
- * */
+-- memasukkan beberapa data
+INSERT INTO sort_demo(num)
+VALUES
+  (1),
+  (2),
+  (3),
+  (null);
 
-select first_name ||' '|| last_name as nama_lengkap, length(first_name ||''|| last_name) as len from customer c order by len asc
+select num from sort_demo
+-- secara default, ngururin dari terkecil [asc]
 
-/* dengan cara diatas, kita bisa menampilkan len 
- * atau menghitung berapa banyak karakter dalam suatu nama
- * 
- * karena data bawaan terlalu banyak , kali ini kita akan membuat data baru
- * agar bisa melihat perbedaan dalam query order by
- */*/
- 
- -- create new table
- create table sort_demo(num int)
- 
- -- insert some data
- insert into sort_demo(num)
- values
- (1),
- (2),
- (3),
- (null);
- 
--- show sort by 
-select num from sort_demo sd order by num asc
+-- bisa juga kalo mau ditampilin lebih dulu
+select num from sort_demo sd order by num nulls first
+-- biar ga error, masukin nama kolom baru null first / las
 
--- kalo make asc, terurut dari yang terkecil dahulu sampe ke terbesar
--- baru ke NULL
+select num from sort_demo sd order by num nulls last
 
-select num from sort_demo sd order by num desc
-
--- dari yang terbesar dulu baru ke terkecil
--- tapi disini NULL ntah kenapa masuk yang ke terbesar
-
-select num from sort_demo sd order by num nulls first 
-
--- ketika jalanin ini, bakal naro NULL paling atas, 
--- tapi angka tetep ngurut dari kecil ke terbesar
-
-select num from sort_demo sd order by num nulls last 
-
--- disini NULL ada di paling atas, tapi angka tetep urut dari kecil > besar
