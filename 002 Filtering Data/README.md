@@ -2,7 +2,7 @@
 
 ## Daftar Isi
 - [PostgreSQL WHERE](#postgresql-where)
-- [PostgreSQL Column Aliases](#postgresql-column-aliases)
+- [PostgreSQL AND Operator](#postgresql-and-operator)
 - [PostgreSQL ORDER BY](#postgresql-order-by)
 - [PostgreSQL SELECT DISTINCT](#postgresql-select-distinct)
 
@@ -256,3 +256,191 @@ Perlu dicatat bahwa kamu bisa menggunakan operator `!=` dan operator `<>` secara
 
 #### Summary
 - Gunakan klausa `WHERE` dalam pernyataan `SELECT` untuk memfilter baris dari query berdasarkan satu atau lebih kondisi.
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL AND Operator
+
+**Ringkasan**: Dalam tutorial ini, kamu akan belajar tentang operator logika `AND` di PostgreSQL dan cara menggunakannya untuk menggabungkan beberapa ekspresi boolean.
+
+## Introduction to the PostgreSQL AND operator
+Dalam PostgreSQL, nilai boolean bisa memiliki salah satu dari tiga nilai: `true`, `false`, dan `null`.
+
+PostgreSQL menggunakan `true`, `'t'`, `'true'`, `'y'`, `'yes'`, `'1'` untuk merepresentasikan nilai true 
+
+dan `false`, `'f'`, `'false'`, `'n'`, `'no'`, dan `'0'` untuk merepresentasikan nilai false.
+
+Ekspresi boolean adalah ekspresi yang dievaluasi menjadi nilai boolean. Misalnya, ekspresi `1=1` adalah ekspresi boolean yang dievaluasi menjadi `true`:
+
+```
+SELECT 1 = 1 AS result;
+```
+
+Output :
+
+```
+result
+--------
+ t
+(1 row)
+```
+
+Huruf `t` dalam output menunjukkan nilai `true`.
+
+Operator `AND` adalah operator logika yang menggabungkan dua ekspresi boolean.
+
+Berikut sintaks dasar dari operator `AND`:
+
+```
+expression1 AND expression2
+```
+
+Dalam sintaks ini, `expression1` dan `expression2` adalah ekspresi boolean yang dievaluasi menjadi `true`, `false`, atau `null`.
+
+Operator `AND` mengembalikan `true` hanya jika kedua ekspresi bernilai `true`. Mengembalikan `false` jika salah satu ekspresi bernilai `false`. Selain itu, mengembalikan `null`.
+
+Tabel berikut menunjukkan hasil dari operator `AND` saat menggabungkan `true`, `false`, dan `null`.
+
+| **AND**   | **TRUE** | **FALSE** | **NULL** |
+|-----------|----------|-----------|----------|
+| **TRUE**  | True | False | Null  |
+| **FALSE** | False | False | False |
+| **NULL**  | Null | False | Null  |
+
+Dalam praktiknya, kamu sering menggunakan operator `AND` dalam klausa `WHERE` untuk memastikan bahwa semua ekspresi yang ditentukan harus bernilai true agar sebuah baris dimasukkan dalam set hasil.
+
+## PostgreSQL AND operator
+Mari kita jelajahi beberapa contoh penggunaan operator `AND`.
+
+### 1) Contoh dasar penggunaan operator PostgreSQL AND
+Contoh berikut menggunakan operator `AND` untuk menggabungkan dua nilai true, yang mengembalikan `true`:
+
+```
+SELECT true AND true AS result;
+```
+
+Output:
+
+```
+result
+--------
+ t
+(1 row)
+```
+
+Pernyataan berikut menggunakan operator `AND` untuk menggabungkan `true` dengan `false`, yang mengembalikan `false`:
+
+```
+SELECT true AND false AS result;
+```
+
+Output:
+
+```
+result
+--------
+ f
+(1 row)
+```
+
+Contoh berikut menggunakan operator `AND` untuk menggabungkan true dengan `null`, yang mengembalikan `null`:
+
+```
+SELECT true AND null AS result;
+```
+
+Output:
+
+```
+result
+--------
+ null
+(1 row)
+```
+
+Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `false`, yang mengembalikan `false`:
+
+```
+SELECT false AND false AS result;
+```
+
+Output:
+
+```
+result
+--------
+ f
+(1 row)
+```
+
+Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `null`, yang mengembalikan `false`:
+
+```
+SELECT false AND null AS result;
+```
+
+Output:
+
+```
+result
+--------
+ f
+(1 row)
+```
+
+Contoh berikut menggunakan operator `AND` untuk menggabungkan `null` dengan `null`, yang mengembalikan `null`:
+
+```
+SELECT null AND null AS result;
+```
+
+Output:
+
+```
+result
+--------
+ null
+(1 row)
+```
+
+### 2) Menggunakan operator AND dalam klausa WHERE
+Kita akan menggunakan tabel `film` dari database contoh untuk demonstrasi:
+
+![image](https://github.com/user-attachments/assets/cfef6559-d850-48d8-879c-f7e65198d5a2)
+
+Contoh berikut menggunakan operator `AND` dalam klausa `WHERE` untuk mencari film yang durasinya lebih dari 180 menit dan tarif sewanya kurang dari 1:
+
+```
+SELECT
+  title,
+  length,
+  rental_rate
+FROM
+  film
+WHERE
+  length > 180
+  AND rental_rate < 1;
+```
+
+Output:
+
+```
+title               | length | rental_rate
+--------------------+--------+-------------
+ Catch Amistad      |    183 |        0.99
+ Haunting Pianist   |    181 |        0.99
+ Intrigue Worst     |    181 |        0.99
+ Love Suicides      |    181 |        0.99
+ Runaway Tenenbaums |    181 |        0.99
+ Smoochy Control    |    184 |        0.99
+ Sorority Queen     |    184 |        0.99
+ Theory Mermaid     |    184 |        0.99
+ Wild Apollo        |    181 |        0.99
+ Young Language     |    183 |        0.99
+(10 rows)
+```
+
+### Summary
+- Gunakan operator `AND` untuk menggabungkan beberapa ekspresi boolean.
