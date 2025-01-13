@@ -1,54 +1,47 @@
-/* kali ini kita belajar distinc
- * jadi distinc ini fungsinya buat nampilin data yang ga duplicate
+/* jadi select distinct ini fungsi nya buat ngilangin duplikat dalam table
+ * misal di table ada 'Agung Wahyu' dan 'Agung Prayogo'
+ * dan kita cuman pengen nampilin first_name doang
+ * nanti yang muncul cuman 1 Agung
+ * karena memang distinct ini buat ngilagin yg sama
  * 
- * jadi, misal di table yang sama ada data agung wahyu dan agung prasojo
- * lalu pengen nampilin first_name, harusnya kan tampil 2 kan
- * tapi karena distinct jadi cuman nampilin satu aja
- * karena agung mau ada 10 juga di table itu bakal di tampilin 1 kalo make distinc
+ * kecuali nampilin first_name dan last_name
+ * nanti tetep nampil 22nya
  * 
- * kecuali kalo nampilin first_name dan last_name
- * baru bisa nampilin 22nya
- * 
- * select distinct 
- * 		column 1, column 2
- * from
- * 		table name
- * 
- * 
- * supaya perbedaan keliatan jelas, kita buat table baru 
- * sekalian latihan buat table
- */*/
- 
-create table distinct_demo (id serial not null primary key, bcolor varchar, fcolor varchar);
- 
-insert into distinct_demo (bcolor, fcolor)
-values 
-('red', 'red'),
-('red', 'red'),
-('red', NULL),
-('red', 'green'),
-('red', 'blue'),
-('green', 'red'),
-('green', 'blue'),
-('green', 'green'),
-('blue', 'red'),
-('blue', 'green'),
-('blue', 'blue');
+ */
 
-/* sekarang kita tampilkan data di table distinct_demo TIDAK menggunakan distinct
- * harusnya tampil semua
- */*/
- 
- select id, bcolor, fcolor from distinct_demo dd 
- 
- -- disini keliatan kalo query diatas dijalanin, ada 11 baris ke bawah hasil datanya
- -- sekarang kita nyoba make distinct
- 
- select distinct bcolor from distinct_demo dd 
- 
- -- ketika distinct dijalankan, hanya ada 3, padahal sebelumnya ada 11 baris
- -- sekarang kita nyoba make 2 kolom berbeda
- 
- select distinct bcolor, fcolor from distinct_demo dd 
- 
- -- ketika di jalanin, cuman jadi ada 10 baris, padahal kalo ga dimasukin distinct ada 11
+CREATE TABLE colors(
+  id SERIAL PRIMARY KEY,
+  bcolor VARCHAR,
+  fcolor VARCHAR
+);
+
+INSERT INTO
+  colors (bcolor, fcolor)
+VALUES
+  ('red', 'red'),
+  ('red', 'red'),
+  ('red', NULL),
+  (NULL, 'red'),
+  (NULL, NULL),
+  ('green', 'green'),
+  ('blue', 'blue'),
+  ('blue', 'blue');
+
+-- kita tampilin semua dulu
+select c.bcolor, c.fcolor from colors c 
+
+-- distinct bcolor
+select distinct c.bcolor from colors c 
+
+select distinct c.fcolor from colors c 
+
+
+-- distinct dua kolom
+select distinct c.bcolor, c.bcolor from colors c 
+-- nah beda kan sama ga distinct
+
+-- select distinct dalam sample database
+select f.rental_rate from film f 
+
+select distinct f.rental_rate from film f order by f.rental_rate 
+
