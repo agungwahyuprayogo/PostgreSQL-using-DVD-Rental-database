@@ -26,11 +26,11 @@ ORDER BY
 
 Dalam sintaks ini, klausa `WHERE` ditempatkan tepat setelah klausa `FROM` dari pernyataan `SELECT`.
 
-Klausa `WHERE` menggunakan `condition` untuk memfilter baris yang dikembalikan dari klausa `SELECT`.
+Klausa `WHERE` menggunakan `kondisi` untuk memfilter baris yang dikembalikan dari klausa `SELECT`.
 
-`Condition` adalah ekspresi boolean yang mengevaluasi ke true, false, atau unknown.
+`kondisi` adalah ekspresi boolean yang mengevaluasi ke true, false, atau unknown.
 
-Query hanya mengembalikan baris yang memenuhi `condition` dalam klausa `WHERE`. Dengan kata lain, query hanya akan menyertakan baris yang menyebabkan `condition` dievaluasi menjadi true dalam hasil.
+Query hanya mengembalikan baris yang memenuhi `kondisi` dalam klausa `WHERE`. Dengan kata lain, query hanya akan menyertakan baris yang menyebabkan `kondisi` dievaluasi menjadi true dalam hasil.
 
 PostgreSQL mengevaluasi klausa `WHERE` setelah klausa `FROM` tetapi sebelum klausa `SELECT` dan `ORDER BY`.
 
