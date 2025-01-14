@@ -3,7 +3,7 @@
 ## Daftar Isi
 - [PostgreSQL WHERE](#postgresql-where)
 - [PostgreSQL AND Operator](#postgresql-and-operator)
-- [PostgreSQL ORDER BY](#postgresql-order-by)
+- [PostgreSQL OR Operator](#postgresql-or-operator)
 - [PostgreSQL SELECT DISTINCT](#postgresql-select-distinct)
 
 # PostgreSQL WHERE
@@ -444,3 +444,159 @@ title               | length | rental_rate
 
 ### Summary
 - Gunakan operator `AND` untuk menggabungkan beberapa ekspresi boolean.
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL OR Operator
+
+## Introduction to the PostgreSQL OR operator
+
+Operator `OR` adalah operator logika yang menggabungkan beberapa ekspresi boolean. Berikut adalah sintaks dasar operator `OR`:
+
+```
+expression1 OR expression2
+```
+
+Dalam sintaks ini, `expression1` dan `expression2` adalah ekspresi boolean yang mengevaluasi `true`, `false`, atau `null`.
+
+Operator `OR` mengembalikan `true` hanya jika salah satu ekspresi adalah `true`. Ini mengembalikan `false` jika kedua ekspresi adalah `false`. Jika tidak, ini mengembalikan `null`.
+
+Tabel berikut menunjukkan hasil operator `OR` saat menggabungkan `true`, `false`, dan `null`.
+
+| **OR** | **True** | **False** | **Null** |
+|------|------|-------|------|
+| **True** | True | True  | True |
+| **False** | True | False | Null |
+| **Null** | True | Null  | Null |
+
+Dalam praktiknya, Anda biasanya menggunakan operator `OR` di klausa `WHERE` untuk memastikan bahwa salah satu dari ekspresi yang ditentukan harus `true` agar baris dimasukkan dalam hasil.
+
+## PostgreSQL OR operator
+Mari kita lihat beberapa contoh penggunaan operator `OR`.
+
+### 1) Contoh dasar operator PostgreSQL OR
+Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan true`, yang mengembalikan `true`:
+
+```
+SELECT true OR true AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ t
+(1 row)
+```
+
+Pernyataan berikut menggunakan operator `OR` untuk menggabungkan `true dengan false`, yang mengembalikan `true`:
+
+```
+SELECT true OR false AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ t
+(1 row)
+```
+
+Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan null`, yang mengembalikan `true`:
+
+```
+SELECT true OR null AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ t
+(1 row)
+```
+
+Contoh berikut menggunakan operator `OR` untuk menggabungkan `false dengan false`, yang mengembalikan `false`:
+
+```
+SELECT false OR false AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ f
+(1 row)
+```
+
+Contoh berikut menggunakan operator `OR` untuk `menggabungkan false dengan null`, yang mengembalikan `null`:
+
+```
+SELECT false OR null AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ null
+(1 row)
+```
+
+Contoh berikut menggunakan operator `OR` untuk `menggabungkan null dengan null`, yang mengembalikan `null`:
+
+```
+SELECT null OR null AS result;
+```
+
+Keluaran:
+
+```
+result
+--------
+ null
+(1 row)
+```
+
+### 2) Menggunakan operator OR dalam klausa WHERE
+Kita akan menggunakan tabel `film` dari basis data contoh untuk demonstrasi:
+
+![image](https://github.com/user-attachments/assets/e8f25316-623d-4f23-aba7-ef0229accaba)
+
+Contoh berikut menggunakan operator `OR` dalam klausa `WHERE` untuk menemukan film-film yang memiliki tarif sewa `0.99` atau `2.99`:
+
+```
+SELECT
+  title,
+  rental_rate
+FROM
+  film
+WHERE
+  rental_rate = 0.99 OR
+  rental_rate = 2.99;
+```
+
+Keluaran:
+
+```
+title            | rental_rate
+-----------------------------+-------------
+ Academy Dinosaur            |        0.99
+ Adaptation Holes            |        2.99
+ Affair Prejudice            |        2.99
+ African Egg                 |        2.99
+...
+```
+
+#### Summary
+- Gunakan operator `OR` untuk menggabungkan beberapa ekspresi boolean.
