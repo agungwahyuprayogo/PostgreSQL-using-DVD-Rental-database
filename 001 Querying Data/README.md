@@ -71,7 +71,7 @@ Kita akan menggunakan tabel `customer` dalam database sampel `dvdrental` untuk d
 
 Contoh ini menggunakan pernyataan `SELECT` untuk menemukan nama depan semua pelanggan dari tabel customer:
 
-```
+```sql
 SELECT first_name FROM customer;
 ```
 
@@ -93,7 +93,7 @@ Perhatikan bahwa kita menambahkan tanda titik koma (`;`) di akhir pernyataan SEL
 ### 2) Menggunakan pernyataan PostgreSQL SELECT untuk mengambil data dari beberapa kolom
 Kueri berikut menggunakan pernyataan `SELECT` untuk mengambil nama depan, nama belakang, dan email pelanggan dari tabel `customer`:
 
-```
+```sql
 SELECT
    first_name,
    last_name,
@@ -118,7 +118,7 @@ Output menunjukkan tiga kolom yang sesuai yaitu first_name, last_name, dan email
 
 Kueri berikut menggunakan pernyataan `SELECT *` untuk mengambil data dari semua kolom tabel `customer`:
 
-```
+```sql
 SELECT * FROM customer;
 ```
 
@@ -149,7 +149,7 @@ Tanda bintang (`*`) sebaiknya hanya digunakan untuk kueri ad-hoc yang meninjau d
 ### 4) Menggunakan pernyataan PostgreSQL SELECT dengan ekspresi
 Contoh berikut menggunakan pernyataan `SELECT` untuk mengembalikan nama lengkap dan email semua pelanggan dari tabel `customer`:
 
-```
+```sql
 SELECT
    first_name || ' ' || last_name,
    email
@@ -172,19 +172,19 @@ Dalam contoh ini, kita menggunakan operator konkatenasi `||` untuk menggabungkan
 Perhatikan bahwa kolom pertama dari output tidak memiliki nama tetapi `?column?`. Untuk memberi nama sementara pada kolom dalam kueri, 
 Anda dapat menggunakan alias kolom:
 
-```
+```sql
 expression AS column_lias
 ```
 
 Kata kunci AS adalah opsional. Oleh karena itu, Anda dapat menggunakan sintaks yang lebih pendek:
 
-```
+```sql
 expression column_lias
 ```
 
 Misalnya, Anda dapat memberikan alias kolom full_name pada kolom pertama dari kueri sebagai berikut:
 
-```
+```sql
 SELECT
    first_name || ' ' || last_name full_name,
    email
@@ -207,7 +207,7 @@ Output:
 Klausa `FROM` dalam pernyataan `SELECT` bersifat opsional. Oleh karena itu, Anda dapat mengabaikannya dalam pernyataan `SELECT`.
 
 Biasanya, Anda menggunakan klausa `SELECT` dengan fungsi untuk mengambil hasil fungsi tersebut. Misalnya:
-
+sql
 ```
 SELECT NOW();
 ```
@@ -234,21 +234,21 @@ Kolom alias memungkinkan Anda untuk memberikan nama sementara pada kolom atau ek
 
 Berikut ini adalah sintaks penggunaan alias kolom:
 
-```
+```sql
 SELECT column_name AS alias_name
 FROM table_name;
 ```
 
 Dalam sintaks ini, `column_name` diberikan alias `alias_name`. Kata kunci `AS` bersifat opsional, sehingga Anda dapat menghilangkannya seperti ini:
 
-```
+```sql
 SELECT column_name alias_name
 FROM table_name;
 ```
 
 Sintaks berikut menunjukkan cara menetapkan alias untuk ekspresi dalam klausa `SELECT`:
 
-```
+```sql
 SELECT expression AS alias_name
 FROM table_name;
 ```
@@ -264,7 +264,7 @@ Kita akan menggunakan tabel `customer` dari database sampel untuk menunjukkan ca
 ### 1) Menetapkan alias kolom ke contoh kolom
 Kueri berikut mengembalikan nama depan dan nama belakang semua `customers` dari tabel customer:
 
-```
+```sql
 SELECT
    first_name,
    last_name
@@ -275,7 +275,7 @@ FROM customer;
 
 Jika Anda ingin mengganti nama heading `last_name`, Anda dapat memberikan nama baru menggunakan alias kolom seperti ini:
 
-```
+```sql
 SELECT
    first_name,
    last_name AS surname
@@ -288,7 +288,7 @@ Kueri ini menetapkan `surname` sebagai alias dari kolom `last_name`:
 
 Atau Anda bisa membuatnya lebih pendek dengan menghapus kata kunci AS seperti berikut:
 
-```
+```sql
 SELECT
    first_name,
    last_name surname
@@ -298,7 +298,7 @@ FROM customer;
 ### 2) Memberikan alias kolom untuk ekspresi
 Kueri berikut akan mengembalikan nama lengkap semua pelanggan di table `customer` dengan menggabungkan nama depan, spasi, dan nama belakang:
 
-```
+```sql
 SELECT
    first_name || ' ' || last_name
 FROM
@@ -313,7 +313,7 @@ Seperti yang bisa Anda lihat dari output, heading dari kolom tersebut tidak berm
 
 Untuk mengatasi ini, Anda dapat memberikan ekspresi `first_name || ' ' || last_name` sebuah alias kolom, misalnya `full_name`:
 
-```
+```sql
 SELECT
     first_name || ' ' || last_name AS full_name
 FROM
@@ -326,13 +326,13 @@ FROM
 
 Jika ingin nama alias kolom mengandung satu atau lebih spasi, Anda perlu mengapitnya dengan tanda kutip ganda seperti ini:
 
-```
+```sql
 column_name AS "column alias"
 ```
 
 Contohnya:
 
-```
+```sql
 SELECT
     first_name || ' ' || last_name "full name"
 FROM
@@ -360,7 +360,7 @@ Klausa `ORDER BY` memungkinkan Anda mengurutkan baris yang dikembalikan oleh kla
 
 Berikut adalah sintaks klausa `ORDER BY`:
 
-```
+```sql
 SELECT
   select_list
 FROM
@@ -390,7 +390,7 @@ Kita akan menggunakan tabel `customer` dalam database sampel untuk demonstrasi.
 
 Kueri berikut menggunakan klausa `ORDER BY` untuk mengurutkan pelanggan berdasarkan nama depan mereka dalam urutan naik:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -402,7 +402,7 @@ ORDER BY
 
 Karena opsi `ASC` adalah default, Anda bisa menghilangkannya dalam klausa `ORDER BY` seperti ini:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -416,7 +416,7 @@ ORDER BY
 
 Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nilai di kolom nama belakang dalam urutan turun:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -430,7 +430,7 @@ ORDER BY
 
 Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nama depan dalam urutan naik dan nama belakang dalam urutan turun:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -449,7 +449,7 @@ Fungsi `LENGTH()` menerima string dan mengembalikan panjang string tersebut.
 
 Pernyataan berikut memilih nama depan dan panjangnya. Mengurutkan baris berdasarkan panjang nama depan:
 
-```
+```sql
 SELECT
   first_name,
   LENGTH(first_name) len
@@ -466,7 +466,7 @@ Dalam dunia database, `NULL` adalah penanda yang menunjukkan data yang hilang at
 
 Ketika Anda mengurutkan baris yang mengandung `NULL`, Anda bisa menentukan urutan `NULL` dengan nilai lain yang tidak null menggunakan opsi `NULLS FIRST` atau `NULLS LAST` dalam klausa `ORDER BY`:
 
-```
+```sql
 ORDER BY sort_expresssion [ASC | DESC] [NULLS FIRST | NULLS LAST]
 ```
 
@@ -474,7 +474,7 @@ Opsi `NULLS FIRST` menempatkan `NULL` sebelum nilai lain yang tidak null dan ops
 
 Mari kita buat tabel untuk demonstrasi.
 
-```
+```sql
 -- membuat tabel baru
 CREATE TABLE sort_demo(num INT);
 
@@ -491,7 +491,7 @@ Jika Anda belum familiar dengan pernyataan `CREATE TABLE` dan `INSERT`, Anda bis
 
 Kueri berikut mengembalikan data dari tabel `sort_demo`:
 
-```
+```sql
 SELECT
   num
 FROM
@@ -514,7 +514,7 @@ Dalam contoh ini, klausa `ORDER BY` mengurutkan nilai di kolom `num` dari tabel 
 
 Perlu dicatat bahwa psql menampilkan null sebagai string kosong secara default. Untuk membuat null lebih jelas, Anda bisa mengeksekusi perintah berikut untuk mengubah string kosong menjadi null:
 
-```
+```sql
 \pset null null
 ```
 
@@ -526,7 +526,7 @@ Null display is "null".
 
 Jika Anda menggunakan opsi `ASC`, klausa `ORDER BY` menggunakan opsi `NULLS LAST` secara default. Oleh karena itu, kueri berikut mengembalikan hasil yang sama:
 
-```
+```sql
 SELECT
   num
 FROM
@@ -549,7 +549,7 @@ num
 
 Untuk menempatkan `NULL` sebelum nilai lain yang tidak null, gunakan opsi `NULLS FIRST`:
 
-```
+```sql
 SELECT
   num
 FROM
@@ -572,7 +572,7 @@ num
 
 Pernyataan berikut mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan turun:
 
-```
+```sql
 SELECT
   num
 FROM
@@ -597,7 +597,7 @@ Output menunjukkan bahwa klausa `ORDER BY` dengan opsi `DESC` menggunakan `NULLS
 
 Untuk membalikkan urutan, gunakan opsi `NULLS LAST`:
 
-```
+```sql
 SELECT
   num
 FROM
@@ -643,7 +643,7 @@ Klausa `SELECT DISTINCT` dapat diterapkan pada satu atau lebih kolom dalam dafta
 
 Berikut adalah sintaks penggunaan klausa `DISTINCT`:
 
-```
+```sql
 SELECT
   DISTINCT column1
 FROM
@@ -654,7 +654,7 @@ Dalam sintaks ini, `SELECT DISTINCT` menggunakan nilai dalam kolom `column1` unt
 
 Jika Anda menentukan beberapa kolom, klausa `SELECT DISTINCT` akan mengevaluasi duplikat berdasarkan kombinasi nilai-nilai dalam kolom-kolom tersebut. Contohnya:
 
-```
+```sql
 SELECT
    DISTINCT column1, column2
 FROM
@@ -667,7 +667,7 @@ Perhatikan bahwa PostgreSQL juga menawarkan klausa `DISTINCT ON` yang mempertaha
 
 Jika Anda ingin menemukan nilai unik dari semua kolom dalam tabel, Anda dapat menggunakan `SELECT DISTINCT *`:
 
-```
+```sql
 SELECT DISTINCT *
 FROM table_name;
 ```
@@ -682,7 +682,7 @@ Perhatikan bahwa Anda akan belajar cara membuat tabel dan memasukkan data ke dal
 
 Pertama, buat tabel `colors` yang memiliki tiga kolom: `id`, `bcolor` dan `fcolor` menggunakan pernyataan `CREATE TABLE` berikut:
 
-```
+```sql
 CREATE TABLE colors(
   id SERIAL PRIMARY KEY,
   bcolor VARCHAR,
@@ -692,7 +692,7 @@ CREATE TABLE colors(
 
 Kedua, masukkan beberapa baris ke dalam tabel `colors`:
 
-```
+```sql
 INSERT INTO
   colors (bcolor, fcolor)
 VALUES
@@ -708,7 +708,7 @@ VALUES
 
 Ketiga, ambil data dari tabel `colors` menggunakan pernyataan `SELECT`:
 
-```
+```sql
 SELECT
   id,
   bcolor,
@@ -736,7 +736,7 @@ id | bcolor | fcolor
 ### 1) Contoh PostgreSQL SELECT DISTINCT satu kolom
 Pernyataan berikut memilih nilai unik dari kolom `bcolor` dari tabel `t1` dan mengurutkan hasil kueri dalam urutan alfabetis menggunakan klausa `ORDER BY`.
 
-```
+```sql
 SELECT
   DISTINCT bcolor
 FROM
@@ -765,7 +765,7 @@ Perhatikan bahwa PostgreSQL menganggap `NULL` sebagai duplikat sehingga memperta
 
 Pernyataan berikut menerapkan klausa `SELECT DISTINCT` pada kolom `bcolor` dan `fcolor`:
 
-```
+```sql
 SELECT
   DISTINCT bcolor, fcolor
 FROM
@@ -801,7 +801,7 @@ Misalnya, Anda mungkin ingin mengetahui berapa banyak tarif sewa untuk film dari
 
 Untuk mencapainya, Anda bisa menentukan kolom `rental_rate` dalam klausa `SELECT DISTINCT` sebagai berikut:
 
-```
+```sql
 SELECT DISTINCT
   rental_rate
 FROM
