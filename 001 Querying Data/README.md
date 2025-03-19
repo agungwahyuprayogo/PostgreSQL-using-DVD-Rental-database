@@ -120,14 +120,13 @@ SELECT * FROM customer;
 
 Sebagian output:
 
-```
-customer_id | store_id | first_name  |  last_name    |                  email                                    | address_id | activebool | create_date |       last_update       | active
--------------+----------+-------------+--------------+------------------------------------------+------------+------------+-------------+-------------------------+--------
-         524 |        1 | Jared       | Ely          | [[email protected]](../cdn-cgi/l/email-protection.html)   |        530 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
-           1 |        1 | Mary        | Smith        | [[email protected]](../cdn-cgi/l/email-protection.html)   |          5 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
-           2 |        1 | Patricia    | Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)   |          6 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
-...
-```
+
+| customer_id | store_id | first_name | last_name | email                       | address_id | activebool | create_date | last_update             | active |
+|-------------|----------|------------|-----------|-----------------------------|------------|------------|-------------|-------------------------|--------|
+| 524         | 1        | Jared      | Ely       | [email protected]           | 530        | t          | 2006-02-14  | 2013-05-26 14:49:45.738 | 1      |
+| 1           | 1        | Mary       | Smith     | [email protected]           | 5          | t          | 2006-02-14  | 2013-05-26 14:49:45.738 | 1      |
+| 2           | 1        | Patricia   | Johnson   | [email protected]           | 6          | t          | 2006-02-14  | 2013-05-26 14:49:45.738 | 1      |
+
 
 Dalam contoh ini, kita menggunakan tanda bintang (`*`) dalam klausa `SELECT`, yang berfungsi sebagai pengganti semua kolom.
 
@@ -155,14 +154,13 @@ FROM
 
 Output:
 
-```
- ?column?              |                  email
- -----------------------+------------------------------------------
- Jared Ely             | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary Smith            | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
-...
-```
+| ?column?            | email                     |
+|---------------------|---------------------------|
+| Jared Ely           | [email protected]         |
+| Mary Smith          | [email protected]         |
+| Patricia Johnson    | [email protected]         |
+
+
 Dalam contoh ini, kita menggunakan operator konkatenasi `||` untuk menggabungkan nama depan, spasi, dan nama belakang setiap pelanggan.
 
 Perhatikan bahwa kolom pertama dari output tidak memiliki nama tetapi `?column?`. Untuk memberi nama sementara pada kolom dalam kueri, 
@@ -190,14 +188,12 @@ FROM
 
 Output:
 
-```
- full_name             |                  email
------------------------+------------------------------------------
- Jared Ely             | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary Smith            | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
-...
-```
+| full_name           | email                     |
+|---------------------|---------------------------|
+| Jared Ely           | [email protected]         |
+| Mary Smith          | [email protected]         |
+| Patricia Johnson    | [email protected]         |
+
 
 ### 5) Menggunakan pernyataan PostgreSQL SELECT tanpa klausa FROM
 Klausa `FROM` dalam pernyataan `SELECT` bersifat opsional. Oleh karena itu, Anda dapat mengabaikannya dalam pernyataan `SELECT`.
@@ -715,19 +711,16 @@ FROM
 
 Output:
 
-```
-id | bcolor | fcolor
-----+--------+--------
-  1 | red    | red
-  2 | red    | red
-  3 | red    | null
-  4 | null   | red
-  5 | null   | null
-  6 | green  | green
-  7 | blue   | blue
-  8 | blue   | blue
-(8 rows)
-```
+| id | bcolor | fcolor |
+|----|--------|--------|
+|  1 | red    | red    |
+|  2 | red    | red    |
+|  3 | red    | null   |
+|  4 | null   | red    |
+|  5 | null   | null   |
+|  6 | green  | green  |
+|  7 | blue   | blue   |
+|  8 | blue   | blue   |
 
 ### 1) Contoh PostgreSQL SELECT DISTINCT satu kolom
 Pernyataan berikut memilih nilai unik dari kolom `bcolor` dari tabel `t1` dan mengurutkan hasil kueri dalam urutan alfabetis menggunakan klausa `ORDER BY`.
@@ -808,14 +801,11 @@ ORDER BY
 
 Output:
 
-```
-rental_rate
--------------
-        0.99
-        2.99
-        4.99
-(3 rows)
-```
+| rental_rate |
+|-------------|
+| 0.99        |
+| 2.99        |
+| 4.99        |
 
 Output menunjukkan bahwa hanya ada tiga tarif sewa yang unik yaitu 0.99, 2.99, dan 4.99.
 
