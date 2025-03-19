@@ -77,16 +77,14 @@ SELECT first_name FROM customer;
 
 Berikut adalah sebagian output:
 
-```
-first_name
--------------
- Jared
- Mary
- Patricia
- Linda
- Barbara
-...
-```
+
+| first_name |
+|------------|
+| Jared      |
+| Mary       |
+| Patricia   |
+| Linda      |
+| Barbara    |
 
 Perhatikan bahwa kita menambahkan tanda titik koma (`;`) di akhir pernyataan SELECT. Tanda titik koma bukanlah bagian dari pernyataan SQL; melainkan, ini berfungsi sebagai sinyal bagi PostgreSQL bahwa pernyataan SQL telah selesai. Selain itu, tanda titik koma digunakan untuk memisahkan dua atau lebih pernyataan SQL.
 
