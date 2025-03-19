@@ -40,7 +40,7 @@ Mari kita mulai dengan bentuk dasar pernyataan `SELECT` yang mengambil data dari
 
 Berikut ini adalah sintaks dari pernyataan `SELECT`:
 
-```
+```sql
 SELECT
    select_list
 FROM
