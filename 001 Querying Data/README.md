@@ -102,14 +102,12 @@ FROM
 
 Sebagian output:
 
-```
-first_name  |  last_name   |                  email
--------------+--------------+------------------------------------------
- Jared       | Ely          | jared.ely@sakilacustomer.org
- Mary        | Smith        | mary.smith@sakilacustomer.org
- Patricia    | Johnson      | patricia.johnson@sakilacustomer.org
-...
-```
+| first_name | last_name  | email                               |
+|------------|------------|-------------------------------------|
+| Jared      | Ely        | jared.ely@sakilacustomer.org        |
+| Mary       | Smith      | mary.smith@sakilacustomer.org       |
+| Patricia   | Johnson    | patricia.johnson@sakilacustomer.org |
+
 Output menunjukkan tiga kolom yang sesuai yaitu first_name, last_name, dan email.
 
 ### 3) Menggunakan pernyataan PostgreSQL SELECT untuk mengambil data dari semua kolom dalam tabel
