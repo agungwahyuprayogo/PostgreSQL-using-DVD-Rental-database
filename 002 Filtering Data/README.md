@@ -7,6 +7,7 @@
 - [PostgreSQL LIMIT](#postgresql-limit)
 - [PostgreSQL FETCH](#postgresql-fetch)
 - [PostgreSQL IN](#postgresql-in)
+- [PostgreSQL BETWEEN](#postgresql-between)
 
 # PostgreSQL WHERE
 
@@ -1127,3 +1128,143 @@ ORDER BY
 ### **Ringkasan**  
 ✅ Gunakan operator `'IN'` untuk memeriksa apakah suatu nilai cocok dengan salah satu nilai dalam daftar.  
 ✅ Gunakan operator `'NOT IN'` untuk **meniadakan** operator `'IN'`.  
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+# **PostgreSQL BETWEEN**  
+
+## **Pengenalan Operator PostgreSQL 'BETWEEN'**  
+
+Operator `'BETWEEN'` memungkinkan kamu untuk **memeriksa apakah suatu nilai berada dalam rentang tertentu**.
+
+Berikut adalah sintaks dasar dari operator `'BETWEEN'`:
+
+```sql
+value BETWEEN low AND high;
+```
+
+Jika `'value'` lebih besar atau sama dengan **`low`** dan lebih kecil atau sama dengan **`high`**, operator `'BETWEEN'` akan **mengembalikan true**; jika tidak, akan mengembalikan **false**.
+
+Operator `'BETWEEN'` dapat ditulis ulang menggunakan operator **`>=`** (lebih besar atau sama dengan) dan **`<=`** (lebih kecil atau sama dengan), serta operator logika **`AND`**:
+
+```sql
+value >= low AND value <= high;
+```
+
+Jika kamu ingin memeriksa apakah suatu **nilai berada di luar** rentang tertentu, gunakan **operator `'NOT BETWEEN'`**:
+
+```sql
+value NOT BETWEEN low AND high;
+```
+
+Pernyataan ini setara dengan kombinasi operator **lebih kecil dari (`<`)** dan **lebih besar dari (`>`)**:
+
+```sql
+value < low OR value > high;
+```
+
+Dalam praktiknya, operator `'BETWEEN'` sering digunakan dalam klausa `'WHERE'` dari pernyataan `'SELECT'`, `'INSERT'`, `'UPDATE'`, dan `'DELETE'`.
+
+---
+
+## **Contoh Penggunaan Operator PostgreSQL 'BETWEEN'**  
+
+Mari kita lihat tabel `'payment'` dalam database contoh.
+
+**(gambar tabel payment)**  
+
+---
+
+### **1) Menggunakan Operator PostgreSQL 'BETWEEN' dengan Angka**  
+
+Kueri berikut menggunakan operator `'BETWEEN'` untuk mengambil pembayaran dengan `'payment_id'` antara **`17503` dan `17505`**:
+
+```sql
+SELECT
+  payment_id,
+  amount
+FROM
+  payment
+WHERE
+  payment_id BETWEEN 17503 AND 17505
+ORDER BY
+  payment_id;
+```
+
+**Output:**
+
+| payment_id | amount |
+|------------|--------|
+| 17503      |  7.99  |
+| 17504      |  1.99  |
+| 17505      |  7.99  |
+
+## **2) Contoh Penggunaan PostgreSQL 'NOT BETWEEN'**  
+
+Contoh berikut menggunakan operator `'NOT BETWEEN'` untuk menemukan pembayaran dengan `'payment_id'` **tidak berada** di antara `17503` dan `17505`:
+
+```sql
+SELECT
+  payment_id,
+  amount
+FROM
+  payment
+WHERE
+  payment_id NOT BETWEEN 17503 AND 17505
+ORDER BY
+  payment_id;
+```
+
+**Output:**
+
+
+| payment_id | amount |
+|------------|--------|
+| 17506      |  2.99  |
+| 17507      |  7.99  |
+| 17508      |  5.99  |
+| 17509      |  5.99  |
+| 17510      |  5.99  |
+| ...        |  ...   |
+
+## **3) Menggunakan PostgreSQL 'BETWEEN' dengan Rentang Tanggal**  
+
+Jika ingin memeriksa suatu nilai dalam rentang tanggal, gunakan format tanggal **ISO 8601**, yaitu `'YYYY-MM-DD'`.
+
+Contoh berikut menggunakan operator `'BETWEEN'` untuk menemukan pembayaran dengan **tanggal pembayaran antara `'2007-02-15'` dan `'2007-02-20'`**, serta jumlah **lebih dari 10**:
+
+```sql
+SELECT
+  customer_id,
+  payment_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  payment_date BETWEEN '2007-02-15' AND '2007-02-20'
+  AND amount > 10
+ORDER BY
+  payment_date;
+```
+
+**Output:**  
+
+| customer_id | payment_id | amount |        payment_date        |
+|-------------|------------|--------|----------------------------|
+| 33         | 18640      | 10.99  | 2007-02-15 08:14:59.996577 |
+| 544        | 18272      | 10.99  | 2007-02-15 16:59:12.996577 |
+| 516        | 18175      | 10.99  | 2007-02-16 13:20:28.996577 |
+| 572        | 18367      | 10.99  | 2007-02-17 02:33:38.996577 |
+| 260        | 19481      | 10.99  | 2007-02-17 16:37:30.996577 |
+| 477        | 18035      | 10.99  | 2007-02-18 07:01:49.996577 |
+| 221        | 19336      | 10.99  | 2007-02-19 09:18:28.996577 |
+
+---
+
+### **Ringkasan**  
+✅ Gunakan operator `'BETWEEN'` untuk memeriksa apakah suatu nilai berada dalam rentang tertentu.  
+✅ Gunakan operator `'NOT BETWEEN'` untuk **meniadakan** operator `'BETWEEN'`.  
+
