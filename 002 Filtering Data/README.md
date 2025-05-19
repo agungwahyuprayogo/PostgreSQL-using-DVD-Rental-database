@@ -1303,13 +1303,11 @@ WHERE
 
 **Output:**
 
-```markdown
 | first_name | last_name |
 |------------|-----------|
 | Jennifer   | Davis    |
 | Jennie     | Terry    |
 | Jenny      | Castro   |
-```
 
 Klausa `'WHERE'` dalam kueri di atas berisi ekspresi:
 
