@@ -5,6 +5,7 @@
 - [PostgreSQL AND Operator](#postgresql-and-operator)
 - [PostgreSQL OR Operator](#postgresql-or-operator)
 - [PostgreSQL LIMIT](#postgresql-limit)
+- [PostgreSQL FETCH](#postgresql-fetch)
 
 # PostgreSQL WHERE
 
@@ -13,7 +14,7 @@ Pernyataan `SELECT` mengembalikan semua baris dari satu atau lebih kolom dalam s
 
 Sintaks klausa PostgreSQL `WHERE` adalah sebagai berikut:
 
-```
+```sql
 SELECT
   select_list
 FROM
@@ -64,7 +65,7 @@ Kita akan menggunakan tabel customer dari database contoh untuk demonstrasi.
 ### 1)  Menggunakan klausa WHERE dengan contoh operator sama dengan (=)
 Pernyataan berikut menggunakan klausa `WHERE` untuk mencari pelanggan yang nama depannya adalah `Jamie`:
 
-```
+```sql
 SELECT
   last_name,
   first_name
@@ -76,18 +77,17 @@ WHERE
 
 Output:
 
-```
-last_name | first_name
------------+------------
- Rice      | Jamie
- Waugh     | Jamie
+| last_name | first_name |
+|-----------|------------|
+| Rice      | Jamie      |
+| Waugh     | Jamie      |
+
 (2 rows)
-```
 
 ### 2) Menggunakan klausa WHERE dengan contoh operator AND
 Contoh berikut menggunakan klausa `WHERE` dengan operator logika `AND` untuk mencari pelanggan yang nama depan dan nama belakangnya adalah `Jamie` dan `Rice`:
 
-```
+```sql
 SELECT
   last_name,
   first_name
@@ -100,17 +100,16 @@ WHERE
 
 Output:
 
-```
-last_name | first_name
------------+------------
- Rice      | Jamie
+| last_name | first_name |
+|-----------|------------|
+| Rice      | Jamie      |
+
 (1 row)
-```
 
 ### 3) Menggunakan klausa WHERE dengan contoh operator OR
 Contoh berikut menggunakan klausa `WHERE` dengan operator `OR` untuk mencari pelanggan yang nama belakangnya adalah `Rodriguez` atau nama depannya adalah `Adam`:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -123,20 +122,19 @@ WHERE
 
 Output:
 
-```
-first_name | last_name
-------------+-----------
- Laura      | Rodriguez
- Adam       | Gooch
+| first_name | last_name |
+|------------|-----------|
+| Laura      | Rodriguez |
+| Adam       | Gooch     |
+
 (2 rows)
-```
 
 ### 4) Menggunakan klausa WHERE dengan contoh operator IN
 Jika kamu ingin menemukan nilai dalam daftar nilai, kamu bisa menggunakan operator `IN`.
 
 Contoh berikut menggunakan klausa `WHERE` dengan operator `IN` untuk mencari pelanggan dengan nama depan dalam daftar `Ann`, `Anne`, dan `Annie`:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -148,21 +146,18 @@ WHERE
 
 Output:
 
-```
-first_name | last_name
-------------+-----------
- Ann        | Evans
- Anne       | Powell
- Annie      | Russell
-(3 rows)
-```
+| first_name | last_name |
+|------------|-----------|
+| Ann        | Evans     |
+| Anne       | Powell    |
+| Annie      | Russell   |
 
 ### 5) Menggunakan klausa WHERE dengan contoh operator LIKE
 Untuk menemukan string yang cocok dengan pola tertentu, kamu menggunakan operator `LIKE`.
 
 Contoh berikut menggunakan operator `LIKE` dalam klausa `WHERE` untuk menemukan pelanggan yang nama depannya dimulai dengan kata `Ann..`:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -174,16 +169,16 @@ WHERE
 
 Output:
 
-```
-first_name | last_name
-------------+-----------
- Anna       | Hill
- Ann        | Evans
- Anne       | Powell
- Annie      | Russell
- Annette    | Olson
+| first_name | last_name |
+|------------|-----------|
+| Anna       | Hill      |
+| Ann        | Evans     |
+| Anne       | Powell    |
+| Annie      | Russell   |
+| Annette    | Olson     |
+
 (5 rows)
-```
+
 
 `%` disebut wildcard yang cocok dengan string apa pun. Pola `'Ann%'` cocok dengan string apa pun yang dimulai dengan `'Ann'`.
 
@@ -192,7 +187,7 @@ Contoh berikut menemukan pelanggan yang nama depannya dimulai dengan huruf `A` d
 
 Operator `BETWEEN` mengembalikan true jika nilai berada dalam rentang nilai.
 
-```
+```sql
 SELECT
   first_name,
   LENGTH(first_name) name_length
@@ -208,29 +203,27 @@ ORDER BY
 
 Output:
 
-```
-first_name | name_length
-------------+-------------
- Amy        |           3
- Ann        |           3
- Ana        |           3
- Andy       |           4
- Anna       |           4
- Anne       |           4
- Alma       |           4
- Adam       |           4
- Alan       |           4
- Alex       |           4
- Angel      |           5
-...
-```
+
+| first_name | name_length |
+|------------|-------------|
+| Amy        |           3 |
+| Ann        |           3 |
+| Ana        |           3 |
+| Andy       |           4 |
+| Anna       |           4 |
+| Anne       |           4 |
+| Alma       |           4 |
+| Adam       |           4 |
+| Alan       |           4 |
+| Alex       |           4 |
+| Angel      |           5 |
 
 Dalam contoh ini, kita menggunakan fungsi `LENGTH()` untuk mendapatkan jumlah karakter dari string input.
 
 ### 7) Menggunakan klausa WHERE dengan contoh operator tidak sama dengan (<>)
 Contoh ini menemukan pelanggan yang nama depannya dimulai dengan `Bra` dan nama belakangnya bukan `Motley`:
 
-```
+```sql
 SELECT
   first_name,
   last_name
@@ -243,14 +236,12 @@ WHERE
 
 Output:
 
-```
-first_name | last_name
-------------+-----------
- Brandy     | Graves
- Brandon    | Huey
- Brad       | Mccurdy
-(3 rows)
-```
+| first_name | last_name |
+|------------|-----------|
+| Brandy     | Graves    |
+| Brandon    | Huey      |
+| Brad       | Mccurdy   |
+
 
 Perlu dicatat bahwa kamu bisa menggunakan operator `!=` dan operator `<>` secara bergantian karena mereka setara.
 
@@ -274,7 +265,7 @@ dan `false`, `'f'`, `'false'`, `'n'`, `'no'`, dan `'0'` untuk merepresentasikan 
 
 Ekspresi boolean adalah ekspresi yang dievaluasi menjadi nilai boolean. Misalnya, ekspresi `1=1` adalah ekspresi boolean yang dievaluasi menjadi `true`:
 
-```
+```sql
 SELECT 1 = 1 AS result;
 ```
 
@@ -293,7 +284,7 @@ Operator `AND` adalah operator logika yang menggabungkan dua ekspresi boolean.
 
 Berikut sintaks dasar dari operator `AND`:
 
-```
+```sql
 expression1 AND expression2
 ```
 
@@ -317,7 +308,7 @@ Mari kita jelajahi beberapa contoh penggunaan operator `AND`.
 ### 1) Contoh dasar penggunaan operator PostgreSQL AND
 Contoh berikut menggunakan operator `AND` untuk menggabungkan dua nilai true, yang mengembalikan `true`:
 
-```
+```sql
 SELECT true AND true AS result;
 ```
 
@@ -332,7 +323,7 @@ result
 
 Pernyataan berikut menggunakan operator `AND` untuk menggabungkan `true` dengan `false`, yang mengembalikan `false`:
 
-```
+```sql
 SELECT true AND false AS result;
 ```
 
@@ -347,7 +338,7 @@ result
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan true dengan `null`, yang mengembalikan `null`:
 
-```
+```sql
 SELECT true AND null AS result;
 ```
 
@@ -362,7 +353,7 @@ result
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `false`, yang mengembalikan `false`:
 
-```
+```sql
 SELECT false AND false AS result;
 ```
 
@@ -377,7 +368,7 @@ result
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `null`, yang mengembalikan `false`:
 
-```
+```sql
 SELECT false AND null AS result;
 ```
 
@@ -392,7 +383,7 @@ result
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `null` dengan `null`, yang mengembalikan `null`:
 
-```
+```sql
 SELECT null AND null AS result;
 ```
 
@@ -412,7 +403,7 @@ Kita akan menggunakan tabel `film` dari database contoh untuk demonstrasi:
 
 Contoh berikut menggunakan operator `AND` dalam klausa `WHERE` untuk mencari film yang durasinya lebih dari 180 menit dan tarif sewanya kurang dari 1:
 
-```
+```sql
 SELECT
   title,
   length,
@@ -426,21 +417,20 @@ WHERE
 
 Output:
 
-```
-title               | length | rental_rate
---------------------+--------+-------------
- Catch Amistad      |    183 |        0.99
- Haunting Pianist   |    181 |        0.99
- Intrigue Worst     |    181 |        0.99
- Love Suicides      |    181 |        0.99
- Runaway Tenenbaums |    181 |        0.99
- Smoochy Control    |    184 |        0.99
- Sorority Queen     |    184 |        0.99
- Theory Mermaid     |    184 |        0.99
- Wild Apollo        |    181 |        0.99
- Young Language     |    183 |        0.99
-(10 rows)
-```
+
+| title              | length | rental_rate |
+|--------------------|--------|-------------|
+| Catch Amistad      |    183 |        0.   |
+| Haunting Pianist   |    181 |        0.   |
+| Intrigue Worst     |    181 |        0.99 |
+| Love Suicides      |    181 |        0.99 |
+| Runaway Tenenbaums |    181 |        0.99 |
+| Smoochy Control    |    184 |        0.99 |
+| Sorority Queen     |    184 |        0.99 |
+| Theory Mermaid     |    184 |        0.99 |
+| Wild Apollo        |    181 |        0.99 |
+| Young Language     |    183 |        0.99 |
+
 
 ### Summary
 - Gunakan operator `AND` untuk menggabungkan beberapa ekspresi boolean.
@@ -456,7 +446,7 @@ title               | length | rental_rate
 
 Operator `OR` adalah operator logika yang menggabungkan beberapa ekspresi boolean. Berikut adalah sintaks dasar operator `OR`:
 
-```
+```sql
 expression1 OR expression2
 ```
 
@@ -480,7 +470,7 @@ Mari kita lihat beberapa contoh penggunaan operator `OR`.
 ### 1) Contoh dasar operator PostgreSQL OR
 Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan true`, yang mengembalikan `true`:
 
-```
+```sql
 SELECT true OR true AS result;
 ```
 
@@ -495,7 +485,7 @@ result
 
 Pernyataan berikut menggunakan operator `OR` untuk menggabungkan `true dengan false`, yang mengembalikan `true`:
 
-```
+```sql
 SELECT true OR false AS result;
 ```
 
@@ -510,7 +500,7 @@ result
 
 Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan null`, yang mengembalikan `true`:
 
-```
+```sql
 SELECT true OR null AS result;
 ```
 
@@ -525,7 +515,7 @@ result
 
 Contoh berikut menggunakan operator `OR` untuk menggabungkan `false dengan false`, yang mengembalikan `false`:
 
-```
+```sql
 SELECT false OR false AS result;
 ```
 
@@ -540,7 +530,7 @@ result
 
 Contoh berikut menggunakan operator `OR` untuk `menggabungkan false dengan null`, yang mengembalikan `null`:
 
-```
+```sql
 SELECT false OR null AS result;
 ```
 
@@ -575,7 +565,7 @@ Kita akan menggunakan tabel `film` dari basis data contoh untuk demonstrasi:
 
 Contoh berikut menggunakan operator `OR` dalam klausa `WHERE` untuk menemukan film-film yang memiliki tarif sewa `0.99` atau `2.99`:
 
-```
+```sql
 SELECT
   title,
   rental_rate
@@ -588,15 +578,14 @@ WHERE
 
 Keluaran:
 
-```
-title            | rental_rate
------------------------------+-------------
- Academy Dinosaur            |        0.99
- Adaptation Holes            |        2.99
- Affair Prejudice            |        2.99
- African Egg                 |        2.99
-...
-```
+
+| title            | rental_rate |
+|------------------|-------------|
+| Academy Dinosaur |        0.99 |
+| Adaptation Holes |        2.99 |
+| Affair Prejudice |        2.99 |
+| African Egg      |        2.99 |
+
 
 #### Summary
 - Gunakan operator `OR` untuk menggabungkan beberapa ekspresi boolean.
@@ -768,3 +757,146 @@ Output:
 
 #### **Ringkasan**  
 Gunakan klausa PostgreSQL `'LIMIT OFFSET'` untuk mengambil sebagian dari kumpulan baris yang dikembalikan oleh kueri.
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL FETCH 
+
+**Ringkasan:** Dalam tutorial ini, kamu akan belajar cara menggunakan klausa PostgreSQL `'FETCH'` untuk mengambil sebagian baris yang dikembalikan oleh kueri.
+
+## **Pengenalan Klausa PostgreSQL 'FETCH'**  
+
+Untuk melewati sejumlah baris dan mengambil jumlah baris tertentu, kamu sering menggunakan klausa `'LIMIT'` dalam pernyataan `'SELECT'`.  
+
+Klausa `'LIMIT'` banyak digunakan oleh berbagai Sistem Manajemen Basis Data Relasional (RDBMS) seperti MySQL, H2, dan HSQLDB. Namun, `'LIMIT'` bukanlah bagian dari standar SQL.
+
+Agar sesuai dengan standar SQL, PostgreSQL mendukung klausa `'FETCH'`, yang memungkinkan melewati sejumlah baris tertentu lalu mengambil sejumlah baris spesifik.
+
+Perlu diketahui bahwa klausa `'FETCH'` diperkenalkan sebagai bagian dari **standar SQL:2008**.
+
+Berikut adalah sintaks dari klausa `'FETCH'` dalam PostgreSQL:
+
+
+```sql
+OFFSET row_to_skip { ROW | ROWS }
+FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY
+```
+
+
+Dalam sintaks ini:
+
+- **Pertama**, tentukan jumlah baris yang akan dilewati (`row_to_skip`) setelah kata kunci `'OFFSET'`. Nilai ini harus berupa bilangan bulat **nol atau positif**, dengan nilai default 0 (artinya tidak melewati baris).  
+- Jika `row_to_skip` lebih besar dari jumlah total baris dalam tabel, kueri tidak akan mengembalikan hasil apa pun.  
+- **Kedua**, tentukan jumlah baris yang ingin diambil (`row_count`) dalam klausa `'FETCH'`. Nilai ini harus berupa **bilangan bulat 1 atau lebih besar**, dengan nilai default **1**.  
+- `'ROW'` adalah sinonim dari `'ROWS'`, sedangkan `'FIRST'` adalah sinonim dari `'NEXT'`, sehingga bisa digunakan secara bergantian.
+
+Karena PostgreSQL menyimpan baris dalam urutan yang tidak ditentukan, **selalu gunakan klausa `'ORDER BY'`** saat menggunakan `'FETCH'`, agar urutan hasil konsisten.
+
+Catatan: Dalam SQL:2008, klausa `'OFFSET'` harus muncul sebelum `'FETCH'`. Namun, dalam PostgreSQL, kedua klausa ini bisa muncul dalam urutan **apa pun**.
+
+---
+
+## **FETCH vs. LIMIT**  
+
+Klausa `'FETCH'` memiliki fungsi yang sama dengan klausa `'LIMIT'`. Jika kamu ingin membuat aplikasi yang **kompatibel dengan berbagai sistem basis data**, sebaiknya gunakan `'FETCH'`, karena klausa ini mengikuti standar SQL.
+
+---
+
+## **Contoh Penggunaan PostgreSQL 'FETCH'**  
+
+Kita akan menggunakan tabel `'film'` dalam database contoh untuk demonstrasi.
+
+![image](https://github.com/user-attachments/assets/a358c66a-5373-4ead-8b59-58756768f75c)
+
+### Klausa PostgreSQL 'FETCH'
+
+Pernyataan berikut menggunakan klausa `'FETCH'` untuk memilih **film pertama** yang diurutkan berdasarkan judul dalam **urutan menaik**:
+
+```sql
+SELECT
+    film_id,
+    title
+FROM
+    film
+ORDER BY
+    title
+FETCH FIRST ROW ONLY;
+```
+
+**Output:**
+
+| film_id |      title       |
+|---------|------------------|
+| 1       | Academy Dinosaur |
+
+
+Pernyataan ini setara dengan kueri berikut:
+
+```sql
+SELECT
+    film_id,
+    title
+FROM
+    film
+ORDER BY
+    title
+FETCH FIRST 1 ROW ONLY;
+```
+
+---
+
+Pernyataan berikut menggunakan klausa `'FETCH'` untuk memilih **lima film pertama** yang diurutkan berdasarkan judul:
+
+```sql
+SELECT
+    film_id,
+    title
+FROM
+    film
+ORDER BY
+    title
+FETCH FIRST 5 ROW ONLY;
+```
+
+**Output:**
+
+| film_id |      title        |
+|---------|------------------|
+| 1       | Academy Dinosaur |
+| 2       | Ace Goldfinger   |
+| 3       | Adaptation Holes |
+| 4       | Affair Prejudice |
+| 5       | African Egg      |
+
+
+---
+
+Pernyataan berikut mengambil **lima film berikutnya** setelah lima film pertama yang diurutkan berdasarkan judul:
+
+```sql
+SELECT
+    film_id,
+    title
+FROM
+    film
+ORDER BY
+    title
+OFFSET 5 ROWS
+FETCH FIRST 5 ROW ONLY;
+```
+
+**Output:**
+
+| film_id |      title        |
+|---------|------------------|
+| 6       | Agent Truman     |
+| 7       | Airplane Sierra  |
+| 8       | Airport Pollock  |
+| 9       | Alabama Devil    |
+| 10      | Aladdin Calendar |
+
+### **Ringkasan**  
+Gunakan klausa PostgreSQL `'FETCH'` untuk melewati sejumlah baris dan mengambil sejumlah baris tertentu dari hasil kueri.
