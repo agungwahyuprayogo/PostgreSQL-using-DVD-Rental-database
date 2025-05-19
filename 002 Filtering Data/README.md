@@ -8,6 +8,7 @@
 - [PostgreSQL FETCH](#postgresql-fetch)
 - [PostgreSQL IN](#postgresql-in)
 - [PostgreSQL BETWEEN](#postgresql-between)
+- [PostgreSQL LIKE](#postgresql-like)
 
 # PostgreSQL WHERE
 
@@ -1264,7 +1265,380 @@ ORDER BY
 
 ---
 
+
 ### **Ringkasan**  
 ✅ Gunakan operator `'BETWEEN'` untuk memeriksa apakah suatu nilai berada dalam rentang tertentu.  
 ✅ Gunakan operator `'NOT BETWEEN'` untuk **meniadakan** operator `'BETWEEN'`.  
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# **PostgreSQL LIKE**  
+
+## **Pengenalan Operator PostgreSQL 'LIKE'**  
+
+Misalkan kamu ingin mencari pelanggan, tetapi **tidak mengingat namanya secara pasti**. Namun, kamu tahu bahwa nama mereka **dimulai dengan** `'Jen'`.  
+
+Bagaimana cara menemukan pelanggan yang sesuai di database?  
+
+Kamu bisa **memeriksa satu per satu** kolom `'first_name'` dalam tabel `'customer'`, tetapi **hal ini memakan waktu** terutama jika tabel memiliki banyak baris.  
+
+Untungnya, kamu bisa **menggunakan operator PostgreSQL 'LIKE'** untuk mencocokkan nama depan pelanggan dengan pola tertentu, seperti dalam kueri berikut:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name LIKE 'Jen%';
+```
+
+**Output:**
+
+```markdown
+| first_name | last_name |
+|------------|-----------|
+| Jennifer   | Davis    |
+| Jennie     | Terry    |
+| Jenny      | Castro   |
+```
+
+Klausa `'WHERE'` dalam kueri di atas berisi ekspresi:
+
+```sql
+first_name LIKE 'Jen%'
+```
+
+Ekspresi ini terdiri dari **kolom `'first_name'`**, **operator `'LIKE'`**, dan **string literal** yang mengandung tanda persen (`%`).  
+String `'Jen%'` disebut sebagai **pola (pattern)**.
+
+Kueri ini akan **mengembalikan baris** di mana nilai dalam kolom `'first_name'` **dimulai dengan `'Jen'`**, diikuti oleh **karakter apa pun**. Teknik ini dikenal sebagai **pattern matching**.
+
+---
+
+## **Wildcard dalam PostgreSQL 'LIKE'**  
+
+Kamu dapat membentuk pola dengan **menggabungkan nilai literal dengan karakter wildcard** serta menggunakan operator **'LIKE'** atau **'NOT LIKE'** untuk menemukan kecocokan.  
+
+PostgreSQL menyediakan **dua wildcard utama**:  
+
+✅ **Tanda persen (`%`)** → Cocok dengan **urutan karakter apa pun**, termasuk tidak ada karakter.  
+✅ **Tanda garis bawah (`_`)** → Cocok dengan **satu karakter tunggal**.
+
+Sintaks dasar dari operator `'LIKE'`:
+
+```sql
+value LIKE pattern
+```
+
+Operator `'LIKE'` mengembalikan **true** jika `'value'` cocok dengan `'pattern'`.  
+Jika ingin **meniadakan** operator `'LIKE'`, gunakan **operator 'NOT LIKE'**:
+
+```sql
+value NOT LIKE pattern
+```
+
+Operator `'NOT LIKE'` akan **mengembalikan true** jika `'value'` **tidak cocok** dengan `'pattern'`.
+
+Jika pola **tidak berisi wildcard**, operator `'LIKE'` **berperilaku seperti operator '='**.
+
+---
+
+## **Contoh Penggunaan PostgreSQL 'LIKE'**  
+
+### **1) Contoh Dasar Operator 'LIKE'**  
+
+Kueri berikut menggunakan **operator 'LIKE'** dengan pola **tanpa karakter wildcard**:
+
+```sql
+SELECT 'Apple' LIKE 'Apple' AS result;
+```
+
+**Output:**
+
+| result |
+|--------|
+| t      |
+
+
+Dalam contoh ini, operator `'LIKE'` **berperilaku seperti operator '='**, karena `'Apple' = 'Apple'` adalah **true**.
+
+Kueri berikut menggunakan **operator 'LIKE'** untuk mencocokkan **string yang dimulai dengan huruf 'A'**:
+
+```sql
+SELECT 'Apple' LIKE 'A%' AS result;
+```
+
+**Output:**
+
+| result |
+|--------|
+| t      |
+
+Kueri mengembalikan **true** karena string `'Apple'` **dimulai dengan huruf 'A'**.
+
+---
+
+### **2) Menggunakan Operator 'LIKE' dengan Data Tabel**  
+
+Kita akan menggunakan tabel `'customer'` dari database contoh.
+
+![image](https://github.com/user-attachments/assets/4d0b5c18-20d4-4e63-9f22-4a0e600ee733)
+
+# **Contoh Penggunaan PostgreSQL 'LIKE'**  
+
+### **Menggunakan Operator 'LIKE' untuk Mencari Nama Depan yang Mengandung String 'er'**  
+
+Kueri berikut menggunakan operator `'LIKE'` untuk menemukan pelanggan dengan **nama depan yang mengandung string `'er'`**:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name LIKE '%er%'
+ORDER BY
+  first_name;
+```
+
+**Output:**  
+
+| first_name  | last_name |
+|-------------|----------|
+| Albert      | Crouse   |
+| Alberto     | Henning  |
+| Alexander   | Fennell  |
+| Amber       | Dixon    |
+| Bernard     | Colby    |
+| ...         | ...      |
+
+---
+
+### **3) Menggunakan Operator 'LIKE' dengan Pola yang Mengandung Wildcard `%` dan `_`**  
+
+Kueri berikut menggunakan operator `'LIKE'` dengan pola yang mengandung **wildcard persen (`%`) dan garis bawah (`_`)**:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name LIKE '_her%'
+ORDER BY
+  first_name;
+```
+
+**Output:**  
+
+| first_name | last_name |
+|------------|----------|
+| Cheryl     | Murphy   |
+| Sherri     | Rhodes   |
+| Sherry     | Marshall |
+| Theresa    | Watson   |
+
+Pola `'_her%'` cocok dengan string yang memenuhi kondisi berikut:  
+
+✅ **Karakter pertama bisa apa saja**.  
+✅ **Karakter berikutnya harus `'her'`**.  
+✅ **Karakter setelah `'her'` bisa berjumlah berapa saja (termasuk nol karakter)**.
+
+---
+
+### **4) Contoh Penggunaan PostgreSQL 'NOT LIKE'**  
+
+Kueri berikut menggunakan operator `'NOT LIKE'` untuk menemukan pelanggan **yang nama depannya tidak dimulai dengan `'Jen'`**:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name NOT LIKE 'Jen%'
+ORDER BY
+  first_name;
+```
+
+**Output:**  
+
+| first_name  | last_name |
+|-------------|----------|
+| Aaron       | Selby    |
+| Adam        | Gooch    |
+| Adrian      | Clary    |
+| Agnes       | Bishop   |
+| ...         | ...      |
+
+---
+
+## **Ekstensi PostgreSQL untuk Operator 'LIKE'**  
+
+PostgreSQL menyediakan **operator 'ILIKE'**, yang **mirip dengan 'LIKE'** tetapi **mendukung pencocokan tanpa peka huruf besar-kecil**.  
+
+Contoh berikut menggunakan operator `'ILIKE'` untuk menemukan pelanggan dengan nama depan yang **dimulai dengan `'BAR'`, tanpa memperhatikan huruf besar atau kecil**:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name ILIKE 'BAR%';
+```
+
+**Output:**  
+
+| first_name | last_name |
+|------------|----------|
+| Barbara    | Jones    |
+| Barry      | Lovelace |
+
+Dalam contoh ini, pola `'BAR%'` cocok dengan **string apa pun yang dimulai dengan `'BAR'`, `'Bar'`, `'BaR'`, dan sebagainya**.  
+Jika menggunakan **operator 'LIKE' biasa**, kueri tidak akan mengembalikan hasil:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name LIKE 'BAR%';
+```
+
+**Output:**  
+
+
+| first_name | last_name |
+|------------|-----------|
+| (0 rows)   |           |
+
+
+---
+
+## **Operator Alternatif PostgreSQL untuk 'LIKE'**  
+
+PostgreSQL juga menyediakan **operator alternatif** untuk `'LIKE'`, `'NOT LIKE'`, `'ILIKE'`, dan `'NOT ILIKE'`, seperti yang ditunjukkan dalam tabel berikut:
+
+| **Operator** | **Setara Dengan** |
+|--------------|-------------------|
+| `~~`         | LIKE              |
+| `~~*`        | ILIKE             |
+| `!~~`        | NOT LIKE          |
+| `!~~*`       | NOT ILIKE         |
+
+---
+
+Contoh berikut menggunakan operator **`~~`** untuk menemukan pelanggan dengan **nama depan yang dimulai dengan `'Dar'`**:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name ~~ 'Dar%'
+ORDER BY
+  first_name;
+```
+
+**Output:**  
+
+
+| first_name | last_name |
+|------------|----------|
+| Darlene    | Rose     |
+| Darrell    | Power    |
+| Darren     | Windham  |
+| Darryl     | Ashcraft |
+| Daryl      | Larue    |
+
+## **PostgreSQL 'LIKE' dengan Opsi 'ESCAPE'**  
+
+Terkadang, data yang ingin kamu cocokkan mengandung **karakter wildcard** seperti `'%'` dan `'_'`. Contoh:  
+
+```
+The rents are now 10% higher than last month  
+The new film will have _ in the title  
+```
+
+Untuk **menginstruksikan operator `'LIKE'` agar memperlakukan karakter wildcard** `'%'` dan `'_'` sebagai **karakter biasa**, gunakan **opsi 'ESCAPE'** dalam operator `'LIKE'`:
+
+```sql
+string LIKE pattern ESCAPE escape_character;
+```
+
+---
+
+### **Membuat Tabel untuk Demonstrasi**  
+
+```sql
+CREATE TABLE t(
+   message text
+);
+
+INSERT INTO t(message)
+VALUES('The rents are now 10% higher than last month'),
+      ('The new film will have _ in the title');
+
+SELECT message FROM t;
+```
+
+---
+
+**Output:**  
+
+| message                                      |
+|----------------------------------------------|
+| The rents are now 10% higher than last month |
+| The new film will have _ in the title        |
+
+---
+
+### **Menggunakan Operator 'LIKE' dengan 'ESCAPE'**  
+
+Pernyataan berikut menggunakan **operator 'LIKE' dengan opsi 'ESCAPE'** untuk memperlakukan `'%'` yang muncul setelah angka `'10'` sebagai **karakter biasa**:
+
+```sql
+SELECT * FROM t
+WHERE message LIKE '%10$%%' ESCAPE '$';
+```
+
+---
+
+**Output:**  
+
+| message                                      |
+|----------------------------------------------|
+| The rents are now 10% higher than last month |
+
+Dalam pola `' %10$%% '`, karakter `'%'` pertama dan terakhir **berfungsi sebagai wildcard**, sedangkan `'%'` setelah karakter **escape `$`** dianggap sebagai **karakter biasa**.
+
+---
+
+#### **Ringkasan**  
+- Gunakan operator `'LIKE'` untuk mencocokkan data berdasarkan pola.  
+- Gunakan operator `'NOT LIKE'` untuk **meniadakan** operator `'LIKE'`.  
+- Gunakan wildcard `'%`' untuk mencocokkan **nol atau lebih karakter**.  
+- Gunakan wildcard `'_'` untuk mencocokkan **satu karakter tunggal**.  
+- Gunakan opsi `'ESCAPE'` untuk menentukan karakter pelolosan (escape).  
+- Gunakan operator `'ILIKE'` untuk **pencocokan tanpa peka huruf besar/kecil**.
+
+---
 
