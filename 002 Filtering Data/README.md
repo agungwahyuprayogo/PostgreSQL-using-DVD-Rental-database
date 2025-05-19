@@ -6,6 +6,7 @@
 - [PostgreSQL OR Operator](#postgresql-or-operator)
 - [PostgreSQL LIMIT](#postgresql-limit)
 - [PostgreSQL FETCH](#postgresql-fetch)
+- [PostgreSQL IN](#postgresql-in)
 
 # PostgreSQL WHERE
 
@@ -900,3 +901,229 @@ FETCH FIRST 5 ROW ONLY;
 
 ### **Ringkasan**  
 Gunakan klausa PostgreSQL `'FETCH'` untuk melewati sejumlah baris dan mengambil sejumlah baris tertentu dari hasil kueri.
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL IN
+
+## **Pengenalan Operator PostgreSQL 'IN'**  
+
+Operator `'IN'` memungkinkan kamu untuk memeriksa apakah suatu **nilai cocok** dengan **salah satu nilai** dalam daftar.
+
+Berikut adalah sintaks dasar dari operator `'IN'`:
+
+```sql
+value IN (value1, value2, ...)
+```
+
+Operator `'IN'` akan mengembalikan **true** jika `'value'` sama dengan salah satu nilai dalam daftar, seperti `'value1'` dan `'value2'`.
+
+Daftar nilai dapat berupa **nilai literal**, termasuk angka dan string.
+
+Selain nilai literal, operator `'IN'` juga dapat menerima daftar nilai yang dihasilkan dari suatu kueri. Kamu akan belajar lebih lanjut tentang penggunaan operator `'IN'` dengan kueri dalam tutorial subquery.
+
+Secara fungsional, operator `'IN'` setara dengan **kombinasi beberapa ekspresi boolean** yang digabungkan dengan operator `'OR'`:
+
+```sql
+value = value1 OR value = value2 OR ...
+```
+
+---
+
+## **Contoh Penggunaan Operator PostgreSQL 'IN'**  
+
+Kita akan menggunakan tabel `'film'` dari database contoh.
+
+![image](https://github.com/user-attachments/assets/882709fd-617d-4b33-8742-cb16cf421d46)
+
+### **1) Menggunakan Operator PostgreSQL 'IN' dengan Daftar Angka**
+
+Contoh berikut menggunakan operator `'IN'` untuk mengambil informasi tentang film dengan `'film_id'` 1, 2, dan 3:
+
+```sql
+SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id IN (1, 2, 3);
+```
+
+**Output:**
+
+| film_id |      title       |
+|---------|------------------|
+| 1       | Academy Dinosaur |
+| 2       | Ace Goldfinger   |
+| 3       | Adaptation Holes |
+
+---
+
+Pernyataan berikut menggunakan operator `'='` dan `'OR'` sebagai pengganti operator `'IN'`, yang setara dengan kueri di atas:
+
+```sql
+SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id = 1
+  OR film_id = 2
+  OR film_id = 3;
+```
+
+---
+
+Kueri yang menggunakan operator `'IN'` lebih **pendek** dan **mudah dibaca** dibandingkan kueri yang menggunakan operator `'='` dan `'OR'`.
+
+Selain itu, PostgreSQL **mengeksekusi kueri dengan operator `'IN'` lebih cepat** daripada kueri yang menggunakan banyak operator `'OR'`.
+
+### **2) Menggunakan Operator PostgreSQL 'IN' dengan Daftar String**  
+
+Kita akan menggunakan tabel `'actor'` dari database contoh:  
+
+![image](https://github.com/user-attachments/assets/d04c04d6-e365-467b-99e7-88006c0a44a5)
+  
+
+Contoh berikut menggunakan operator `'IN'` untuk menemukan aktor yang memiliki nama belakang dalam daftar `'Allen'`, `'Chase'`, dan `'Davis'`:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  actor
+WHERE
+  last_name IN ('Allen', 'Chase', 'Davis')
+ORDER BY
+  last_name;
+```
+
+**Output:**  
+
+| first_name | last_name |
+|------------|-----------|
+| Meryl      | Allen    |
+| Cuba       | Allen    |
+| Kim        | Allen    |
+| Jon        | Chase    |
+| Ed         | Chase    |
+| Susan      | Davis    |
+| Jennifer   | Davis    |
+| Susan      | Davis    |
+
+### 3) Menggunakan Operator PostgreSQL 'IN' dengan Daftar Tanggal
+
+Pernyataan berikut menggunakan operator `'IN'` untuk menemukan pembayaran dengan tanggal pembayaran dalam daftar tanggal: `'2007-02-15'` dan `'2007-02-16'`:
+
+```sql
+SELECT
+  payment_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  payment_date::date IN ('2007-02-15', '2007-02-16');
+```
+
+**Output:**
+
+| payment_id | amount |        payment_date        |
+|------------|--------|---------------------------|
+| 17503      |  7.99  | 2007-02-15 22:25:46.996577 |
+| 17504      |  1.99  | 2007-02-16 17:23:14.996577 |
+| 17505      |  7.99  | 2007-02-16 22:41:45.996577 |
+| 17512      |  4.99  | 2007-02-16 00:10:50.996577 |
+| ...        |  ...   | ...                        |
+
+
+Dalam contoh ini, kolom `'payment_date'` memiliki tipe `'timestamp'`, yang terdiri dari bagian **tanggal** dan **waktu**.
+
+Agar nilai dalam kolom `'payment_date'` cocok dengan daftar tanggal, kamu perlu **mengonversinya ke tipe tanggal saja**.  
+
+Untuk melakukannya, gunakan operator **cast (`::`)**:
+
+```sql
+payment_date::date
+```
+
+Sebagai contoh, jika nilai timestamp adalah `'2007-02-15 22:25:46.996577'`, operator cast akan mengonversinya menjadi **`2007-02-15`**.
+
+---
+
+## **PostgreSQL 'NOT IN' Operator**  
+
+Untuk meniadakan operator `'IN'`, gunakan **operator `'NOT IN'`**.  
+
+Berikut adalah sintaks dasar dari operator `'NOT IN'`:
+
+```sql
+value NOT IN (value1, value2, ...)
+```
+
+Operator `'NOT IN'` akan **mengembalikan true** jika `'value'` **tidak sama** dengan salah satu nilai dalam daftar, seperti `'value1'` dan `'value2'`. Jika ada kecocokan, operator ini akan mengembalikan **false**.
+
+Secara fungsional, operator `'NOT IN'` setara dengan **kombinasi beberapa ekspresi boolean** yang digabungkan dengan operator `'AND'`:
+
+```sql
+value <> value1 AND value <> value2 AND ...
+```
+
+---
+
+## **Contoh Penggunaan PostgreSQL 'NOT IN'**  
+
+Pernyataan berikut menggunakan operator `'NOT IN'` untuk mengambil film yang **id-nya bukan 1, 2, atau 3**:
+
+```sql
+SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id NOT IN (1, 2, 3)
+ORDER BY
+  film_id;
+```
+
+**Output:**
+
+
+| film_id |            title           |
+|---------|----------------------------|
+| 4       | Affair Prejudice           |
+| 5       | African Egg                |
+| 6       | Agent Truman               |
+| 7       | Airplane Sierra            |
+| 8       | Airport Pollock            |
+| ...     | ...                        |
+
+---
+
+Kueri berikut mengambil hasil yang **sama**, tetapi menggunakan **operator tidak sama (`<>`)** dan operator **AND**:
+
+```sql
+SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id <> 1
+  AND film_id <> 2
+  AND film_id <> 3
+ORDER BY
+  film_id;
+```
+
+---
+
+### **Ringkasan**  
+✅ Gunakan operator `'IN'` untuk memeriksa apakah suatu nilai cocok dengan salah satu nilai dalam daftar.  
+✅ Gunakan operator `'NOT IN'` untuk **meniadakan** operator `'IN'`.  
