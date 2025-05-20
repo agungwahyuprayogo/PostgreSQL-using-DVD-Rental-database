@@ -274,12 +274,9 @@ SELECT 1 = 1 AS result;
 
 Output :
 
-```
-result
---------
- t
-(1 row)
-```
+| result |
+|--------|
+| t      |
 
 Huruf `t` dalam output menunjukkan nilai `true`.
 
@@ -317,12 +314,9 @@ SELECT true AND true AS result;
 
 Output:
 
-```
-result
---------
- t
-(1 row)
-```
+| result |
+|--------|
+| t      |
 
 Pernyataan berikut menggunakan operator `AND` untuk menggabungkan `true` dengan `false`, yang mengembalikan `false`:
 
@@ -332,12 +326,9 @@ SELECT true AND false AS result;
 
 Output:
 
-```
-result
---------
- f
-(1 row)
-```
+| result |
+|--------|
+| f      |
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan true dengan `null`, yang mengembalikan `null`:
 
@@ -347,12 +338,9 @@ SELECT true AND null AS result;
 
 Output:
 
-```
-result
---------
- null
-(1 row)
-```
+| result |
+|--------|
+| null      |
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `false`, yang mengembalikan `false`:
 
@@ -362,12 +350,9 @@ SELECT false AND false AS result;
 
 Output:
 
-```
-result
---------
- f
-(1 row)
-```
+| result |
+|--------|
+| f      |
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `null`, yang mengembalikan `false`:
 
@@ -377,12 +362,9 @@ SELECT false AND null AS result;
 
 Output:
 
-```
-result
---------
- f
-(1 row)
-```
+| result |
+|--------|
+| f      |
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `null` dengan `null`, yang mengembalikan `null`:
 
@@ -392,12 +374,9 @@ SELECT null AND null AS result;
 
 Output:
 
-```
-result
---------
- null
-(1 row)
-```
+| result |
+|--------|
+| null   |
 
 ### 2) Menggunakan operator AND dalam klausa WHERE
 Kita akan menggunakan tabel `film` dari database contoh untuk demonstrasi:
