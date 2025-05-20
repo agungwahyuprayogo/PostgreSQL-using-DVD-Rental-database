@@ -1,59 +1,90 @@
-/* kalo lu lagi pengen nyari nama seseorang cuman lu kaga yakin sama namanya
- * lu bisa make query 'like'
- * 
- * anggep lah nama temen lu itu ada 'Jen' nya di awal
- */*/
- 
- select first_name, last_name from customer c where first_name like 'Jen%'
- -- maksud dari query ini, cari nama orang di customer yang nama awalnya tuh ada 'Jen',
- -- belakangnya make % biar hasil apapun di tampilin selama depanya 'Jen'
- -- 'Jen%' tuh disebut pola atau pattern
- 
- select first_name, last_name from customer c where first_name like '%er%' order by first_name 
- -- atau mau nyari orang yang ada 'er' ditengah tengah nama 
- -- bisa juga make %er%
- 
- -- misal lagi nih orang bule , namanya ada her her nya gitu
- select first_name, last_name from customer c where first_name like '_her%' order by first_name
- 
- 
- ----------------------------------------------------------------------------------
- 
- 
- /* operator like juga bisa buat deteksi apakah tulisanya dah mirip2 atau dah sama belom
-  * misal ni ye :
-  */*/
+like yang kita tahu adalah untuk mencari value 
+semisal kamu ingin mengetahu nama customer, 
+namun kamu hanya ingat nama depanya saja , 'Jen'
+kamu bisa menggunakan like 'Jen%'
 
- select 'Apple' like 'Apple' as result
- -- kalo hasilnya t atau [v] berarti Apple sama dengan Apple 
- 
- select 'Apple' like 'A%' as result
- -- apakah Apple mirip A...
- 
- select 'A%' like 'Apple' as result
- -- ternyata disini hasilnya false atau [] 
- 
- 
- -----------------------------------------------------------------------------------
- 
- 
- /* kalo tadi kan kita buat contoh yang 'like'
-  * sekarang kita buat yang 'not like'
-  */*/
-  
- select first_name, last_name from customer c where first_name not like 'Jen%'
- -- kalo diatas kan pen nyari Jen, dapet Jennifer dll
- -- nah sekarang Jennifer dah ilang karena kita make not like
- 
- 
- --------------------------------------------------------------------------------
- 
- 
- /* di postgreSQL 'ilike' mirip2 query mirip2 query 'like'
-  * cuman 'ilike' ini lebih ga sensitive case
-  * jadi kalo ada yg ga pas huruf gede kecilnya, make 'ilike' bantu banget
-  */ 
- 
- select first_name, last_name from customer c where first_name ilike '%bar%'
- -- yang ditampilin Barbara dan Barry (kapital)
- -- padahal kita masukin nya 'bar' huruf kecil semua
+select 
+  first_name,
+  last_name
+from 
+  customer
+where 
+  first_name like 'Jen%';
+
+-- 1. contoh penggunaan dasar like
+SELECT 'Apple' LIKE 'Apple' AS result; -- hasilnya true karena plek numplek sama
+
+SELECT 'Apple' LIKE 'A%' AS result; -- hasilnya true karena setelah A bebas mau huruf apa
+
+-- 2. menggunakan operator like dalam table
+select 
+  first_name,
+  last_name
+from 
+  customer
+where 
+  first_name like  '%er%' -- (huruf bebas) er (huruf bebas)
+order by 
+  first_name;
+
+-- 3. menggunakan operator like dengan pola '%' dan '_'
+select 
+  first_name,
+  last_name
+from 
+  customer
+where 
+  first_name like  '_her%' -- mengandung huruf pertama di depan 'her', dan berakhiran bebas
+order  by 
+  first_name;
+
+-- 4. penggunakan not like
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name NOT LIKE 'Jen%' -- cari first name selain Jen_ _
+ORDER BY
+  first_name;
+
+-- ILIKE
+-- ada cara lain kalo semisal kita gatau data dan ga pengen ada insensitive case
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name ILIKE 'BAR%';
+-- disini terlihat kalo make ilike, ga ngaruh ke hasilnya, 
+-- selama mengandung huruf bar baik huruf besar atau kecil tetap ditampilkan
+
+-- berbeda jika menggunakan like biasa
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name LIKE 'BAR%';
+-- hasilnya kosong
+
+
+
+--	Operator	Setara Dengan
+--	~~			LIKE
+--	~~*			ILIKE
+--	!~~			NOT LIKE
+--	!~~*		NOT ILIKE
+
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  first_name ~~ 'Dar%'
+ORDER BY
+  first_name;
