@@ -22,3 +22,19 @@ order by
   film_id -- urutkan berdasarkan film_id
 limit 4 offset 3; -- skip bari 1 sampai 3, makanya langsung ke 4 hasilnya
 
+-- 3) Menggunakan 'LIMIT OFFSET' untuk Mendapatkan N Baris Teratas/Bawah
+
+SELECT
+  film_id,
+  title,
+  rental_rate
+FROM
+  film
+ORDER BY
+  rental_rate DESC
+LIMIT
+  10;
+
+--Dengan perintah ini, kita mengambil 10 film paling mahal berdasarkan 'rental_rate', 
+--diurutkan dalam urutan menurun (dari harga tertinggi ke terendah). 
+--Jika ingin mendapatkan 10 film termurah, cukup ubah 'DESC' menjadi 'ASC' dalam klausa 'ORDER BY'.
