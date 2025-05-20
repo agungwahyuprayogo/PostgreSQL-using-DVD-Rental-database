@@ -9,6 +9,7 @@
 - [PostgreSQL IN](#postgresql-in)
 - [PostgreSQL BETWEEN](#postgresql-between)
 - [PostgreSQL LIKE](#postgresql-like)
+- [PostgreSQL IS NULL](#postgresql-is-null)
 
 # PostgreSQL WHERE
 
@@ -1618,4 +1619,115 @@ Dalam pola `' %10$%% '`, karakter `'%'` pertama dan terakhir **berfungsi sebagai
 - Gunakan operator `'ILIKE'` untuk **pencocokan tanpa peka huruf besar/kecil**.
 
 ---
+---
+---
 
+# PostgreSQL IS NULL
+
+## Pengantar tentang NULL
+Dalam dunia basis data, `NULL` berarti informasi yang hilang atau tidak berlaku. `NULL` bukanlah sebuah nilai, sehingga Anda tidak dapat membandingkannya dengan nilai lain seperti angka atau string.
+
+Perbandingan antara `NULL` dengan sebuah nilai akan selalu menghasilkan `NULL`. Selain itu, `NULL` tidak sama dengan `NULL`, sehingga ekspresi berikut akan menghasilkan `NULL`:
+
+```sql
+SELECT null = null AS result;
+```
+
+Output:
+
+| result |
+|--------|
+| null   |
+
+Total row: 1
+
+## Operator IS NULL
+Untuk memeriksa apakah sebuah nilai adalah NULL atau bukan, Anda tidak dapat menggunakan operator sama dengan (`=`) atau tidak sama dengan (`<>`). Sebagai gantinya, gunakan operator `IS NULL`.
+
+Berikut sintaks dasar dari operator `IS NULL`:
+
+```sql
+value IS NULL
+```
+
+Operator `IS NULL` akan mengembalikan true jika `value` adalah NULL dan false jika tidak.
+
+Untuk meniadakan operator `IS NULL`, gunakan operator `IS NOT NULL`:
+
+```sql
+value IS NOT NULL
+```
+
+Operator `IS NOT NULL` akan mengembalikan true jika nilai tidak NULL dan false jika sebaliknya.
+
+Untuk mempelajari cara menangani NULL dalam proses pengurutan, lihat tutorial *ORDER BY*.
+
+PostgreSQL menawarkan beberapa fungsi berguna untuk menangani NULL secara efektif, seperti NULLIF, ISNULL, dan COALESCE.
+
+Untuk memastikan bahwa sebuah kolom tidak mengandung NULL, gunakan constraint NOT NULL.
+
+## Contoh penggunaan operator PostgreSQL IS NULL
+Kita akan menggunakan tabel `address` dari database sampel:
+
+![image](https://github.com/user-attachments/assets/8d21a191-174a-43fc-b391-f4a2e3ad138f)
+
+---
+
+Harap diperhatikan bahwa program `psql` menampilkan `NULL` sebagai string kosong secara default. Untuk mengubah cara `psql` menampilkan `NULL` di terminal, gunakan perintah: `\pset null null`. Perintah ini akan menampilkan `NULL` sebagai null.
+
+### 1) Contoh dasar penggunaan operator IS NULL
+Contoh berikut menggunakan operator `IS NULL` untuk mencari alamat dari tabel `address` yang memiliki kolom `address2` bernilai `NULL`:
+
+```sql
+SELECT
+  address,
+  address2
+FROM
+  address
+WHERE
+  address2 IS NULL;
+```
+
+Output:
+
+| address              | address2 |
+|----------------------|---------|
+| 47 MySakila Drive   | null    |
+| 28 MySQL Boulevard  | null    |
+| 23 Workhaven Lane   | null    |
+| 1411 Lillydale Drive | null    |
+
+Total row: 4
+
+### 2) Contoh penggunaan operator IS NOT NULL
+Contoh berikut menggunakan operator `IS NOT NULL` untuk mengambil alamat yang memiliki nilai `address2` yang bukan NULL:
+
+```sql
+SELECT
+  address,
+  address2
+FROM
+  address
+WHERE
+  address2 IS NOT NULL;
+```
+
+Output:
+
+| address               | address2 |
+|-----------------------|---------|
+| 1913 Hanoi Way       |         |
+| 1121 Loja Avenue     |         |
+| 692 Joliet Street    |         |
+| 1566 Inegl Manor     |         |
+
+Total row: 4
+
+Perhatikan bahwa `address2` kosong, bukan NULL. Ini adalah contoh *bad practice* dalam penyimpanan string kosong dan NULL dalam kolom yang sama.
+
+#### Ringkasan
+- Dalam basis data, NULL berarti informasi yang hilang atau tidak berlaku.
+- Operator `IS NULL` mengembalikan true jika sebuah nilai adalah NULL dan false jika tidak.
+- Operator `IS NOT NULL` mengembalikan true jika sebuah nilai bukan NULL dan false jika sebaliknya.
+
+---
