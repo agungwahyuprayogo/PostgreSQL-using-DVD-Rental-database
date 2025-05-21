@@ -1,5 +1,6 @@
 - [PostgreSQL AVG Function](#postgresql-avg-function)
 - [PostgreSQL COUNT Function](#postgresql-count-function)
+- [PostgreSQL MAX Function](#postgresql-max-function)
 
 ---
 ---
@@ -462,7 +463,152 @@ Total row: 2
 - Gunakan fungsi PostgreSQL `COUNT()` untuk mendapatkan jumlah baris dalam tabel.
 
 ---
+---
+---
+
+
+# PostgreSQL MAX Function
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar bagaimana menggunakan fungsi PostgreSQL `MAX()` untuk mendapatkan nilai maksimum dari sekumpulan nilai.
+
+## Pengenalan Fungsi PostgreSQL MAX()
+Fungsi PostgreSQL `MAX()` adalah fungsi agregat yang mengembalikan nilai maksimum dalam suatu kumpulan nilai.
+
+Fungsi `MAX()` dapat berguna dalam banyak kasus. Misalnya, Anda dapat menggunakannya untuk menemukan karyawan dengan gaji tertinggi atau mengidentifikasi produk yang paling mahal.
+
+Berikut sintaks dari fungsi `MAX()`:
+
+```sql
+MAX(expression);
+```
+
+Anda dapat menggunakan fungsi `MAX()` tidak hanya dalam klausa `SELECT`, tetapi juga dalam klausa `WHERE` dan `HAVING`.
+
+## Contoh Penggunaan Fungsi PostgreSQL MAX()
+Mari kita lihat beberapa contoh penggunaan fungsi `MAX()`. Kita akan menggunakan tabel `payment` dari database sampel.
+
+![image](https://github.com/user-attachments/assets/b2974f2c-9ae3-4db2-b85a-a2adddc5b751)
 
 ---
+
+### 1) Contoh dasar penggunaan fungsi PostgreSQL MAX()
+Query berikut menggunakan fungsi `MAX()` untuk menemukan jumlah pembayaran tertinggi yang dilakukan oleh pelanggan dalam tabel `payment`:
+
+```sql
+SELECT
+  MAX(amount)
+FROM
+  payment;
+```
+
+Output:
+
+| max   |
+|-------|
+| 11.99 |
+
+Total row: 1
+
+---
+
+### 2) Menggunakan fungsi PostgreSQL MAX() dalam subquery
+Contoh berikut menggunakan fungsi `MAX()` dalam subquery untuk mendapatkan informasi pembayaran secara lebih rinci:
+
+```sql
+SELECT
+  payment_id,
+  customer_id,
+  amount
+FROM
+  payment
+WHERE
+  amount = (
+    SELECT
+      MAX(amount)
+    FROM
+      payment
+  );
+```
+
+Output:
+
+| payment_id | customer_id | amount |
+|------------|-------------|--------|
+| 20403      | 362         | 11.99  |
+| 22650      | 204         | 11.99  |
+| 23757      | 116         | 11.99  |
+| ...        | ...         | ...    |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+Cara kerja:
+- Pertama, subquery menggunakan fungsi `MAX()` untuk mengembalikan jumlah pembayaran tertinggi.
+- Kedua, query utama mengambil semua pembayaran yang jumlahnya sama dengan nilai tertinggi yang dikembalikan oleh subquery.
+
+---
+
+### 3) Menggunakan fungsi PostgreSQL MAX() dengan klausa GROUP BY
+Anda dapat menggabungkan fungsi `MAX()` dengan klausa `GROUP BY` untuk mendapatkan nilai maksimum dalam setiap kelompok.
+
+Contoh berikut menggunakan fungsi `MAX()` dengan klausa `GROUP BY` untuk mengambil jumlah pembayaran tertinggi yang dilakukan oleh setiap pelanggan:
+
+```sql
+SELECT
+  customer_id,
+  MAX(amount)
+FROM
+  payment
+GROUP BY
+  customer_id;
+```
+
+Output:
+
+| customer_id | max   |
+|-------------|------|
+| 184         | 9.99  |
+| 87          | 10.99 |
+| 477         | 10.99 |
+| 273         | 8.99  |
+| ...         | ...   |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+---
+
+### 4) Menggunakan fungsi PostgreSQL MAX() dengan klausa HAVING
+Jika Anda menggunakan fungsi `MAX()` dalam klausa `HAVING`, Anda dapat menerapkan filter untuk suatu kelompok.
+
+Contoh berikut menggunakan fungsi `MAX()` untuk memilih jumlah pembayaran tertinggi yang dilakukan oleh setiap pelanggan dan hanya menampilkan transaksi dengan jumlah lebih dari 8.99:
+
+```sql
+SELECT
+  customer_id,
+  MAX(amount)
+FROM
+  payment
+GROUP BY
+  customer_id
+HAVING
+  MAX(amount) > 8.99;
+```
+
+Output:
+
+| customer_id | max   |
+|-------------|------|
+| 184         | 9.99  |
+| 87          | 10.99 |
+| 477         | 10.99 |
+| 550         | 10.99 |
+| 51          | 9.99  |
+| ...         | ...   |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+---
+
+#### Ringkasan
+- Gunakan fungsi PostgreSQL `MAX()` untuk menemukan nilai maksimum dalam suatu kumpulan data.
 
 ---
