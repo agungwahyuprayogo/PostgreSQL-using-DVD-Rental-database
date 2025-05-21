@@ -907,6 +907,15 @@ Output:
 
 Total row: 1
 
+Jika ingin dalam bentuk text, Anda dapat melakukan casting terlebih dahulu
+
+SELECT
+  COALESCE(CAST(SUM(amount) AS TEXT), 'no row') AS total
+FROM
+  payment
+WHERE
+  customer_id = 2000;
+
 ---
 
 ### 4) Menggunakan fungsi PostgreSQL SUM() dengan klausa GROUP BY
