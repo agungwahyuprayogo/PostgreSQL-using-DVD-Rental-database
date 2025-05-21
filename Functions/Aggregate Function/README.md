@@ -1068,6 +1068,12 @@ Output:
 
 Total row: (jumlah sesuai hasil sebenarnya)
 
+Penjelasan
+
+- return_date - rental_date akan menghasilkan jumlah hari peminjaman per baris.
+- Fungsi SUM() menjumlahkan seluruh durasi tersebut untuk setiap customer.
+- Hasil akhirnya adalah total hari semua peminjaman customer tersebut.
+
 ---
 
 #### Ringkasan
