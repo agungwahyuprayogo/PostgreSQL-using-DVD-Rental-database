@@ -1,4 +1,5 @@
 - [PostgreSQL AVG Function](#postgresql-avg-function)
+- [PostgreSQL COUNT Function](#postgresql-count-function)
 
 ---
 ---
@@ -273,8 +274,195 @@ Hasilnya adalah 20, yang menunjukkan bahwa fungsi `AVG()` mengabaikan nilai `NUL
 - Fungsi `AVG()` mengabaikan `NULL` dalam perhitungan.
 - Fungsi `AVG()` mengembalikan `NULL` jika kumpulan data kosong.
 
----
 
 ---
 ---
+---
+
+
+
+# PostgreSQL COUNT Function
+
+## Pengenalan Fungsi PostgreSQL COUNT()
+Fungsi `COUNT()` adalah fungsi agregat yang memungkinkan Anda mendapatkan jumlah baris yang sesuai dengan kondisi tertentu.
+
+Pernyataan berikut menunjukkan berbagai cara penggunaan fungsi `COUNT()`.
+
+## COUNT(*)
+Fungsi `COUNT(*)` mengembalikan jumlah baris yang dikembalikan oleh pernyataan `SELECT`, termasuk nilai `NULL` dan duplikat.
+
+```sql
+SELECT
+   COUNT(*)
+FROM
+   table_name
+WHERE
+   condition;
+```
+
+Ketika Anda menerapkan fungsi `COUNT(*)` ke seluruh tabel, PostgreSQL harus membaca seluruh tabel secara berurutan. Jika Anda menggunakan fungsi `COUNT(*)` pada tabel yang besar, query akan berjalan lambat. Hal ini terkait dengan implementasi MVCC di PostgreSQL.
+
+Karena adanya banyak transaksi yang melihat berbagai keadaan data secara bersamaan, tidak ada cara langsung bagi fungsi `COUNT(*)` untuk menghitung jumlah baris dalam seluruh tabel. Oleh karena itu, PostgreSQL harus membaca semua baris.
+
+## COUNT(column)
+Mirip dengan fungsi `COUNT(*)`, fungsi `COUNT(column_name)` mengembalikan jumlah baris yang dikembalikan oleh klausa `SELECT`. Namun, fungsi ini tidak menghitung nilai `NULL` dalam kolom yang ditentukan.
+
+```sql
+SELECT
+   COUNT(column_name)
+FROM
+   table_name
+WHERE
+   condition;
+```
+
+## COUNT(DISTINCT column)
+Dalam sintaks ini, `COUNT(DISTINCT column_name)` mengembalikan jumlah nilai unik yang bukan `NULL` dalam kolom yang ditentukan.
+
+```sql
+SELECT
+   COUNT(DISTINCT column_name)
+FROM
+   table_name
+WHERE
+   condition;
+```
+
+Dalam praktiknya, Anda sering menggunakan fungsi `COUNT()` bersama dengan klausa `GROUP BY` untuk mendapatkan jumlah item dalam setiap kelompok.
+
+Sebagai contoh, Anda dapat menggunakan fungsi `COUNT()` dengan klausa `GROUP BY` untuk menghitung jumlah film dalam setiap kategori film.
+
+## Contoh penggunaan fungsi PostgreSQL COUNT()
+Kita akan menggunakan tabel `payment` dalam database sampel sebagai demonstrasi.
+
+![image](https://github.com/user-attachments/assets/38f217c3-329f-488d-9bc8-554836fb726f)
+
+---
+
+### 1) Contoh dasar penggunaan PostgreSQL COUNT(*)
+Pernyataan berikut menggunakan fungsi `COUNT(*)` untuk menghitung jumlah transaksi dalam tabel `payment`:
+
+```sql
+SELECT
+   COUNT(*)
+FROM
+   payment;
+```
+
+Output:
+
+| count  |
+|--------|
+| 14596  |
+
+Total row: 1
+
+---
+
+### 2) Contoh PostgreSQL COUNT(DISTINCT column)
+Untuk mendapatkan jumlah pembayaran unik yang dilakukan oleh pelanggan, gunakan fungsi `COUNT(DISTINCT amount)` seperti contoh berikut:
+
+```sql
+SELECT
+  COUNT(DISTINCT amount)
+FROM
+  payment;
+```
+
+Output:
+
+| count |
+|-------|
+| 19    |
+
+Total row: 1
+
+---
+
+### 3) Penggunaan fungsi PostgreSQL COUNT() dengan klausa GROUP BY
+Contoh berikut menggunakan fungsi `COUNT()` bersama `GROUP BY` untuk menghitung jumlah pembayaran setiap pelanggan:
+
+```sql
+SELECT
+  customer_id,
+  COUNT(customer_id)
+FROM
+  payment
+GROUP BY
+  customer_id;
+```
+
+Output:
+
+| customer_id | count |
+|-------------|------|
+| 184         | 20   |
+| 87          | 28   |
+| 477         | 21   |
+| 273         | 28   |
+| ...         | ...  |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+Jika Anda ingin menampilkan nama pelanggan alih-alih ID, Anda bisa menggabungkan tabel `payment` dengan tabel `customer`:
+
+```sql
+SELECT
+  first_name || ' ' || last_name AS full_name,
+  COUNT(customer_id)
+FROM
+  payment
+INNER JOIN customer USING(customer_id)
+GROUP BY
+  customer_id;
+```
+
+Output:
+
+| full_name         | count |
+|------------------|------|
+| Vivian Ruiz      | 20   |
+| Wanda Patterson  | 28   |
+| Dan Paine        | 21   |
+| Priscilla Lowe   | 28   |
+| ...              | ...  |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+---
+
+### 4) Penggunaan fungsi PostgreSQL COUNT() dengan klausa HAVING
+Anda dapat menggunakan fungsi `COUNT()` dalam klausa `HAVING` untuk menerapkan kondisi tertentu pada kelompok. Contoh berikut mencari pelanggan yang telah melakukan lebih dari 40 pembayaran:
+
+```sql
+SELECT
+  first_name || ' ' || last_name AS full_name,
+  COUNT(customer_id)
+FROM
+  payment
+INNER JOIN customer USING(customer_id)
+GROUP BY
+  customer_id
+HAVING
+  COUNT(customer_id) > 40;
+```
+
+Output:
+
+| full_name   | count |
+|------------|------|
+| Karl Seal  | 42   |
+| Eleanor Hunt | 45 |
+
+Total row: 2
+
+---
+
+#### Ringkasan
+- Gunakan fungsi PostgreSQL `COUNT()` untuk mendapatkan jumlah baris dalam tabel.
+
+---
+
+---
+
 ---
