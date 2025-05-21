@@ -2,6 +2,7 @@
 - [PostgreSQL COUNT Function](#postgresql-count-function)
 - [PostgreSQL MAX Function](#postgresql-max-function)
 - [PostgreSQL MIN Function](#postgresql-min-function)
+- [PostgreSQL SUM Function](#postgresql-sum-function)
 
 ---
 ---
@@ -804,5 +805,262 @@ Total row: 16
 #### Ringkasan
 - Gunakan fungsi `MIN()` untuk menemukan nilai terendah dalam suatu kumpulan data.
 - Gunakan fungsi `MIN()` dengan klausa `GROUP BY` untuk menemukan nilai terendah dalam setiap kelompok data.
+
+---
+---
+---
+
+
+# PostgreSQL SUM Function
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `SUM()` untuk menghitung jumlah dari sekumpulan nilai.
+
+## Pengenalan Fungsi PostgreSQL SUM()
+Fungsi PostgreSQL `SUM()` adalah fungsi agregat yang mengembalikan jumlah dari sekumpulan nilai.
+
+Berikut sintaks dasar dari fungsi `SUM()`:
+
+```sql
+SUM(DISTINCT expression)
+```
+
+Fungsi `SUM()` mengabaikan nilai `NULL`, yang berarti nilai `NULL` tidak diperhitungkan dalam proses perhitungan.
+
+Jika Anda menggunakan opsi `DISTINCT`, fungsi `SUM()` hanya akan menghitung jumlah dari nilai unik.
+
+Sebagai contoh, tanpa opsi `DISTINCT`, `SUM()` dari nilai 1, 1, dan 2 akan menghasilkan 4. Namun, jumlah dari nilai unik 1, 1, dan 2 akan menghasilkan 3 (1 + 2) karena fungsi `SUM()` mengabaikan satu nilai duplikat (1).
+
+Fungsi `SUM()` dari sekumpulan data kosong akan menghasilkan `NULL`, bukan nol.
+
+## Contoh Penggunaan Fungsi PostgreSQL SUM()
+Mari kita lihat beberapa contoh penggunaan fungsi `SUM()`. Kita akan menggunakan tabel `payment` dari database sampel.
+
+![image](https://github.com/user-attachments/assets/f89e4520-ade1-4c1a-b913-47f87c85b847)
+
+---
+
+### 1) Menggunakan fungsi PostgreSQL SUM() dalam pernyataan SELECT
+Contoh berikut menggunakan fungsi `SUM()` untuk menghitung total semua pembayaran dalam tabel `payment`:
+
+```sql
+SELECT
+  SUM(amount)
+FROM
+  payment;
+```
+
+Output:
+
+| sum      |
+|---------|
+| 61312.04 |
+
+Total row: 1
+
+---
+
+### 2) Menggunakan fungsi PostgreSQL SUM() dengan kumpulan hasil kosong
+Pernyataan berikut menggunakan fungsi `SUM()` untuk menghitung total pembayaran dari pelanggan dengan `customer_id` 2000:
+
+```sql
+SELECT
+  SUM(amount)
+FROM
+  payment
+WHERE
+  customer_id = 2000;
+```
+
+Output:
+
+| sum   |
+|-------|
+| null  |
+
+Total row: 1
+
+Dalam contoh ini, fungsi `SUM()` mengembalikan `NULL` karena tabel `payment` tidak memiliki baris dengan `customer_id` 2000.
+
+---
+
+### 3) Menggunakan fungsi SUM() dengan fungsi COALESCE()
+Jika Anda ingin fungsi `SUM()` mengembalikan nol alih-alih `NULL` ketika tidak ada baris yang sesuai, gunakan fungsi `COALESCE()`.
+
+Fungsi `COALESCE()` mengembalikan argumen pertama yang tidak `NULL`. Dengan kata lain, jika argumen pertama adalah `NULL`, maka ia mengembalikan argumen kedua.
+
+Berikut contoh penggunaan `SUM()` dengan `COALESCE()`:
+
+```sql
+SELECT
+  COALESCE(SUM(amount), 0) AS total
+FROM
+  payment
+WHERE
+  customer_id = 2000;
+```
+
+Output:
+
+| total |
+|-------|
+| 0     |
+
+Total row: 1
+
+---
+
+### 4) Menggunakan fungsi PostgreSQL SUM() dengan klausa GROUP BY
+Untuk menghitung total dalam setiap kelompok, gunakan klausa `GROUP BY` untuk mengelompokkan baris dalam tabel, kemudian terapkan fungsi `SUM()` pada masing-masing kelompok.
+
+Contoh berikut menggunakan fungsi `SUM()` dengan `GROUP BY` untuk menghitung total jumlah pembayaran yang dilakukan oleh setiap pelanggan:
+
+```sql
+SELECT
+  customer_id,
+  SUM(amount) AS total
+FROM
+  payment
+GROUP BY
+  customer_id
+ORDER BY
+  total;
+```
+
+Output:
+
+| customer_id | total  |
+|-------------|--------|
+| 318         | 27.93  |
+| 281         | 32.90  |
+| 248         | 37.87  |
+| 320         | 47.85  |
+| ...         | ...    |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+Berikut query untuk mengambil lima pelanggan yang melakukan pembayaran tertinggi:
+
+```sql
+SELECT
+  customer_id,
+  SUM(amount) AS total
+FROM
+  payment
+GROUP BY
+  customer_id
+ORDER BY
+  total DESC
+LIMIT
+  5;
+```
+
+Output:
+
+| customer_id | total  |
+|-------------|--------|
+| 148         | 211.55 |
+| 526         | 208.58 |
+| 178         | 194.61 |
+| 137         | 191.62 |
+| 144         | 189.60 |
+
+Total row: 5
+
+---
+
+### 5) Menggunakan fungsi PostgreSQL SUM() dengan klausa HAVING
+Untuk memfilter kelompok berdasarkan kondisi tertentu, gunakan fungsi `SUM()` dalam klausa `HAVING`.
+
+Contoh berikut mengambil daftar pelanggan yang telah melakukan pembayaran lebih dari 200:
+
+```sql
+SELECT
+  customer_id,
+  SUM(amount) AS total
+FROM
+  payment
+GROUP BY
+  customer_id
+HAVING
+  SUM(amount) > 200
+ORDER BY
+  total DESC;
+```
+
+Output:
+
+| customer_id | total  |
+|-------------|--------|
+| 148         | 211.55 |
+| 526         | 208.58 |
+
+Total row: 2
+
+---
+
+### 6) Menggunakan fungsi PostgreSQL SUM() dengan ekspresi
+Berikut tabel `rental` dari database sampel:
+
+![image](https://github.com/user-attachments/assets/4a1d97b9-9b0d-425e-88a2-c1c0bdcdfa5e)
+
+Berikut terjemahan ke dalam bahasa Indonesia dengan tabel output yang telah dirapikan:
+
+---
+
+### 6) Menggunakan fungsi PostgreSQL SUM() dengan ekspresi
+Pernyataan berikut menggunakan fungsi `SUM()` untuk menghitung total hari sewa:
+
+```sql
+SELECT
+  SUM(return_date - rental_date)
+FROM
+  rental;
+```
+
+Output:
+
+| sum                     |
+|-------------------------|
+| 71786 days 190098:21:00 |
+
+Total row: 1
+
+Cara kerja:
+- Pertama, menghitung durasi penyewaan dengan mengurangi tanggal penyewaan dari tanggal pengembalian.
+- Kedua, menerapkan fungsi `SUM()` pada ekspresi tersebut.
+
+Contoh berikut menggunakan fungsi `SUM()` untuk menghitung total durasi penyewaan berdasarkan pelanggan:
+
+```sql
+SELECT
+  first_name || ' ' || last_name AS full_name,
+  SUM(return_date - rental_date) AS rental_duration
+FROM
+  rental
+  INNER JOIN customer USING(customer_id)
+GROUP BY
+  customer_id
+ORDER BY
+  full_name;
+```
+
+Output:
+
+| full_name      | rental_duration        |
+|----------------|------------------------|
+| Aaron Selby    | 109 days 273:34:00     |
+| Adam Gooch     | 106 days 245:18:00     |
+| Adrian Clary   | 90 days 286:00:00      |
+| Agnes Bishop   | 97 days 339:40:00      |
+| ...            | ...                    |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+---
+
+#### Ringkasan
+- Gunakan fungsi `SUM()` untuk menghitung jumlah nilai dalam suatu kumpulan data.
+- Gunakan opsi `DISTINCT` dalam fungsi `SUM()` untuk menghitung jumlah nilai yang unik.
+- Gunakan fungsi `SUM()` dengan klausa `GROUP BY` untuk menghitung jumlah nilai dalam setiap kelompok.
 
 ---
