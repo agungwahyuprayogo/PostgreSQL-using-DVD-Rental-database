@@ -909,12 +909,20 @@ Total row: 1
 
 Jika ingin dalam bentuk text, Anda dapat melakukan casting terlebih dahulu
 
+```sql
 SELECT
   COALESCE(CAST(SUM(amount) AS TEXT), 'no row') AS total
 FROM
   payment
 WHERE
   customer_id = 2000;
+```
+
+Output :
+
+| total      |
+|------------|
+| no row     |
 
 ---
 
@@ -1012,9 +1020,7 @@ Berikut tabel `rental` dari database sampel:
 
 ![image](https://github.com/user-attachments/assets/4a1d97b9-9b0d-425e-88a2-c1c0bdcdfa5e)
 
-Berikut terjemahan ke dalam bahasa Indonesia dengan tabel output yang telah dirapikan:
 
----
 
 ### 6) Menggunakan fungsi PostgreSQL SUM() dengan ekspresi
 Pernyataan berikut menggunakan fungsi `SUM()` untuk menghitung total hari sewa:
