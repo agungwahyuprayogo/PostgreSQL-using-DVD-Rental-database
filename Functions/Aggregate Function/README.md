@@ -1,6 +1,7 @@
 - [PostgreSQL AVG Function](#postgresql-avg-function)
 - [PostgreSQL COUNT Function](#postgresql-count-function)
 - [PostgreSQL MAX Function](#postgresql-max-function)
+- [PostgreSQL MIN Function](#postgresql-min-function)
 
 ---
 ---
@@ -610,5 +611,198 @@ Total row: (jumlah sesuai hasil sebenarnya)
 
 #### Ringkasan
 - Gunakan fungsi PostgreSQL `MAX()` untuk menemukan nilai maksimum dalam suatu kumpulan data.
+
+---
+---
+---
+
+# PostgreSQL MIN Function
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `MIN()` untuk mendapatkan nilai minimum dari sekumpulan data.
+
+## Pengenalan Fungsi PostgreSQL MIN()
+Fungsi PostgreSQL `MIN()` adalah fungsi agregat yang mengembalikan nilai minimum dalam suatu kumpulan data.
+
+Untuk menemukan nilai minimum dalam sebuah kolom tabel, Anda memberikan nama kolom tersebut ke dalam fungsi `MIN()`. Tipe data kolom dapat berupa numerik, string, atau tipe data lain yang dapat dibandingkan.
+
+Berikut sintaks dasar dari fungsi `MIN()`:
+
+```sql
+MIN(expression)
+```
+
+Tidak seperti fungsi `AVG()`, `COUNT()`, dan `SUM()`, opsi `DISTINCT` tidak memiliki efek pada fungsi `MIN()`.
+
+## Contoh Penggunaan Fungsi PostgreSQL MIN()
+Kita akan menggunakan tabel `film`, `film_category`, dan `category` dari database sampel *dvdrental* sebagai demonstrasi.
+
+![image](https://github.com/user-attachments/assets/52d78823-b2b3-47b8-a213-9d31155404fc)
+
+---
+
+### 1) Contoh dasar penggunaan fungsi PostgreSQL MIN()
+Contoh berikut menggunakan fungsi `MIN()` untuk mendapatkan tarif sewa terendah dari kolom `rental_rate` dalam tabel `film`:
+
+```sql
+SELECT
+   MIN(rental_rate)
+FROM
+   film;
+```
+
+Output:
+
+| min  |
+|------|
+| 0.99 |
+
+Total row: 1
+
+Query ini menghasilkan 0.99, yang merupakan tarif sewa terendah.
+
+---
+
+### 2) Menggunakan fungsi PostgreSQL MIN() dalam subquery
+Contoh berikut menggunakan fungsi `MIN()` dalam subquery untuk mendapatkan informasi film dengan tarif sewa terendah:
+
+```sql
+SELECT
+  film_id,
+  title,
+  rental_rate
+FROM
+  film
+WHERE
+  rental_rate = (
+    SELECT
+      MIN(rental_rate)
+    FROM
+      film
+  );
+```
+
+Output:
+
+| film_id | title               | rental_rate |
+|---------|---------------------|-------------|
+| 1       | Academy Dinosaur    | 0.99        |
+| 11      | Alamo Videotape     | 0.99        |
+| 12      | Alaska Phantom      | 0.99        |
+| 213     | Date Speed          | 0.99        |
+| ...     | ...                 | ...         |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+Cara kerja:
+- Pertama, subquery memilih tarif sewa terendah.
+- Kemudian, query utama memilih film dengan tarif sewa yang sama dengan nilai terendah yang dikembalikan oleh subquery.
+
+---
+
+### 3) Menggunakan fungsi PostgreSQL MIN() dengan klausa GROUP BY
+Dalam praktiknya, Anda sering menggunakan fungsi `MIN()` bersama dengan klausa `GROUP BY` untuk menemukan nilai terendah dalam setiap kelompok.
+
+Contoh berikut menggunakan fungsi `MIN()` dengan klausa `GROUP BY` untuk menemukan biaya penggantian terendah dari film berdasarkan kategori:
+
+```sql
+SELECT
+  name AS category,
+  MIN(replacement_cost) AS replacement_cost
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+ORDER BY
+  name;
+```
+
+Output:
+
+| category   | replacement_cost |
+|-----------|------------------|
+| Action    | 9.99             |
+| Animation | 9.99             |
+| Children  | 9.99             |
+| Classics  | 10.99            |
+| Comedy    | 9.99             |
+| ...       | ...              |
+
+Total row: (jumlah sesuai hasil sebenarnya)
+
+---
+
+### 4) Menggunakan fungsi PostgreSQL MIN() dengan klausa HAVING
+Anda dapat menggunakan fungsi `MIN()` dalam klausa `HAVING` untuk memfilter kelompok dengan nilai minimum yang memenuhi kondisi tertentu.
+
+Contoh berikut menggunakan fungsi `MIN()` untuk menemukan biaya penggantian terendah dari film yang dikelompokkan berdasarkan kategori, hanya menampilkan kelompok dengan biaya penggantian lebih dari 9.99:
+
+```sql
+SELECT
+  name AS category,
+  MIN(replacement_cost) AS replacement_cost
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+HAVING
+  MIN(replacement_cost) > 9.99
+ORDER BY
+  name;
+```
+
+Output:
+
+| category  | replacement_cost |
+|----------|------------------|
+| Classics | 10.99            |
+| Horror   | 10.99            |
+| Music    | 10.99            |
+
+Total row: 3
+
+---
+
+### 5) Menggunakan fungsi PostgreSQL MIN() dengan fungsi agregat lainnya
+Anda dapat menggunakan fungsi `MIN()` bersama dengan fungsi agregat lainnya seperti `MAX()` dalam query yang sama.
+
+Contoh berikut menggunakan fungsi `MIN()` dan `MAX()` untuk menemukan durasi film terpendek dan terpanjang berdasarkan kategori:
+
+```sql
+SELECT
+  name AS category,
+  MIN(length) AS min_length,
+  MAX(length) AS max_length
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+ORDER BY
+  name;
+```
+
+Output:
+
+| category   | min_length | max_length |
+|-----------|-----------|-----------|
+| Action    | 47        | 185       |
+| Animation | 49        | 185       |
+| Children  | 46        | 178       |
+| Classics  | 46        | 184       |
+| Comedy    | 47        | 185       |
+| ...       | ...       | ...       |
+
+Total row: 16
+
+---
+
+#### Ringkasan
+- Gunakan fungsi `MIN()` untuk menemukan nilai terendah dalam suatu kumpulan data.
+- Gunakan fungsi `MIN()` dengan klausa `GROUP BY` untuk menemukan nilai terendah dalam setiap kelompok data.
 
 ---
