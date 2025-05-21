@@ -1020,9 +1020,6 @@ Berikut tabel `rental` dari database sampel:
 
 ![image](https://github.com/user-attachments/assets/4a1d97b9-9b0d-425e-88a2-c1c0bdcdfa5e)
 
-
-
-### 6) Menggunakan fungsi PostgreSQL SUM() dengan ekspresi
 Pernyataan berikut menggunakan fungsi `SUM()` untuk menghitung total hari sewa:
 
 ```sql
