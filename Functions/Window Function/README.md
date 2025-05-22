@@ -104,8 +104,8 @@ SELECT
 	)
 FROM
 	products
-	INNER JOIN
-		product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/3ff9b525-cadb-4b4c-ba40-438e6eeaee90)
