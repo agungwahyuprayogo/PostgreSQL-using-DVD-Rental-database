@@ -204,17 +204,17 @@ Fungsi `ROW_NUMBER()` memberikan nomor urut secara berurutan kepada setiap baris
 
 ```sql
 SELECT
- product_name,
+ 	product_name,
 	group_name,
 	price,
 	ROW_NUMBER() OVER (
 		PARTITION BY group_name
-		ORDER BY
-			price
-	)
+		ORDER BY price
+		)
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/ab447fe3-7db7-4780-ba4e-e7c545d5a0a2)
