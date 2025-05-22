@@ -1,4 +1,5 @@
 - [PostgreSQL Window Function](#postgresql-window-function)
+- [PostgreSQL ROW_NUMBER Function](#postgresql-row_number-function)
 
 ---
 
@@ -405,3 +406,209 @@ INNER JOIN
 | 9      | `NTH_VALUE()`   | Navigasi       | Mengambil nilai ke-*n* dalam window.                                              |
 | 10     | `PERCENT_RANK()`| Statistik      | Menentukan posisi relatif baris sebagai persentase, dengan gap.                   |
 | 11     | `CUME_DIST()`   | Statistik      | Menentukan distribusi kumulatif baris dalam window.                               |
+
+
+---
+---
+---
+
+# PostgreSQL ROW_NUMBER Function
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `ROW_NUMBER()` untuk menetapkan nilai integer unik ke setiap baris dalam hasil query.
+
+## Pengenalan Fungsi PostgreSQL ROW_NUMBER()
+Fungsi `ROW_NUMBER()` adalah fungsi *window* yang memberikan nomor urut secara berurutan kepada setiap baris dalam hasil query.
+
+Berikut sintaks dari fungsi `ROW_NUMBER()`:
+
+```sql
+ROW_NUMBER() OVER(
+    [PARTITION BY column_1, column_2,…]
+    [ORDER BY column_3, column_4,…]
+)
+```
+
+Sekumpulan baris tempat fungsi `ROW_NUMBER()` beroperasi disebut *window*.
+
+Klausa `PARTITION BY` membagi *window* menjadi kelompok atau *partisi* yang lebih kecil. Jika Anda menyertakan klausa `PARTITION BY`, maka penomoran setiap *partisi* akan dimulai dari satu dan bertambah satu setiap barisnya.
+
+Karena klausa `PARTITION BY` bersifat opsional, Anda dapat mengabaikannya, dan fungsi `ROW_NUMBER()` akan memperlakukan seluruh *window* sebagai satu *partisi*.
+
+Klausa `ORDER BY` dalam `OVER` menentukan urutan penomoran baris.
+
+---
+
+## Contoh Penggunaan Fungsi PostgreSQL ROW_NUMBER()
+Kita akan menggunakan tabel `products` yang dibuat dalam tutorial fungsi *window* PostgreSQL untuk mendemonstrasikan fungsionalitas `ROW_NUMBER()`.
+
+![image](https://github.com/user-attachments/assets/74b8085e-f966-4aa4-a428-34181cf8570e)
+
+Berikut ini menunjukkan data dalam tabel `products`:
+
+![image](https://github.com/user-attachments/assets/59956b8d-3bb2-4d23-8116-3b1897931f66)
+
+Lihat query berikut.
+
+```sql
+SELECT
+  product_id,
+  product_name,
+  group_id,
+  ROW_NUMBER () OVER (
+    	ORDER BY
+		product_id
+	)
+FROM
+  products;
+```
+
+![image](https://github.com/user-attachments/assets/d9254a3e-5373-4e15-8f28-4bfc010f74ec)
+
+Karena kita tidak menggunakan klausa `PARTITION BY`, fungsi `ROW_NUMBER()` menganggap seluruh hasil query sebagai satu *partisi*.
+
+Klausa `ORDER BY` mengurutkan hasil query berdasarkan `product_id`, sehingga fungsi `ROW_NUMBER()` menetapkan nilai integer ke setiap baris berdasarkan urutan `product_id`.
+
+Dalam query berikut, kita mengubah kolom dalam klausa `ORDER BY` menjadi `product_name`, sehingga fungsi `ROW_NUMBER()` menetapkan nilai integer ke setiap baris berdasarkan urutan nama produk.
+
+```sql
+SELECT
+  product_id,
+  product_name,
+  group_id,
+  ROW_NUMBER () OVER (
+	ORDER BY
+      		product_name
+  )
+FROM
+	products;
+```
+
+![image](https://github.com/user-attachments/assets/769264e2-6855-49d5-9b8a-018602cc9501)
+
+Dalam query berikut, kita menggunakan klausa `PARTITION BY` untuk membagi *window* menjadi subset berdasarkan nilai dalam kolom `group_id`. Dalam hal ini, fungsi `ROW_NUMBER()` menetapkan angka satu ke baris awal setiap *partisi* dan meningkat satu untuk setiap baris berikutnya dalam *partisi* yang sama.
+
+Klausa `ORDER BY` mengurutkan baris dalam setiap *partisi* berdasarkan nilai dalam kolom `product_name`.
+
+```sql
+SELECT
+	product_id,
+  	product_name,
+  	group_id,
+  	ROW_NUMBER() OVER (
+    		PARTITION BY
+			group_id
+    		ORDER BY
+      			product_name
+  		)
+FROM
+  	products;
+```
+
+![image](https://github.com/user-attachments/assets/65055f35-dba0-4148-8abd-b982ee87b71c)
+
+---
+
+## Fungsi PostgreSQL ROW_NUMBER() dan Operator DISTINCT
+Query berikut menggunakan fungsi `ROW_NUMBER()` untuk menetapkan angka berurutan pada harga yang unik dari tabel `products`:
+
+```sql
+SELECT
+	DISTINCT price,
+	ROW_NUMBER() OVER (
+		ORDER BY
+			price
+		)
+FROM
+  	products
+ORDER BY
+  	price;
+```
+
+![image](https://github.com/user-attachments/assets/1cd3c5b2-e927-41ac-ad48-b229cdc08bb5)
+
+Namun, hasilnya tidak sesuai dengan yang diharapkan karena masih terdapat harga yang duplikat. Alasannya adalah fungsi `ROW_NUMBER()` beroperasi pada hasil query sebelum `DISTINCT` diterapkan.
+
+Untuk mengatasi masalah ini, kita dapat memperoleh daftar harga yang unik dalam sebuah CTE, lalu menerapkan fungsi `ROW_NUMBER()` dalam query luar seperti berikut:
+
+```sql
+WITH prices AS (
+  SELECT DISTINCT price
+  FROM products
+)
+SELECT
+  price,
+  ROW_NUMBER() OVER (ORDER BY price) AS row_num
+FROM
+  prices;
+```
+
+![image](https://github.com/user-attachments/assets/65b27027-dddb-4b1f-9b90-d03a6f11bdf7)
+
+Atau kita bisa menggunakan subquery dalam klausa `FROM` untuk mendapatkan daftar harga unik, lalu menerapkan fungsi `ROW_NUMBER()` dalam query luar.
+
+```sql
+SELECT
+  price,
+  ROW_NUMBER() OVER (ORDER BY price) AS row_num
+FROM (
+  SELECT DISTINCT price
+  FROM products
+) AS prices;
+```
+
+![image](https://github.com/user-attachments/assets/96394c7b-93c8-406b-ae34-400e750ae84c)
+
+---
+
+## Menggunakan Fungsi ROW_NUMBER() untuk Paginasi
+
+Dalam pengembangan aplikasi, teknik paginasi digunakan untuk menampilkan sebagian baris daripada menampilkan semua baris dalam tabel.
+
+Selain menggunakan klausa `LIMIT`, Anda dapat menggunakan fungsi `ROW_NUMBER()` untuk paginasi.
+
+Sebagai contoh, query berikut memilih lima baris yang dimulai dari nomor baris ke-6:
+
+```sql
+SELECT *
+FROM (
+  SELECT
+    product_id,
+    product_name,
+    price,
+    ROW_NUMBER() OVER (ORDER BY product_name) AS rn
+  FROM products
+) AS ranked
+WHERE rn BETWEEN 6 AND 10;
+
+```
+
+![image](https://github.com/user-attachments/assets/b4968d73-054e-4ed6-b4c4-8aeaee74d794)
+
+---
+
+## Menggunakan Fungsi ROW_NUMBER() untuk Mendapatkan Baris ke-n Tertinggi/Terendah
+
+Sebagai contoh, untuk mendapatkan produk dengan harga tertinggi ketiga, pertama, kita mengambil harga yang unik dari tabel `products` dan memilih harga dengan nomor baris ke-3. Kemudian, dalam query luar, kita mengambil produk dengan harga yang sama dengan harga tertinggi ketiga.
+
+```sql
+SELECT *
+FROM products
+WHERE price = (
+  SELECT price
+  FROM (
+    SELECT price,
+           ROW_NUMBER() OVER (ORDER BY price DESC) AS nth
+    FROM (SELECT DISTINCT price FROM products)
+  )
+  WHERE nth = 3
+);
+```
+
+![image](https://github.com/user-attachments/assets/65c3073f-58a9-4ae9-bec8-0f5e3246f548)
+
+#### Ringkasan
+- Gunakan fungsi PostgreSQL `ROW_NUMBER()` untuk menetapkan nilai integer ke setiap baris dalam hasil query.
+
+---
+---
+---
