@@ -386,3 +386,19 @@ INNER JOIN product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/a561b1d4-7a50-495c-89c3-ea42e9f2d84a)
+
+## 📊 Urutan Belajar SQL Window Function
+
+| Urutan | Fungsi          | Kategori       | Penjelasan Singkat                                                                |
+|--------|-----------------|----------------|-----------------------------------------------------------------------------------|
+| 1      | `ROW_NUMBER()`  | Ranking        | Memberi nomor urut unik dalam partisi; tidak ada nilai yang sama.                 |
+| 2      | `RANK()`        | Ranking        | Memberi peringkat; nilai sama mendapat peringkat yang sama, tapi ada "gap".       |
+| 3      | `DENSE_RANK()`  | Ranking        | Seperti `RANK()`, tapi **tanpa gap** antara peringkat.                            |
+| 4      | `NTILE(n)`      | Distribusi     | Membagi data ke dalam *n* grup yang kurang lebih sama besar.                      |
+| 5      | `LAG()`         | Navigasi       | Mengambil nilai dari baris sebelumnya dalam window.                               |
+| 6      | `LEAD()`        | Navigasi       | Mengambil nilai dari baris berikutnya dalam window.                               |
+| 7      | `FIRST_VALUE()` | Navigasi       | Mengambil nilai pertama dalam window.                                             |
+| 8      | `LAST_VALUE()`  | Navigasi       | Mengambil nilai terakhir dalam window.                                            |
+| 9      | `NTH_VALUE()`   | Navigasi       | Mengambil nilai ke-*n* dalam window.                                              |
+| 10     | `PERCENT_RANK()`| Statistik      | Menentukan posisi relatif baris sebagai persentase, dengan gap.                   |
+| 11     | `CUME_DIST()`   | Statistik      | Menentukan distribusi kumulatif baris dalam window.                               |
