@@ -229,15 +229,16 @@ Lihat query berikut:
 SELECT
 	product_name,
 	group_name,
-    price,
+    	price,
 	RANK() OVER (
 		PARTITION BY group_name
 		ORDER BY
 			price
-	)
+		)
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN 
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/1169b989-a0d7-4355-adb2-4a3c00276b07)
@@ -257,10 +258,11 @@ SELECT
 		PARTITION BY group_name
 		ORDER BY
 			price
-	)
+		)
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/54bfebaa-a503-4612-a613-69be8a193b67)
@@ -285,10 +287,11 @@ SELECT
 		PARTITION BY group_name
 		ORDER BY
 			price
-	) AS lowest_price_per_group
+		) AS lowest_price_per_group
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/bb90005c-a616-4d66-9e9e-f1c159994d71)
@@ -304,11 +307,12 @@ SELECT
 		PARTITION BY group_name
 		ORDER BY
 			price RANGE BETWEEN UNBOUNDED PRECEDING
-		AND UNBOUNDED FOLLOWING
+			AND UNBOUNDED FOLLOWING
 	) AS highest_price_per_group
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/5d233f5e-0e33-4ba1-b77a-c7f7378f2452)
@@ -348,8 +352,7 @@ SELECT
 	price,
 	LAG(price, 1) OVER (
 		PARTITION BY group_name
-		ORDER BY
-			price
+		ORDER BY price
 	) AS prev_price,
 	price - LAG(price, 1) OVER (
 		PARTITION BY group_name
@@ -358,7 +361,8 @@ SELECT
 	) AS cur_prev_diff
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/cd337034-21d6-40b8-8c65-c6510e0beb73)
@@ -372,17 +376,16 @@ SELECT
 	price,
 	LEAD(price, 1) OVER (
 		PARTITION BY group_name
-		ORDER BY
-			price
+		ORDER BY price
 	) AS next_price,
 	price - LEAD(price, 1) OVER (
 		PARTITION BY group_name
-		ORDER BY
-			price
+		ORDER BY price
 	) AS cur_next_diff
 FROM
 	products
-INNER JOIN product_groups USING (group_id);
+INNER JOIN
+	product_groups USING (group_id);
 ```
 
 ![image](https://github.com/user-attachments/assets/a561b1d4-7a50-495c-89c3-ea42e9f2d84a)
