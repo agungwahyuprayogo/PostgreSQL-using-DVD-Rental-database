@@ -11,7 +11,7 @@ Pertama, buat dua tabel bernama `products` dan `product_groups` untuk demonstras
 
 ![image](https://github.com/user-attachments/assets/59010ade-afeb-45a6-8fb0-f83abddb8892)
 
-```sql
+```postgresql
 CREATE TABLE product_groups (
 	group_id serial PRIMARY KEY,
 	group_name VARCHAR (255) NOT NULL
