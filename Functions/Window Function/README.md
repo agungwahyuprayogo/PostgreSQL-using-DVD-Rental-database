@@ -2,6 +2,7 @@
 - [PostgreSQL ROW_NUMBER Function](#postgresql-row_number-function)
 - [PostgreSQL RANK](#postgresql-rank)
 - [PostgreSQL DENSE_RANK](#postgresql-dense_rank)
+- [PostgreSQL NTILE](#postgresql-ntile)
 
 ---
 
@@ -927,3 +928,127 @@ WHERE
 ---
 
 Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `DENSE_RANK()` untuk menghitung peringkat setiap baris dalam *partisi* hasil query, tanpa celah dalam nilai peringkat.
+
+
+---
+---
+---
+
+
+
+# PostgreSQL NTILE
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `NTILE()` untuk membagi baris yang diurutkan dalam *partisi* ke dalam sejumlah *bucket* yang diberi peringkat.
+
+## Pengenalan Fungsi PostgreSQL NTILE()
+
+Fungsi PostgreSQL `NTILE()` memungkinkan Anda untuk membagi baris yang diurutkan dalam *partisi* ke dalam sejumlah kelompok (*buckets*) dengan ukuran yang seimbang. Kelompok-kelompok ini disebut *buckets*.
+
+Fungsi `NTILE()` memberikan setiap kelompok nomor *bucket* yang dimulai dari 1. Untuk setiap baris dalam kelompok, fungsi `NTILE()` menetapkan nomor *bucket* yang menunjukkan kelompok tempat baris tersebut berada.
+
+Sintaks fungsi `NTILE()` adalah sebagai berikut:
+
+```sql
+NTILE(buckets) OVER (
+    [PARTITION BY partition_expression, ... ]
+    [ORDER BY sort_expression [ASC | DESC], ...]
+)
+```
+
+Mari kita bahas sintaks ini secara rinci:
+
+### buckets
+
+`buckets` mewakili jumlah kelompok yang diberi peringkat. Nilai ini bisa berupa angka atau ekspresi yang dievaluasi menjadi bilangan bulat positif (lebih besar dari 0) untuk setiap *partisi*. Nilai `buckets` tidak boleh *nullable*.
+
+### PARTITION BY
+
+Klausa `PARTITION BY` membagi baris menjadi beberapa *partisi* tempat fungsi ini diterapkan.
+
+Klausa `PARTITION BY` bersifat opsional. Jika diabaikan, fungsi akan memperlakukan seluruh hasil query sebagai satu *partisi*.
+
+### ORDER BY
+
+Klausa `ORDER BY` mengurutkan baris dalam setiap *partisi* tempat fungsi ini diterapkan.
+
+Klausa `ORDER BY` bersifat opsional. Namun, sebaiknya selalu digunakan agar mendapatkan hasil yang diharapkan.
+
+Perlu diperhatikan bahwa jika jumlah baris tidak dapat dibagi secara merata oleh jumlah *buckets*, fungsi `NTILE()` akan menghasilkan kelompok dengan dua ukuran berbeda dengan selisih satu. Kelompok yang lebih besar selalu muncul sebelum kelompok yang lebih kecil, sesuai dengan urutan yang ditentukan oleh klausa `ORDER BY`.
+
+---
+
+## Contoh Penggunaan Fungsi PostgreSQL NTILE()
+
+Mari kita lihat beberapa contoh penggunaan fungsi `NTILE()`.
+
+Kita akan menggunakan tabel `sales_stats` yang dibuat dalam tutorial fungsi `CUME_DIST()` untuk mendemonstrasikan penggunaan `NTILE()`.
+
+```sql
+SELECT
+	year,
+	name,
+	amount
+FROM
+	actual_sales
+ORDER BY
+	year, name;
+```
+
+![image](https://github.com/user-attachments/assets/c7f36bd1-c7cf-448d-a32d-6d47944c8482)
+
+### 1) Menggunakan Fungsi PostgreSQL NTILE() pada Hasil Query
+
+Contoh berikut menggunakan fungsi `NTILE()` untuk membagi baris menjadi 3 *buckets*:
+
+```sql
+SELECT
+	name,
+	amount,
+	NTILE(3) OVER(
+		ORDER BY amount
+	)
+FROM
+	sales_stats
+WHERE
+	year = 2019;
+```
+
+Berikut hasilnya:
+
+![image](https://github.com/user-attachments/assets/6b49ba96-5730-45b8-9642-9581af487eab)
+
+### 2) Menggunakan Fungsi PostgreSQL NTILE() pada *Partitioning*
+
+Contoh berikut menggunakan fungsi `NTILE()` untuk membagi baris dalam tabel `sales_stats` ke dalam dua *partisi* dan 3 *buckets* di setiap *partisi*:
+
+```sql
+SELECT
+	name,
+	amount,
+	NTILE(3) OVER(
+		PARTITION BY year
+		ORDER BY amount
+	)
+FROM
+	sales_stats;
+```
+
+Berikut hasilnya:
+
+![image](https://github.com/user-attachments/assets/69a4203c-36ae-4fca-bc2d-5fb1bea3ec90)
+
+---
+
+Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `NTILE()` untuk membagi baris yang diurutkan dalam suatu *partisi* ke dalam sejumlah kelompok yang diberi peringkat.
+
+
+
+
+
+
+
+
+
+---
+---
+---
