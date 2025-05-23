@@ -1,5 +1,6 @@
 - [PostgreSQL Window Function](#postgresql-window-function)
 - [PostgreSQL ROW_NUMBER Function](#postgresql-row_number-function)
+- [PostgreSQL RANK](#postgresql-rank)
 
 ---
 
@@ -612,3 +613,145 @@ WHERE price = (
 ---
 ---
 ---
+
+# PostgreSQL RANK
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `RANK()` untuk menetapkan peringkat pada setiap baris dalam hasil query.
+
+## Pengenalan Fungsi PostgreSQL RANK()
+
+Fungsi `RANK()` memberikan peringkat pada setiap baris dalam *partisi* dari hasil query.
+
+Untuk setiap *partisi*, peringkat baris pertama adalah 1. Fungsi `RANK()` menambahkan jumlah baris yang memiliki nilai sama ke peringkat tersebut untuk menghitung peringkat baris berikutnya, sehingga peringkatnya mungkin tidak berurutan. Selain itu, baris dengan nilai yang sama akan mendapatkan peringkat yang sama.
+
+Berikut sintaks fungsi `RANK()`:
+
+```sql
+RANK() OVER (
+    [PARTITION BY partition_expression, ... ]
+    ORDER BY sort_expression [ASC | DESC], ...
+)
+```
+
+Dalam sintaks ini:
+
+- Pertama, klausa `PARTITION BY` membagi hasil query menjadi *partisi* tempat fungsi `RANK()` diterapkan.
+- Kemudian, klausa `ORDER BY` menentukan urutan baris dalam setiap *partisi* yang digunakan oleh fungsi.
+
+Fungsi `RANK()` dapat digunakan untuk membuat laporan *top-N* dan *bottom-N*.
+
+## Contoh Penggunaan Fungsi PostgreSQL RANK()
+
+Pertama, buat tabel baru bernama `ranks` yang memiliki satu kolom:
+
+```sql
+CREATE TABLE ranks (
+    c VARCHAR(10)
+);
+```
+
+Kedua, masukkan beberapa baris ke dalam tabel `ranks`:
+
+```sql
+INSERT INTO ranks(c)
+VALUES('A'),('A'),('B'),('B'),('B'),('C'),('E');
+```
+
+Ketiga, query data dari tabel `ranks`:
+
+```sql
+SELECT
+    c
+FROM
+    ranks;
+```
+
+![image](https://github.com/user-attachments/assets/6800f799-143f-40f6-9ebc-5f2c676ffad9)
+
+Keempat, gunakan fungsi `RANK()` untuk menetapkan peringkat pada baris dalam hasil query tabel `ranks`:
+
+```sql
+SELECT
+    c,
+    RANK () OVER (
+        ORDER BY c
+    ) rank_number
+FROM
+    ranks;
+```
+
+Gambar berikut menunjukkan outputnya:
+
+![image](https://github.com/user-attachments/assets/3414810e-2b7a-4ab1-b087-85eebd32e297)
+
+Seperti yang dapat Anda lihat dengan jelas dari outputnya:
+
+- Baris pertama dan kedua mendapatkan peringkat yang sama karena memiliki nilai `A`.
+- Baris ketiga, keempat, dan kelima mendapatkan peringkat 3 karena fungsi `RANK()` melewati peringkat 2, dan semuanya memiliki nilai `B`.
+
+---
+
+## Contoh Penggunaan Fungsi PostgreSQL RANK()
+
+Kita akan menggunakan tabel `products` untuk mendemonstrasikan fungsi `RANK()`.
+
+![image](https://github.com/user-attachments/assets/8179f890-fcc4-4cbf-a473-b60acb39234b)
+
+Gambar ini menunjukkan data tabel `products` :
+
+![image](https://github.com/user-attachments/assets/38811125-3b84-43b7-bf4b-4019683af49c)
+
+### 1) Menggunakan Fungsi PostgreSQL RANK() untuk Seluruh Hasil Query
+
+Contoh berikut menggunakan fungsi `RANK()` untuk menetapkan peringkat pada setiap produk berdasarkan harga:
+
+```sql
+SELECT
+    product_id,
+    product_name,
+    price,
+    RANK () OVER (
+        ORDER BY price DESC
+    ) price_rank
+FROM
+    products;
+```
+
+![image](https://github.com/user-attachments/assets/5b57917e-b913-46ca-9510-637d63d3e0e6)
+
+Dalam contoh ini, kita tidak menyertakan klausa `PARTITION BY`, sehingga fungsi `RANK()` memperlakukan seluruh hasil query sebagai satu *partisi*.
+
+Fungsi `RANK()` menghitung peringkat setiap baris dalam hasil query yang telah diurutkan berdasarkan harga dari tinggi ke rendah.
+
+---
+
+### 2) Menggunakan Fungsi PostgreSQL RANK() dengan Klausa PARTITION BY
+
+Contoh berikut menggunakan fungsi `RANK()` untuk menetapkan peringkat pada setiap produk dalam kelompok produk masing-masing:
+
+```sql
+SELECT
+    product_id,
+    product_name,
+    group_name,
+    price,
+    RANK () OVER (
+        PARTITION BY p.group_id
+        ORDER BY price DESC
+    ) price_rank
+FROM
+    products p
+INNER JOIN
+    product_groups g USING (group_id);
+```
+
+![image](https://github.com/user-attachments/assets/7db4a296-c054-43f9-ad61-614e2f18a46c)
+
+Dalam contoh ini:
+
+- Pertama, klausa `PARTITION BY` membagi produk berdasarkan kelompok produk (`group_id`).
+- Kedua, klausa `ORDER BY` mengurutkan produk dalam setiap *partisi* berdasarkan harga dari tinggi ke rendah.
+
+Fungsi `RANK()` diterapkan pada setiap produk dalam setiap kelompok dan direset saat kelompok produk berubah.
+
+Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `RANK()` untuk menghitung peringkat setiap baris dalam *partisi* dari hasil query.
