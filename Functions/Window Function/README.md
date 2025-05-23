@@ -1,6 +1,7 @@
 - [PostgreSQL Window Function](#postgresql-window-function)
 - [PostgreSQL ROW_NUMBER Function](#postgresql-row_number-function)
 - [PostgreSQL RANK](#postgresql-rank)
+- [PostgreSQL DENSE_RANK](#postgresql-dense_rank)
 
 ---
 
@@ -754,4 +755,175 @@ Dalam contoh ini:
 
 Fungsi `RANK()` diterapkan pada setiap produk dalam setiap kelompok dan direset saat kelompok produk berubah.
 
+---
+
 Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `RANK()` untuk menghitung peringkat setiap baris dalam *partisi* dari hasil query.
+
+---
+---
+---
+
+# PostgreSQL DENSE_RANK
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `DENSE_RANK()` untuk menetapkan peringkat pada setiap baris dalam *partisi* dari hasil query, tanpa celah dalam nilai peringkat.
+
+## Pengenalan Fungsi PostgreSQL DENSE_RANK()
+
+Fungsi `DENSE_RANK()` memberikan peringkat pada setiap baris dalam *partisi* dari hasil query. Berbeda dengan fungsi `RANK()`, fungsi `DENSE_RANK()` selalu menghasilkan nilai peringkat yang berurutan.
+
+Untuk setiap *partisi*, fungsi `DENSE_RANK()` memberikan peringkat yang sama pada baris dengan nilai yang sama.
+
+Berikut sintaks dari fungsi `DENSE_RANK()`:
+
+```sql
+DENSE_RANK() OVER (
+    [PARTITION BY partition_expression, ... ]
+    ORDER BY sort_expression [ASC | DESC], ...
+)
+```
+
+Fungsi `DENSE_RANK()` diterapkan pada setiap baris dalam setiap *partisi* yang didefinisikan oleh klausa `PARTITION BY`, dalam urutan yang ditentukan oleh klausa `ORDER BY`. Peringkat akan diatur ulang saat melintasi batas *partisi*.
+
+Klausa `PARTITION BY` bersifat opsional. Jika Anda mengabaikannya, fungsi `DENSE_RANK()` akan memperlakukan seluruh hasil query sebagai satu *partisi*.
+
+---
+
+## Demo Fungsi PostgreSQL DENSE_RANK()
+
+Pertama, buat tabel bernama `dense_ranks` yang memiliki satu kolom:
+
+```sql
+CREATE TABLE dense_ranks (
+    c VARCHAR(10)
+);
+```
+
+Kedua, masukkan beberapa baris ke dalam tabel `dense_ranks`:
+
+```sql
+INSERT INTO dense_ranks(c)
+VALUES('A'),('A'),('B'),('C'),('C'),('D'),('E');
+```
+
+Ketiga, query data dari tabel `dense_ranks`:
+
+```sql
+SELECT c FROM dense_ranks;
+```
+
+![image](https://github.com/user-attachments/assets/3908abf1-e055-4180-ae0d-fc07c1a80125)
+
+Keempat, gunakan fungsi `DENSE_RANK()` untuk menetapkan peringkat pada setiap baris dalam kumpulan hasil:
+
+```sql
+SELECT
+    c,
+    DENSE_RANK() OVER (
+        ORDER BY c
+    ) dense_rank_number
+FROM
+    dense_ranks;
+```
+
+Berikut hasilnya:
+
+![image](https://github.com/user-attachments/assets/2e594213-1623-4593-9ea1-7da9ff745ac9)
+
+---
+
+## Contoh Penggunaan Fungsi PostgreSQL DENSE_RANK()
+
+Kita akan menggunakan tabel `products` untuk mendemonstrasikan fungsi `DENSE_RANK()`.
+
+![image](https://github.com/user-attachments/assets/fdcd3436-9f41-46ff-aa1b-06838b285ac7)
+
+
+![image](https://github.com/user-attachments/assets/32700991-efce-46ad-87d0-d0d8e59d91c4)
+
+---
+
+### 1) Menggunakan Fungsi PostgreSQL DENSE_RANK() pada Seluruh Hasil Query
+
+Pernyataan berikut menggunakan fungsi `DENSE_RANK()` untuk memberikan peringkat pada produk berdasarkan harga:
+
+```sql
+SELECT
+    product_id,
+    product_name,
+    price,
+    DENSE_RANK() OVER (
+        ORDER BY price DESC
+    ) price_rank
+FROM
+    products;
+```
+
+Berikut hasilnya:
+
+![image](https://github.com/user-attachments/assets/f31b9ee8-e21c-4a16-86d0-575ae4fe118f)
+
+Dalam contoh ini, kita mengabaikan klausa `PARTITION BY`, sehingga fungsi `DENSE_RANK()` memperlakukan seluruh hasil query sebagai satu *partisi*.
+
+Fungsi `DENSE_RANK()` menetapkan peringkat pada setiap produk berdasarkan urutan harga dari tinggi ke rendah yang ditentukan oleh klausa `ORDER BY`.
+
+---
+
+### 2) Menggunakan Fungsi PostgreSQL DENSE_RANK() dengan *Partitioning*
+
+Contoh berikut menetapkan peringkat pada setiap produk dalam setiap kelompok produk:
+
+```sql
+SELECT
+    product_id,
+    product_name,
+    group_id,
+    price,
+    DENSE_RANK() OVER (
+        PARTITION BY group_id
+        ORDER BY price DESC
+    ) price_rank
+FROM
+    products;
+```
+
+Berikut hasilnya:
+
+![image](https://github.com/user-attachments/assets/753397b8-eada-4253-97ff-91b42223bdef)
+
+Dalam contoh ini, klausa `PARTITION BY` membagi produk berdasarkan kelompok produk. Klausa `ORDER BY` mengurutkan produk dalam setiap kelompok berdasarkan harga dari tinggi ke rendah untuk diterapkan fungsi `DENSE_RANK()`.
+
+---
+
+### 3) Menggunakan Fungsi PostgreSQL DENSE_RANK() dengan CTE
+
+Pernyataan berikut menggunakan fungsi `DENSE_RANK()` dengan CTE untuk mengembalikan produk dengan harga tertinggi dalam setiap kelompok produk:
+
+```sql
+WITH cte AS(
+    SELECT
+        product_id,
+        product_name,
+        group_id,
+        price,
+        DENSE_RANK() OVER (
+            PARTITION BY group_id
+            ORDER BY price DESC
+        ) price_rank
+    FROM
+        products
+)
+SELECT
+    product_id,
+    product_name,
+    price
+FROM
+    cte
+WHERE
+    price_rank = 1;
+```
+
+![image](https://github.com/user-attachments/assets/dc46befa-4167-4450-90d3-0cacc8bc5011)
+
+---
+
+Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `DENSE_RANK()` untuk menghitung peringkat setiap baris dalam *partisi* hasil query, tanpa celah dalam nilai peringkat.
