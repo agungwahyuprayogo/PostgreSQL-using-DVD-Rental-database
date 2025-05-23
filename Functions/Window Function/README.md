@@ -3,6 +3,7 @@
 - [PostgreSQL RANK](#postgresql-rank)
 - [PostgreSQL DENSE_RANK](#postgresql-dense_rank)
 - [PostgreSQL NTILE](#postgresql-ntile)
+- [PostgreSQL LAG](#postgresql-lag)
 
 ---
 
@@ -1077,3 +1078,156 @@ Dalam tutorial ini, Anda telah belajar cara menggunakan fungsi PostgreSQL `NTILE
 ---
 ---
 ---
+
+
+
+
+
+
+
+
+
+
+
+# PostgreSQL LAG
+
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan fungsi PostgreSQL `LAG()` untuk mengakses data dari baris sebelumnya berdasarkan baris saat ini.
+
+## Pengenalan Fungsi PostgreSQL LAG()
+
+Fungsi PostgreSQL `LAG()` memungkinkan Anda untuk mengakses data dari baris sebelumnya berdasarkan baris saat ini. Ini bisa sangat berguna untuk membandingkan nilai dari baris saat ini dengan nilai dari baris sebelumnya.
+
+### Sintaks Dasar `LAG()`
+```sql
+LAG(expression [,offset [,default_value]])
+OVER (
+    [PARTITION BY partition_expression, ... ]
+    ORDER BY sort_expression [ASC | DESC], ...
+)
+```
+
+Penjelasan sintaks:
+- **expression**: Dievaluasi terhadap baris sebelumnya dengan offset tertentu. Bisa berupa kolom, ekspresi, atau subquery.
+- **offset**: Bilangan bulat positif yang menunjukkan jumlah baris sebelum baris saat ini dari mana data diakses. Nilai default adalah 1 jika tidak ditentukan.
+- **default_value**: Nilai default yang dikembalikan jika `offset` melampaui cakupan *partisi*. Jika tidak ditentukan, fungsi akan mengembalikan `NULL`.
+- **PARTITION BY**: Membagi baris menjadi beberapa *partisi* di mana fungsi `LAG()` diterapkan. Jika diabaikan, fungsi memperlakukan seluruh hasil query sebagai satu *partisi*.
+- **ORDER BY**: Menentukan urutan baris dalam setiap *partisi* tempat fungsi `LAG()` diterapkan.
+
+---
+
+## Contoh Penggunaan Fungsi PostgreSQL LAG()
+
+Kita akan menggunakan tabel `sales` dari tutorial fungsi [`LEAD()`](postgresql-lead-function) untuk demonstrasi:
+
+```sql
+CREATE TABLE sales (
+    year SMALLINT CHECK(year > 0),
+    group_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY(year, group_id)
+);
+
+INSERT INTO sales(year, group_id, amount)
+VALUES
+    (2018, 1, 1474),
+    (2018, 2, 1787),
+    (2018, 3, 1760),
+    (2019, 1, 1915),
+    (2019, 2, 1911),
+    (2019, 3, 1118),
+    (2020, 1, 1646),
+    (2020, 2, 1975),
+    (2020, 3, 1516)
+RETURNING *;
+```
+
+Data dari tabel `sales`:
+
+| year | group_id | amount  |
+|------|---------|---------|
+| 2018 | 1       | 1474.00 |
+| 2018 | 2       | 1787.00 |
+| 2018 | 3       | 1760.00 |
+| 2019 | 1       | 1915.00 |
+| 2019 | 2       | 1911.00 |
+| 2019 | 3       | 1118.00 |
+| 2020 | 1       | 1646.00 |
+| 2020 | 2       | 1975.00 |
+| 2020 | 3       | 1516.00 |
+
+(9 rows)
+
+---
+
+### 1) Menggunakan Fungsi PostgreSQL LAG() pada Hasil Query
+
+Contoh berikut menggunakan fungsi `LAG()` untuk mengembalikan jumlah penjualan tahun saat ini dan tahun sebelumnya untuk grup ID 1:
+
+```sql
+SELECT
+    year,
+    amount,
+    LAG(amount, 1) OVER (ORDER BY year) AS previous_year_sales
+FROM sales
+WHERE group_id = 1;
+```
+
+**Output:**
+
+| year | amount  | previous_year_sales |
+|------|---------|---------------------|
+| 2018 | 1474.00 | NULL                |
+| 2019 | 1915.00 | 1474.00             |
+| 2020 | 1646.00 | 1915.00             |
+
+(3 rows)
+
+Penjelasan:
+- `WHERE` hanya mengambil baris dengan `group_id = 1`.
+- `LAG()` mengembalikan jumlah penjualan dari tahun sebelumnya berdasarkan tahun saat ini.
+- Karena tabel `sales` tidak memiliki data sebelum tahun 2018, fungsi `LAG()` mengembalikan `NULL`.
+
+---
+
+### 2) Menggunakan Fungsi PostgreSQL LAG() dalam *Partitioning*
+
+Contoh berikut menggunakan fungsi `LAG()` untuk membandingkan jumlah penjualan tahun saat ini dengan tahun sebelumnya dalam setiap kelompok produk:
+
+```sql
+SELECT
+    year,
+    amount,
+    group_id,
+    LAG(amount, 1) OVER (
+        PARTITION BY group_id
+        ORDER BY year
+    ) AS previous_year_sales
+FROM sales;
+```
+
+**Output:**
+
+| year | amount  | group_id | previous_year_sales |
+|------|---------|----------|---------------------|
+| 2018 | 1474.00 | 1        | NULL                |
+| 2019 | 1915.00 | 1        | 1474.00             |
+| 2020 | 1646.00 | 1        | 1915.00             |
+| 2018 | 1787.00 | 2        | NULL                |
+| 2019 | 1911.00 | 2        | 1787.00             |
+| 2020 | 1975.00 | 2        | 1911.00             |
+| 2018 | 1760.00 | 3        | NULL                |
+| 2019 | 1118.00 | 3        | 1760.00             |
+| 2020 | 1516.00 | 3        | 1118.00             |
+
+(9 rows)
+
+Penjelasan:
+- Klausa `PARTITION BY` membagi baris berdasarkan kelompok produk `group_id`.
+- Klausa `ORDER BY` mengurutkan baris dalam setiap *partisi* berdasarkan tahun secara naik.
+- Fungsi `LAG()` diterapkan pada setiap *partisi* untuk mengembalikan jumlah penjualan dari tahun sebelumnya.
+
+---
+
+## Ringkasan
+
+- Gunakan fungsi PostgreSQL `LAG()` untuk mengakses data dari baris sebelumnya berdasarkan baris saat ini.
