@@ -235,11 +235,7 @@ SELECT
 	product_name,
 	group_name,
     	price,
-	RANK() OVER (
-		PARTITION BY group_name
-		ORDER BY
-			price
-		)
+	RANK() OVER (PARTITION BY group_name ORDER BY price)
 FROM
 	products
 INNER JOIN 
@@ -259,11 +255,7 @@ SELECT
 	product_name,
 	group_name,
 	price,
-	DENSE_RANK() OVER (
-		PARTITION BY group_name
-		ORDER BY
-			price
-		)
+	DENSE_RANK() OVER (PARTITION BY group_name ORDER BY price)
 FROM
 	products
 INNER JOIN
@@ -288,11 +280,7 @@ SELECT
 	product_name,
 	group_name,
 	price,
-	FIRST_VALUE(price) OVER (
-		PARTITION BY group_name
-		ORDER BY
-			price
-		) AS lowest_price_per_group
+	FIRST_VALUE(price) OVER (PARTITION BY group_name ORDER BY price) AS lowest_price_per_group
 FROM
 	products
 INNER JOIN
@@ -479,10 +467,7 @@ SELECT
   product_id,
   product_name,
   group_id,
-  ROW_NUMBER () OVER (
-	ORDER BY
-      		product_name
-  )
+  ROW_NUMBER () OVER (ORDER BY product_name)
 FROM
 	products;
 ```
@@ -491,7 +476,7 @@ FROM
 
 Dalam query berikut, kita menggunakan klausa `PARTITION BY` untuk membagi *window* menjadi subset berdasarkan nilai dalam kolom `group_id`. Dalam hal ini, fungsi `ROW_NUMBER()` menetapkan angka satu ke baris awal setiap *partisi* dan meningkat satu untuk setiap baris berikutnya dalam *partisi* yang sama.
 
-Klausa `ORDER BY` mengurutkan baris dalam setiap *partisi* berdasarkan nilai dalam kolom `product_name`.
+Klausa `ORDER BY` mengurutkan baris dalam setiap *partisi* `group_id` berdasarkan nilai dalam kolom `product_name`.
 
 ```sql
 SELECT
@@ -518,10 +503,7 @@ Query berikut menggunakan fungsi `ROW_NUMBER()` untuk menetapkan angka berurutan
 ```sql
 SELECT
 	DISTINCT price,
-	ROW_NUMBER() OVER (
-		ORDER BY
-			price
-		)
+	ROW_NUMBER() OVER (ORDER BY price)
 FROM
   	products
 ORDER BY
@@ -536,14 +518,16 @@ Untuk mengatasi masalah ini, kita dapat memperoleh daftar harga yang unik dalam 
 
 ```sql
 WITH prices AS (
-  SELECT DISTINCT price
-  FROM products
+  SELECT
+	DISTINCT price
+  FROM
+	products
 )
 SELECT
-  price,
-  ROW_NUMBER() OVER (ORDER BY price) AS row_num
+	price,
+	ROW_NUMBER() OVER (ORDER BY price) AS row_num
 FROM
-  prices;
+  	prices;
 ```
 
 ![image](https://github.com/user-attachments/assets/65b27027-dddb-4b1f-9b90-d03a6f11bdf7)
@@ -552,11 +536,12 @@ Atau kita bisa menggunakan subquery dalam klausa `FROM` untuk mendapatkan daftar
 
 ```sql
 SELECT
-  price,
-  ROW_NUMBER() OVER (ORDER BY price) AS row_num
-FROM (
-  SELECT DISTINCT price
-  FROM products
+	price,
+	ROW_NUMBER() OVER (ORDER BY price) AS row_num
+FROM (	SELECT DISTINCT
+		price
+	FROM
+		products
 ) AS prices;
 ```
 
