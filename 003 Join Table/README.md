@@ -88,7 +88,7 @@ Output:
 
 ---
 
-## PostgreSQL Inner Join
+## Inner Join
 
 The following statement joins the first table (`basket_a`) with the second table (`basket_b`) by matching the values in the `fruit_a` and `fruit_b` columns:
 
@@ -121,7 +121,7 @@ The following diagram illustrates the `INNER JOIN`:
 
 ---
 
-## PostgreSQL Left Join
+## Left Join
 
 The following statement uses the `LEFT JOIN` clause to join the `basket_a` table with the `basket_b` table. In the left join context, the first table is called the left table and the second table is called the right table.
 
@@ -191,7 +191,7 @@ Note that the `LEFT JOIN` is the same as the `LEFT OUTER JOIN` so you can use th
 
 ---
 
-## PostgreSQL Right Join
+## Right Join
 
 The `RIGHT JOIN` is a reversed version of the left join. The `RIGHT JOIN` starts selecting data from the right table. It compares each value in the `fruit_b` column of every row in the right table with each value in the `fruit_a` column of every row in the `fruit_a` table.
 
@@ -259,7 +259,7 @@ The following diagram illustrates the right join that returns rows from the righ
 
 ![image](https://github.com/user-attachments/assets/fff671d0-0c6c-4b15-a9eb-70d0f692f4e2)
 
-## PostgreSQL Full Outer Join
+## Full Outer Join
 
 The `FULL OUTER JOIN` or `FULL JOIN` returns a result set that contains all rows from both left and right tables, with the matching rows from both sides if available. In case there is no match, the columns of the table will be filled with `NULL`.
 
