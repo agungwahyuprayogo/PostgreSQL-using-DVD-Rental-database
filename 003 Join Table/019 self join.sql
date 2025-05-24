@@ -1,43 +1,22 @@
 /* -------- SELF JOIN ------
- *
- * sesuai namanya, self join disini perbandingan hanya dengan table itu sendiri
- * dalam artian, kalo misalkan kamu punya table film, 
- * ya yang dibandingkan adalah data dengan data di table film
- * 
- * penggambaran query self join
- * 
- * SELECT 
- * 		select list,
- * 		select list,
- * from
- * 		table_name t1
- * inner join
- * 		table_name t2 on join_predicate
- * 
- * di syntax ini, si 'table' yang di join dengan dirinya sendiri bisa make 'inner join'
- * alternative lainya bisa make 'left join' atau 'right join'
- * 
- * SELECT 
- * 		select list,
- * 		select list,
- * from
- * 		table_name t1
- * left join
- * 		table_name t2 on join_predicate
- * 
- * 
- * langsung ke contoh kasus ya.
- * jadi anggeplah pak Hartono sebagai direktur punya 2 manager :
- * 
- * 2 manager tadi ada pak Chandra dan pak Reza
- * 
- * nah Pak Chandra punya anak buah : Dedi, Nugi, dan Agung
- * sedangkan Pak Reza punya anak buah : Qisty, Azizi, dan Irvan
- * 
- * penggambaranya seperti ini
- * Direktur 			 		Hartono
- * manager	 		 Chandra 		|			    Reza
- * anak buah    Agung, Dedi, Nugi	|		Qisty, Azizi, Irvan
+ 
+ Cara paling gampang untuk ilustrasi self join adalah table karyawan
+ yang terdiri dari id_employee, name, id_manager
+ 
+ dalam bentuk data seperti ini biasanya
+ 	(1, 'Director', 'Hartono', 'Sutejo', null),
+	(2, 'Manager IT', 'Chandra', 'Alexandre', 1),
+	(3, 'Manager Marketing', 'Reza', 'Rahardian', 1)
+
+misal manager marketing, pak reza, kalo dilihat sekilas id_manager dia adalah Hartono, karena dia direkturnya
+tapi kalo data kaya gitu gaenak banget diliat, kek misal ditanya "siapa manager/atasanya?" "yg id karyawanya 1"
+kan kaga enak tuh, makanya untuk perapihan data, alangkah baiknya dibikin self join
+buat nampilin siapa nama manager masing2 karyawan
+ 
+ penggambaranya seperti ini
+ Direktur 			 		Hartono
+ manager	 		 Chandra 		|			    Reza
+ anak buah    Agung, Dedi, Nugi	|		Qisty, Azizi, Irvan
  */
 
 create table employee (
@@ -75,22 +54,26 @@ select * from employee e
 -- nah maksud dari Hartono manager_idnya null karena, dia udah diposisi direktur,
 -- paling atas diperusahaan
 
-SELECT 
-  e.first_name || ' ' || e.last_name employee, 
-  m.first_name || ' ' || m.last_name manager 
+select
+	karyawan.position,
+  	karyawan.first_name || ' ' || karyawan.last_name nama_karyawan, 
+  	manager.first_name || ' ' || manager.last_name manager 
 FROM 
-  employee e 
-  INNER JOIN employee m ON m.employee_id = e.manager_id 
+  	employee karyawan 
+ INNER JOIN 
+ 	employee manager ON manager.employee_id = karyawan.manager_id -- joinnya make id 
 ORDER BY 
-  manager;
+ 	manager;
   
-SELECT 
-  e.first_name || ' ' || e.last_name employee, 
-  m.first_name || ' ' || m.last_name manager 
-FROM 
-  employee e 
-  LEFT JOIN employee m ON m.employee_id = e.manager_id 
-ORDER BY 
-  manager desc
-  
- 
+-- 2. nyoba make data dvd rental
+-- misal kita pengen tau, film mana aja yg durasi filmnya sama
+SELECT
+  	f1.title,
+  	f2.title,
+  	f1.length
+FROM
+  	film f1
+INNER JOIN 
+	film f2 ON f1.film_id <> f2.film_id -- selama ga = gpp, penggunaan <> agar menghindari film dengan id yg sama
+	AND f1.length = f2.length			-- 2 film dengan durasi yg sama
+order by 3
