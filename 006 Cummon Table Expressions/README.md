@@ -1,38 +1,170 @@
-# PostgreSQL-using-DVD-Rental-database
+# Panduan PostgreSQL Common Table Expression
 
-## What is PostgreSQL
+## Daftar Isi
 
-![1_mMq3Bem9r8ASAn1YwcTbEw](https://github.com/agungwahyuprayogo/PostgreSQL-using-DVD-Rental-database/assets/101789879/8186ad0d-6e7a-4269-8f38-a35cdc609666)
+- [PostgreSQL CTE](#postgresql-cte)
 
-PostgreSQL is an advanced, enterprise-class, and open-source relational database system. PostgreSQL supports both SQL (relational) and JSON (non-relational) querying. PostgreSQL is a highly stable database backed by more than 20 years of development by the open-source community. PostgreSQL is used as a primary database for many web applications as well as mobile and analytics applications. PostgreSQL’s community pronounces PostgreSQL as /ˈpoʊstɡrɛs ˌkjuː ˈɛl/.
+# PostgreSQL CTE
 
-## PostgreSQL Sample Database
-We will use the DVD rental database to demonstrate the features of PostgreSQL. The DVD rental database represents the business processes of a DVD rental store. The DVD rental database has many objects, including:
-  * 15 tables
-  * 1 trigger
-  * 7 views
-  * 8 functions
-  * 1 domain
-  * 13 sequences
+**Ringkasan**: Dalam tutorial ini, Anda akan belajar cara menggunakan *Common Table Expression* (CTE) PostgreSQL untuk menyederhanakan query yang kompleks.
 
-### DVD Rental ER Model
-![dvd-rental-sample-database-diagram](https://github.com/agungwahyuprayogo/PostgreSQL-using-DVD-Rental-database/assets/101789879/1ff7eabf-3ddf-4b28-a776-1d6228fb38e2)
-In the diagram, the asterisk (*), which appears in front of the field, indicates the primary key.
+## Pengenalan Common Table Expression (CTE) di PostgreSQL
 
-### PostgreSQL Sample Database Tables
-There are 15 tables in the DVD Rental database:
+*Common Table Expression* (CTE) memungkinkan Anda membuat hasil sementara dalam sebuah query.
 
- * actor – stores actor data including first name and last name.
- * film – stores film data such as title, release year, length, rating, etc.
- * film_actor – stores the relationships between films and actors.
- * category – stores film’s categories data.
- * film_category- stores the relationships between films and categories.
- * store – contains the store data including manager staff and address.
- * inventory – stores inventory data.
- * rental – stores rental data.
- * payment – stores customer’s payments.
- * staff – stores staff data.
- * customer – stores customer data.
- * address – stores address data for staff and customers
- * city – stores city names.
- * country – stores country names.
+CTE membantu meningkatkan keterbacaan query kompleks dengan membaginya menjadi bagian yang lebih kecil dan lebih dapat digunakan kembali.
+
+### Sintaks Dasar CTE
+
+```sql
+WITH cte_name (column1, column2, ...) AS (
+    -- Query CTE
+    SELECT ...
+)
+-- Query utama yang menggunakan CTE
+SELECT ...
+FROM cte_name;
+```
+
+Penjelasan sintaks:
+- **WITH clause**: Memperkenalkan *Common Table Expression* (CTE). Setelahnya terdapat nama CTE dan daftar kolom dalam tanda kurung (opsional).
+- **CTE name**: Menentukan nama CTE yang bersifat unik dalam query.
+- **Column List (opsional)**: Jika tidak ditentukan, kolom akan mengikuti nama dari hasil `SELECT` dalam CTE.
+- **AS keyword**: Menandakan awal definisi CTE.
+- **CTE query**: Query yang mendefinisikan CTE dan dapat mencakup `JOIN`, `WHERE`, `GROUP BY`, dan lainnya.
+- **Main query**: Setelah CTE didefinisikan, Anda dapat merujuknya dalam query utama seperti tabel biasa, sehingga menyederhanakan struktur query yang kompleks.
+
+---
+
+## Contoh Penggunaan CTE di PostgreSQL
+
+### 1) Contoh Dasar Common Table Expression
+
+Berikut contoh penggunaan CTE untuk memilih `title` dan `length` film dalam kategori `'Action'` dan mengembalikan semua kolom dari CTE:
+
+```sql
+WITH action_films AS (
+  SELECT
+    f.title,
+    f.length
+  FROM film f
+  INNER JOIN film_category fc USING (film_id)
+  INNER JOIN category c USING (category_id)
+  WHERE c.name = 'Action'
+)
+SELECT * FROM action_films;
+```
+
+**Output:**
+
+|          title          | length |
+|-------------------------|--------|
+| Amadeus Holy            |    113 |
+| American Circus         |    129 |
+| Antitrust Tomatoes      |    168 |
+| Ark Ridgemont           |     68 |
+| ...                     | ...    |
+
+Penjelasan:
+- CTE `action_films` menggabungkan data dari tiga tabel (`film`, `film_category`, `category`).
+- Query utama mengambil data dari CTE dengan `SELECT * FROM action_films`.
+
+---
+
+### 2) Menggunakan CTE dengan JOIN
+
+Kita akan menggunakan tabel `rental` dan `staff` dalam contoh berikut.
+
+Berikut contoh penggunaan CTE untuk mencari jumlah transaksi rental oleh setiap staf:
+
+```sql
+WITH cte_rental AS (
+  SELECT
+    staff_id,
+    COUNT(rental_id) AS rental_count
+  FROM rental
+  GROUP BY staff_id
+)
+SELECT
+  s.staff_id,
+  first_name,
+  last_name,
+  rental_count
+FROM staff s
+INNER JOIN cte_rental USING (staff_id);
+```
+
+Penjelasan:
+- CTE `cte_rental` mengambil `staff_id` dan jumlah transaksi rental.
+- Query utama menggabungkan tabel `staff` dengan CTE berdasarkan `staff_id`.
+
+**Output:**
+
+| staff_id | first_name | last_name | rental_count |
+|----------|------------|-----------|--------------|
+|        1 | Mike       | Hillyer   |         8040 |
+|        2 | Jon        | Stephens  |         8004 |
+| ...      | ...        | ...       | ...          |
+
+(2 rows)
+
+
+---
+
+### 3) Contoh Menggunakan Multiple CTEs
+
+Berikut contoh penggunaan beberapa CTE untuk menghitung statistik film dan pelanggan:
+
+```sql
+WITH film_stats AS (
+    SELECT
+        AVG(rental_rate) AS avg_rental_rate,
+        MAX(length) AS max_length,
+        MIN(length) AS min_length
+    FROM film
+),
+customer_stats AS (
+    SELECT
+        COUNT(DISTINCT customer_id) AS total_customers,
+        SUM(amount) AS total_payments
+    FROM payment
+)
+SELECT
+    ROUND((SELECT avg_rental_rate FROM film_stats), 2) AS avg_film_rental_rate,
+    (SELECT max_length FROM film_stats) AS max_film_length,
+    (SELECT min_length FROM film_stats) AS min_film_length,
+    (SELECT total_customers FROM customer_stats) AS total_customers,
+    (SELECT total_payments FROM customer_stats) AS total_payments;
+```
+
+**Output:**
+
+| avg_film_rental_rate | max_film_length | min_film_length | total_customers | total_payments |
+|----------------------|-----------------|-----------------|-----------------|----------------|
+|                 2.98 |             185 |              46 |             599 |       61312.04 |
+
+(1 row)
+
+Penjelasan:
+- **CTE `film_stats`** menghitung rata-rata harga rental, panjang maksimum, dan panjang minimum film.
+- **CTE `customer_stats`** menghitung total pelanggan dan jumlah pembayaran yang dilakukan.
+- Query utama mengambil nilai dari masing-masing CTE untuk menghasilkan laporan ringkasan.
+
+---
+
+## Keunggulan Penggunaan CTE di PostgreSQL
+
+Berikut beberapa keuntungan menggunakan *Common Table Expression* (CTE):
+
+- **Meningkatkan keterbacaan query kompleks** – Mengorganisir query dalam bagian yang lebih terstruktur dan mudah dipahami.
+- **Mendukung query rekursif** – Berguna untuk menangani data hierarkis seperti struktur organisasi.
+- **Dapat digunakan dengan fungsi *window*** – CTE bisa digabungkan dengan fungsi *window* untuk mengolah dataset secara bertahap.
+
+---
+
+## Ringkasan
+
+- Gunakan *Common Table Expression* (CTE) untuk membuat hasil sementara dalam query.
+- Manfaatkan CTE untuk menyederhanakan dan meningkatkan keterbacaan query yang kompleks.
+
+Semoga membantu! Jika ada hal lain yang perlu diperbaiki, beri tahu saya! 🚀
