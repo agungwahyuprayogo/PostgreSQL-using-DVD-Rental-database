@@ -43,7 +43,9 @@ values
 		('HR'),
 		('IT'),
 		('Production');
- 
+
+drop table departments 
+
 INSERT INTO employees (employee_name, department_id) 
 VALUES 
 	('Bette Nicholson', 1), 
@@ -57,7 +59,7 @@ VALUES
  -- sekarang kita coba tampilin dulu table department
  select * from departments d 
  
- select * from employees e 
+ select * from employees e -- diliat, ada yg null 
  
  -- BASIC FULL OUTER JOIN
  -- pake yang gampang ae ye biar bisa keliatan bedanya
