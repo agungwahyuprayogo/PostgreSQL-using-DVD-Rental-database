@@ -14,9 +14,9 @@ kan kaga enak tuh, makanya untuk perapihan data, alangkah baiknya dibikin self j
 buat nampilin siapa nama manager masing2 karyawan
  
  penggambaranya seperti ini
- Direktur 			 		Hartono
- manager	 		 Chandra 		|			    Reza
- anak buah    Agung, Dedi, Nugi	|		Qisty, Azizi, Irvan
+ Direktur 			    Hartono
+ manager	   Chandra 		|			    Reza
+ anak buah    Agung, Dedi, Nugi	        |		     Qisty, Azizi, Irvan
  */
 
 create table employee (
