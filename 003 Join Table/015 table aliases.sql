@@ -13,7 +13,7 @@
  	film_id 
  limit 5
  -- "from film as f" buat gambaran aja
- -- kalo mau lebih singkat boleh langsung "from film f"
+ -- kalo mau lebih singkat boleh langsung -> "from film f"
  
  /* TABLE ALIASES IN JOIN
   * 
@@ -30,16 +30,18 @@
   */
  
 select 
-	c.customer_id, 
-	c.first_name, 
-	p.amount, 
-	p.payment_date 
+	customer.customer_id, 
+	customer.first_name, 
+	payment.amount, 
+	payment.payment_date 
 from 
-	customer c 
-	inner join payment p on p.customer_id = c.customer_id 
+	customer
+inner join 
+	payment on payment.customer_id = customer.customer_id 
 order by 
-	p.payment_date 
+	payment.payment_date 
 
+-- bisa kita persingkat jadi :
 
 select 
 	c.customer_id, 
@@ -48,10 +50,25 @@ select
 	p.payment_date 
 from 
 	payment p 
-	inner join customer c on p.customer_id = c.customer_id 
+inner join 
+	customer c on p.customer_id = c.customer_id 
 order by 
 	p.payment_date
 
+-- lebih singkat lagi make USING()
+
+select 
+	c.customer_id, 
+	c.first_name, 
+	p.amount, 
+	p.payment_date 
+from 
+	payment p 
+inner join 
+	customer c using (customer_id)
+order by 
+	p.payment_date
+	
 -- 2 query diatas hasilnya sama karena emang pengen nyoba aja di bolak balik
 
 select 
@@ -60,4 +77,18 @@ select
 	a.district 
 from 
 	customer c 
-	inner join address a on c.address_id = a.address_id 
+	inner join address a on c.address_id = a.address_id;
+
+-- 3 self join make table alias
+-- misal menampilkan film yang memiliki durasi sama tetapi merupakan film yang berbeda.
+
+SELECT
+    f1.title,
+    f2.title,
+    f1.length
+FROM
+    film f1
+INNER JOIN 
+	film f2
+    ON f1.film_id <> f2.film_id and -- jangan gabungkan film dengan dirinya sendiri
+       f1.length = f2.length;  		-- hanya gabungkan film yang durasinya (length) sama.
