@@ -6,6 +6,11 @@
 - [PostgreSQL TABLE ALIASES](#postgresql-table-aliases)
 - [PostgreSQL INNER JOIN](#postgresql-inner-join)
 - [PostgreSQL LEFT JOIN](#postgresql-left-join)
+- [PostgreSQL RIGHT JOIN](#postgresql-right-join)
+- [PostgreSQL SELF JOIN](#postgresql-self-join)
+- [PostgreSQL FULL OUTER JOIN](#postgresql-full-outer-join)
+- [PostgreSQL CROSS JOIN](#postgresql-cross-join)
+- [PostgreSQL NATURAL JOIN](#postgresql-natural-join)
 ---
 
 ---
@@ -13,7 +18,7 @@
 
 **Summary**: in this tutorial, you will learn about various kinds of PostgreSQL JOINS including `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, and `FULL OUTER JOIN`.
 
-PostgreSQL join is used to combine columns from one self-join](postgresql-self-join or more tables based on the values of the common columns between related tables. The common columns are typically the `primary key` columns of the first table and the `foreign key` columns of the second table.
+PostgreSQL join is used to combine columns from one `self join` or more tables based on the values of the common columns between related tables. The common columns are typically the `primary key` columns of the first table and the `foreign key` columns of the second table.
 
 PostgreSQL supports `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL OUTER JOIN`, `CROSS JOIN`, `NATURAL JOIN`, and a special kind of join called SELF JOIN.
 
@@ -151,9 +156,9 @@ Output:
 
 The left join starts selecting data from the left table. It compares values in the `fruit_a` column with the values in the `fruit_b` column in the `basket_b` table.
 
-If these values are equal, the LEFT JOIN creates a new row that contains columns of both tables and adds this new row to the result set. (see the row \#1 and \#2 in the result set).
+If these values are equal, the LEFT JOIN creates a new row that contains columns of both tables and adds this new row to the result set. (see the row #1 and #2 in the result set).
 
-In case the values do not equal, the left join also creates a new row that contains columns from both tables and adds it to the result set. However, it fills the columns of the right table (`basket_b`) with null. (see the row \#3 and \#4 in the result set).
+In case the values do not equal, the left join also creates a new row that contains columns from both tables and adds it to the result set. However, it fills the columns of the right table (`basket_b`) with null. (see the row #3 and #4 in the result set).
 
 The following diagram illustrates the left join:
 
@@ -214,12 +219,12 @@ RIGHT JOIN basket_b ON fruit_a = fruit_b;
 
 Here is the output:
 
-  a   | fruit_a | b |  fruit_b
-------+---------+---+------------
-    2 | Orange  | 1 | Orange
-    1 | Apple   | 2 | Apple
- null | null    | 3 | Watermelon
- null | null    | 4 | Pear
+| a    | fruit_a  | b    | fruit_b    |
+|------|----------|------|------------|
+| 2    | Orange   | 1    | Orange     |
+| 1    | Apple    | 2    | Apple      |
+| null | null     | 3    | Watermelon |
+| null | null     | 4    | Pear       |
 
 (4 rows)
 
@@ -675,16 +680,13 @@ ORDER BY
 
 Output:
 
-```
- customer_id |     customer_name     |  staff_name  | amount |        payment_date
--------------+-----------------------+--------------+--------+----------------------------
-         416 | Jeffery Pinson        | Jon Stephens |   2.99 | 2007-02-14 21:21:59.996577
-         516 | Elmer Noe             | Jon Stephens |   4.99 | 2007-02-14 21:23:39.996577
-         239 | Minnie Romero         | Mike Hillyer |   4.99 | 2007-02-14 21:29:00.996577
-         592 | Terrance Roush        | Jon Stephens |   6.99 | 2007-02-14 21:41:12.996577
-          49 | Joyce Edwards         | Mike Hillyer |   0.99 | 2007-02-14 21:44:52.996577
-...
-```
+| customer_id | customer_name     | staff_name   | amount | payment_date              |
+|------------|------------------|-------------|--------|---------------------------|
+| 416        | Jeffery Pinson   | Jon Stephens | 2.99   | 2007-02-14 21:21:59.996577 |
+| 516        | Elmer Noe        | Jon Stephens | 4.99   | 2007-02-14 21:23:39.996577 |
+| 239        | Minnie Romero    | Mike Hillyer | 4.99   | 2007-02-14 21:29:00.996577 |
+| 592        | Terrance Roush   | Jon Stephens | 6.99   | 2007-02-14 21:41:12.996577 |
+| 49         | Joyce Edwards    | Mike Hillyer | 0.99   | 2007-02-14 21:44:52.996577 |
 
 ## Summary
 
@@ -850,3 +852,969 @@ Output:
 ## Summary
 
 - Use the PostgreSQL `LEFT JOIN` clause to select rows from one table that may or may not have corresponding rows in other tables.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+# PostgreSQL RIGHT JOIN
+
+**Summary**: in this tutorial, you will how to use PostgreSQL `RIGHT JOIN` to join two tables and return rows from the right table that may or may not have matching rows in the left table.
+
+## Introduction to PostgreSQL RIGHT JOIN clause
+
+The `RIGHT JOIN` clause joins a right table with a left table and returns the rows from the right table that may or may not have matching rows in the left table.
+
+The `RIGHT JOIN` can be useful when you want to find rows in the right table that do not have matching rows in the left table.
+
+Here’s the basic syntax of the `RIGHT JOIN` clause:
+
+```sql
+SELECT
+  select_list
+FROM
+  table1
+RIGHT JOIN table2
+  ON table1.column_name = table2.column_name;
+```
+
+In this syntax:
+
+- First, specify the columns from both tables in the `select_list` in the `SELECT` clause.
+- Second, provide the left table (`table1`) from which you want to select data in the `FROM` clause.
+- Third, specify the right table (`table2`) that you want to join with the left table in the `RIGHT JOIN` clause.
+- Finally, define a condition for joining two tables (`table1.column_name = table2.column_name`), which indicates the `column_name` in each table should have matching rows.
+
+### How the RIGHT JOIN works
+
+The `RIGHT JOIN` starts retrieving data from the right table (`table2`).
+
+For each row in the right table (`table2`), the `RIGHT JOIN` checks if the value in the `column_name` is equal to the value of the corresponding column in every row of the left table (`table1`).
+
+When these values are equal, the `RIGHT JOIN` creates a new row that includes columns specified in the `select_list` and appends it to the result set.
+
+If these values are not equal, the `RIGHT JOIN` generates a new row that includes columns specified in the `select_list`, populates the columns on the left with `NULL`, and appends the new row to the result set.
+
+In other words, the `RIGHT JOIN` returns all rows from the right table whether or not they have corresponding rows in the left table.
+
+The following Venn diagram illustrates how the `RIGHT JOIN` works:
+
+![image](https://github.com/user-attachments/assets/7b03bc7c-5c11-4c5e-a57b-5fe949deb6c5)
+
+Note that the `RIGHT OUTER JOIN` is the same as `RIGHT JOIN`. The `OUTER` keyword is optional
+
+---
+
+### The USING syntax
+
+When the columns for joining have the same name, you can use the `USING` syntax:
+
+```sql
+SELECT
+  select_list
+FROM
+  table1
+RIGHT JOIN table2 USING (column_name);
+```
+
+## PostgreSQL RIGHT JOIN examples
+
+We’ll use the `film` and `inventory` tables from the sample database
+
+### 1) Basic PostgreSQL RIGHT JOIN examples
+
+The following example uses the `RIGHT JOIN` clause to retrieve all rows from the film table that may or may not have corresponding rows in the inventory table:
+
+```sql
+SELECT
+  film.film_id,
+  film.title,
+  inventory.inventory_id
+FROM
+  inventory
+RIGHT JOIN film
+  ON film.film_id = inventory.film_id
+ORDER BY
+  film.title;
+```
+
+Output:
+
+![image](https://github.com/user-attachments/assets/cfdd08db-abac-4b3e-a219-25e0f9f8e4ae)
+
+You can rewrite the above query using table aliases:
+
+```
+SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+FROM
+  inventory i
+RIGHT JOIN film f
+  ON f.film_id = i.film_id
+ORDER BY
+  f.title;
+```
+
+Since the film and inventory table has the `film_id` column, you can use the `USING` syntax:
+
+```sql
+SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+FROM
+  inventory i
+RIGHT JOIN film f USING(film_id)
+ORDER BY
+  f.title;
+```
+
+### 2) PostgreSQL RIGHT JOIN with a WHERE clause
+
+The following query uses a `RIGHT JOIN` clause with a `WHERE` clause to retrieve the films that have no inventory:
+
+```sql
+SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+FROM
+  inventory i
+RIGHT JOIN film f USING(film_id)
+WHERE i.inventory_id IS NULL
+ORDER BY
+  f.title;
+```
+
+Output:
+
+
+| film_id | title                | inventory_id |
+|---------|----------------------|--------------|
+| 14      | Alice Fantasia       | null         |
+| 33      | Apollo Teen          | null         |
+| 36      | Argonauts Town       | null         |
+| 38      | Ark Ridgemont        | null         |
+| 41      | Arsenic Independence | null         |
+...
+
+
+## Summary
+
+- Use the PostgreSQL `RIGHT JOIN` clause to join a right table with a left table and return rows from the right table that may or may not have corresponding rows in the left table.
+- The `RIGHT JOIN` is also known as `RIGHT OUTER JOIN`.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+
+# PostgreSQL SELF JOIN
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `self join` technique to compare rows within the same table.
+
+## Introduction to PostgreSQL self-join
+
+A `self join` is a regular join that joins a table to itself. In practice, you typically use a self-join to query hierarchical data or to compare rows within the same table.
+
+To form a `self join`, you specify the same table twice with different table aliases and provide the join predicate after the `ON` keyword.
+
+The following query uses an `INNER JOIN` that joins the table to itself:
+
+```sql
+SELECT select_list
+FROM table_name t1
+INNER JOIN table_name t2 ON join_predicate;
+```
+
+In this syntax, the `table_name` is joined to itself using the `INNER JOIN` clause.
+
+Alternatively, you can use the `LEFT JOIN` or `RIGHT JOIN` clause to join the table to itself like this:
+
+```sql
+SELECT select_list
+FROM table_name t1
+LEFT JOIN table_name t2 ON join_predicate;
+```
+
+## PostgreSQL self-join examples
+
+Let’s take some examples of using `self join`.
+
+### 1) Querying hierarchical data example
+
+Let’s set up a sample table for the demonstration.
+
+Suppose, you have the following organizational structure:
+
+![image](https://github.com/user-attachments/assets/d538c9b5-e361-4dfe-b789-565c00e16487)
+
+The following statements create the `employee` table and insert some sample data into the table.
+
+```sql
+CREATE TABLE employee (
+  employee_id INT PRIMARY KEY,
+  first_name VARCHAR (255) NOT NULL,
+  last_name VARCHAR (255) NOT NULL,
+  manager_id INT,
+  FOREIGN KEY (manager_id) REFERENCES employee (employee_id) ON DELETE CASCADE
+);
+
+INSERT INTO employee (employee_id, first_name, last_name, manager_id)
+VALUES
+  (1, 'Windy', 'Hays', NULL),
+  (2, 'Ava', 'Christensen', 1),
+  (3, 'Hassan', 'Conner', 1),
+  (4, 'Anna', 'Reeves', 2),
+  (5, 'Sau', 'Norman', 2),
+  (6, 'Kelsie', 'Hays', 3),
+  (7, 'Tory', 'Goff', 3),
+  (8, 'Salley', 'Lester', 3);
+
+SELECT * FROM employee;
+```
+
+Output:
+
+| employee_id | first_name | last_name    | manager_id |
+|------------|------------|-------------|------------|
+| 1          | Windy      | Hays        | null       |
+| 2          | Ava        | Christensen | 1          |
+| 3          | Hassan     | Conner      | 1          |
+| 4          | Anna       | Reeves      | 2          |
+| 5          | Sau        | Norman      | 2          |
+| 6          | Kelsie     | Hays        | 3          |
+| 7          | Tory       | Goff        | 3          |
+| 8          | Salley     | Lester      | 3          |
+
+(8 rows)
+
+In this `employee` table, the `manager_id` column references the `employee_id` column.
+
+The `manager_id` column indicates the direct relationship, showing the manager to whom the employee reports.
+
+If the `manager_id` column contains NULL, which signifies that the respective employee does not report to anyone, essentially holding the top managerial position.
+
+The following query uses the self-join to find who reports to whom:
+
+```sql
+SELECT
+  e.first_name || ' ' || e.last_name employee,
+  m.first_name || ' ' || m.last_name manager
+FROM
+  employee e
+  INNER JOIN employee m ON m.employee_id = e.manager_id
+ORDER BY
+  manager;
+```
+
+Output:
+
+| employee        | manager        |
+|----------------|-----------------|
+| Sau Norman     | Ava Christensen |
+| Anna Reeves    | Ava Christensen |
+| Salley Lester  | Hassan Conner   |
+| Kelsie Hays    | Hassan Conner   |
+| Tory Goff      | Hassan Conner   |
+| Ava Christensen| Windy Hays      |
+| Hassan Conner  | Windy Hays      |
+
+(7 rows)
+
+
+This query references the `employees` table twice, one as the employee and the other as the manager. It uses table aliases `e` for the employee and `m` for the manager.
+
+The join predicate finds the employee/manager pair by matching values in the `employee_id` and `manager_id` columns.
+
+Notice that the top manager does not appear on the output.
+
+To include the top manager in the result set, you use the [`LEFT JOIN`](postgresql-left-join) instead of [`INNER JOIN`](postgresql-inner-join) clause as shown in the following query:
+
+```sql
+SELECT
+  e.first_name || ' ' || e.last_name employee,
+  m.first_name || ' ' || m.last_name manager
+FROM
+  employee e
+  LEFT JOIN employee m ON m.employee_id = e.manager_id
+ORDER BY
+  manager;
+```
+
+Output:
+
+
+| employee       | manager         |
+|----------------|-----------------|
+| Anna Reeves    | Ava Christensen |
+| Sau Norman     | Ava Christensen |
+| Salley Lester  | Hassan Conner   |
+| Kelsie Hays    | Hassan Conner   |
+| Tory Goff      | Hassan Conner   |
+| Hassan Conner  | Windy Hays      |
+| Ava Christensen| Windy Hays      |
+| Windy Hays     | null            |
+
+(8 rows)
+
+
+### 2) Comparing the rows with the same table
+
+See the following `film` table from the DVD rental database:
+
+![image](https://github.com/user-attachments/assets/996ee6ec-32dd-4b16-b32f-51fbaf58afe4)
+
+The following query finds all pairs of films that have the same length,
+
+```sql
+SELECT
+  f1.title,
+  f2.title,
+  f1.length
+FROM
+  film f1
+  INNER JOIN film f2 ON f1.film_id > f2.film_id
+  AND f1.length = f2.length;
+```
+
+Output:
+
+
+| title              | title                  | length |
+|--------------------|-----------------------|--------|
+| Chamber Italian   | Affair Prejudice       | 117    |
+| Grosse Wonderful  | Doors President        | 49     |
+| Bright Encounters | Bedazzled Married      | 73     |
+| Date Speed       | Crow Grease             | 104    |
+| Annie Identity   | Academy Dinosaur       | 86     |
+| Anything Savannah| Alone Trip             | 82     |
+| Apache Divine    | Anaconda Confessions   | 92     |
+| Arabia Dogma     | Airplane Sierra        | 62     |
+| Dying Maker      | Antitrust Tomatoes     | 168    |
+
+
+The join predicate matches two different films (`f1.film_id > f2.film_id`) that have the same length (`f1.length = f2.length`)
+
+## Summary
+
+- A PostgreSQL self-join is a regular join that joins a table to itself using the `INNER JOIN` or `LEFT JOIN`.
+- Self-joins are very useful for querying hierarchical data or comparing rows within the same table.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+
+# PostgreSQL FULL OUTER JOIN
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `FULL OUTER JOIN` to query data from two tables.
+
+## Introduction to the PostgreSQL FULL OUTER JOIN clause
+
+The `FULL OUTER JOIN` combine data from two tables and returns all rows from both tables, including matching and non-matching rows from both sides.
+
+In other words, the `FULL OUTER JOIN` combines the results of both the `LEFT JOIN` and the `RIGHT JOIN`.
+
+Here’s the basic syntax of `FULL OUTER JOIN` clause:
+
+```sql
+SELECT select_list
+FROM table1
+FULL OUTER JOIN table2
+   ON table1.column_name = table2.column_name;
+```
+
+In this syntax:
+
+- First, specify the columns from `table1` and `table2` in the `select_list`.
+- Second, specify the `table1` that you want to retrieve data in the `FROM` clause.
+- Third, specify the `table2` that you want to join with the `table1` in the `FULL OUTER JOIN` clause.
+- Finally, define a condition for joining two tables.
+
+The `FULL OUTER JOIN` is also known as `FULL JOIN`. The `OUTER` keyword is optional.
+
+### How the FULL OUTER JOIN works
+
+**Step 1. Initialize the result set:**
+
+- The `FULL OUTER JOIN` starts with an empty result set.
+
+**Step 2. Match rows:**
+
+- First, identify rows in `table1` and `table2` where the values in the specified `column_name` match.
+- Then, include these matching rows in the result set.
+
+**Step 3. Include non-matching rows from the `table1` and `table2`:**
+
+- First, include rows from `table1` that do not have a match in `table2`. For the columns from `table2` in these rows, include NULLs.
+- Second, include rows from `table2` that do not have a match in `table1`. For the columns from `table1` in these rows, include NULLs.
+
+**Step 4. Return the result set:**
+
+- Return the final result set will contain all rows from both tables, with matching rows and non-matching rows from both `table1` and `table2`.
+- If a row has a match on both sides, combine the values into a single row.
+- If there is no match on one side, the columns from the non-matching side will have NULLs.
+
+The following Venn diagram illustrates the `FULL OUTER JOIN` operation:
+
+![image](https://github.com/user-attachments/assets/24ea8645-4335-419e-8f93-418df198075d)
+
+## Setting up sample tables
+
+First, create two new tables for the demonstration: `employees` and `departments`:
+
+```sql
+CREATE TABLE departments (
+  department_id serial PRIMARY KEY,
+  department_name VARCHAR (255) NOT NULL
+);
+CREATE TABLE employees (
+  employee_id serial PRIMARY KEY,
+  employee_name VARCHAR (255),
+  department_id INTEGER
+);
+```
+
+Each department has zero or many employees and each employee belongs to zero or one department.
+
+Second, insert some sample data into the `departments` and `employees` tables.
+
+```sql
+INSERT INTO departments (department_name)
+VALUES
+  ('Sales'),
+  ('Marketing'),
+  ('HR'),
+  ('IT'),
+  ('Production');
+INSERT INTO employees (employee_name, department_id)
+VALUES
+  ('Bette Nicholson', 1),
+  ('Christian Gable', 1),
+  ('Joe Swank', 2),
+  ('Fred Costner', 3),
+  ('Sandra Kilmer', 4),
+  ('Julia Mcqueen', NULL);
+
+```
+
+Third, query data from the `departments` and `employees` tables:
+
+```sql
+SELECT * FROM departments;
+```
+
+Output:
+
+| department_id | department_name |
+|--------------|----------------|
+| 1            | Sales          |
+| 2            | Marketing      |
+| 3            | HR             |
+| 4            | IT             |
+| 5            | Production     |
+...
+
+```sql
+SELECT * FROM employees;
+```
+
+Output:
+
+| employee_id | employee_name   | department_id |
+|-------------|-----------------|---------------|
+| 1           | Bette Nicholson | 1             |
+| 2           | Christian Gable | 1             |
+| 3           | Joe Swank       | 2             |
+| 4           | Fred Costner    | 3             |
+| 5           | Sandra Kilmer   | 4             |
+| 6           | Julia Mcqueen   | null          |
+
+## PostgreSQL FULL OUTER JOIN examples
+
+Let’s take some examples of using the `FULL OUTER JOIN` clause.
+
+### 1) Basic FULL OUTER JOIN examaple
+
+The following query uses the `FULL OUTER JOIN` to query data from both `employees` and `departments` tables:
+
+```sql
+SELECT
+  employee_name,
+  department_name
+FROM
+  employees e
+FULL OUTER JOIN departments d
+  ON d.department_id = e.department_id;
+```
+
+Output:
+
+| employee_name   | department_name |
+|----------------|----------------|
+| Bette Nicholson | Sales          |
+| Christian Gable | Sales          |
+| Joe Swank       | Marketing      |
+| Fred Costner    | HR             |
+| Sandra Kilmer   | IT             |
+| Julia Mcqueen   | null           |
+| null           | Production      |
+
+The result set includes every employee who belongs to a department and every department which have an employee.
+
+Additionally, it includes every employee who does not belong to a department and every department that does not have an employee.
+
+### 2) Using FULL OUTER JOIN with WHERE clause example
+
+The following example use the `FULL OUTER JOIN` with a `WHERE` clause to find the department that does not have any employees:
+
+```sql
+SELECT
+  employee_name,
+  department_name
+FROM
+  employees e
+FULL OUTER JOIN departments d
+  ON d.department_id = e.department_id
+WHERE
+  employee_name IS NULL;
+
+```
+
+Output:
+
+| employee_name | department_name |
+|--------------|------------------|
+| null         | Production       |
+
+The result shows that the `Production` department does not have any employees.
+
+The following example use the `FULL OUTER JOIN` cluase with a `WHERE` clause to find employees who do not belong to any department:
+
+```sql
+SELECT
+  employee_name,
+  department_name
+FROM
+  employees e
+FULL OUTER JOIN departments d
+  ON d.department_id = e.department_id
+WHERE
+  department_name IS NULL;
+```
+
+Output:
+
+| employee_name  | department_name |
+|----------------|-----------------|
+| Julia Mcqueen  | null            |
+
+The output shows that `Juila Mcqueen` does not belong to any department.
+
+## Summary
+
+- Use the PostgreSQL `FULL OUTER JOIN` clause to combine data from both tables, ensuring that matching rows are included from both the left and right tables, as well as unmatched rows from either table.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+---
+# PostgreSQL Cross Join
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `CROSS JOIN` to produce a cartesian product of rows from the joined tables.
+
+## Introduction to the PostgreSQL CROSS JOIN clause
+
+In PostgreSQL, a cross-join allows you to join two tables by combining each row from the first table with every row from the second table, resulting in a complete combination of all rows.
+
+In the set theory, we can say that a cross-join produces the cartesian product of rows in two tables.
+
+Unlike other join clauses such as `LEFT JOIN` or `INNER JOIN`, the `CROSS JOIN` clause does not have a join predicate.
+
+Suppose you have to perform a `CROSS JOIN` of `table1` and `table2`.
+
+If `table1` has `n` rows and `table2` has `m` rows, the `CROSS JOIN` will return a result set that has `nxm` rows.
+
+For example, the `table1` has `1,000` rows and `table2` has `1,000` rows, the result set will have `1,000 x 1,000` = `1,000,000` rows.
+
+Because a `CROSS JOIN` may generate a large result set, you should use it carefully to avoid performance issues.
+
+Here’s the basic syntax of the `CROSS JOIN` syntax:
+
+```sql
+SELECT
+  select_list
+FROM
+  table1
+CROSS JOIN table2;
+```
+
+The following statement is equivalent to the above statement:
+
+```sql
+SELECT
+  select_list
+FROM
+  table1,table2;
+```
+
+Alternatively, you can use an `INNER JOIN` clause with a condition that always evaluates to true to simulate a cross-join:
+
+```sql
+SELECT
+  select_list
+FROM
+  table1
+  INNER JOIN table2 ON true;
+```
+
+## PostgreSQL CROSS JOIN example
+
+The following CREATE TABLE statements create `T1` and `T2` tables and insert sample data demonstration.
+
+```sql
+DROP TABLE IF EXISTS T1;
+
+CREATE TABLE
+  T1 (LABEL CHAR(1) PRIMARY KEY);
+
+DROP TABLE IF EXISTS T2;
+
+CREATE TABLE
+  T2 (score INT PRIMARY KEY);
+
+INSERT INTO
+  T1 (LABEL)
+VALUES
+  ('A'),
+  ('B');
+
+INSERT INTO
+  T2 (score)
+VALUES
+  (1),
+  (2),
+  (3);
+```
+
+The following statement uses the `CROSS JOIN` operator to join `T1` table with `T2` table:
+
+```sql
+SELECT *
+FROM T1
+CROSS JOIN T2;
+```
+
+| label | score |
+|-------|------|
+| A     | 1    |
+| B     | 1    |
+| A     | 2    |
+| B     | 2    |
+| A     | 3    |
+| B     | 3    |
+
+The following picture illustrates how the `CROSS JOIN` works when joining the `T1` table with the `T2` table:
+
+![image](https://github.com/user-attachments/assets/edd119ed-0395-45f7-b66f-d6d53b3f4681)
+
+## Some practical examples of using CROSS JOIN
+
+In practice, you can find the `CROSS JOIN` useful when you need to combine data from two tables without specific matching conditions. For example:
+
+### 1) Scheduling
+
+Suppose you have a table for `employees` and `shifts`, and you want to create a schedule that lists all possible combinations of employees and shifts to explore various staffing scenarios:
+
+```
+SELECT *
+FROM employees
+CROSS JOIN shift;
+```
+
+### 2) Inventory management
+
+In an inventory management system, you have tables for `warehouses` and `products`. A `CROSS JOIN` can help you analyze the availability of each product in every warehouse:
+
+```sql
+SELECT *
+FROM products
+CROSS JOIN warehouses;
+```
+
+## Summary
+
+- Use the PostgreSQL `CROSS JOIN` clause to make a cartesian product of rows in two tables.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+---
+# PostgreSQL NATURAL JOIN
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `NATURAL JOIN` to query data from two tables.
+
+## Introduction to PostgreSQL NATURAL JOIN clause
+
+A natural join is a join that creates an implicit join based on the same column names in the joined tables.
+
+The following shows the syntax of the PostgreSQL NATURAL JOIN clause:
+
+```sql
+SELECT select_list
+FROM table1
+NATURAL [INNER, LEFT, RIGHT] JOIN table2;
+```
+
+In this syntax:
+
+- First, specify columns from the tables from which you want to retrieve data in the `select_list` in the `SELECT` clause.
+- Second, provide the main table (`table1`) from which you want to retrieve data.
+- Third, specify the table (`table2`) that you want to join with the main table, in the `NATURAL JOIN` clause.
+
+A natural join can be an inner join, left join, or right join. If you do not specify an explicit join, PostgreSQL will use the `INNER JOIN` by default.
+
+The convenience of the `NATURAL JOIN` is that it does not require you to specify the condition in the join clause because it uses an implicit condition based on the equality of the common columns.
+
+The equivalent of the `NATURAL JOIN` clause will be like this:
+
+```sql
+SELECT select_list
+FROM table1
+[INNER, LEFT, RIGHT] JOIN table2
+   ON table1.column_name = table2.column_name;
+```
+
+### Inner Join
+
+The following statements are equivalent:
+
+```
+SELECT select_list
+FROM table1
+NATURAL INNER JOIN table2;
+```
+
+And
+
+```
+SELECT select_list
+FROM table1
+INNER JOIN table2 USING (column_name);
+```
+
+### Left Join
+
+The following statements are equivalent:
+
+```
+SELECT select_list
+FROM table1
+NATURAL LEFT JOIN table2;
+```
+
+And
+
+```
+SELECT select_list
+FROM table1
+LEFT JOIN table2 USING (column_name);
+```
+
+### Right join
+
+The following statements are equivalent:
+
+```
+SELECT select_list
+FROM table1
+NATURAL RIGHT JOIN table2;
+```
+
+And
+
+```
+SELECT select_list
+FROM table1
+RIGHT JOIN table2 USING (column_name);
+```
+
+## Setting up sample tables
+
+The following statements create `categories` and `products` tables, and insert sample data for the demonstration:
+
+```
+CREATE TABLE categories (
+  category_id SERIAL PRIMARY KEY,
+  category_name VARCHAR (255) NOT NULL
+);
+
+CREATE TABLE products (
+  product_id serial PRIMARY KEY,
+  product_name VARCHAR (255) NOT NULL,
+  category_id INT NOT NULL,
+  FOREIGN KEY (category_id) REFERENCES categories (category_id)
+);
+
+INSERT INTO categories (category_name)
+VALUES
+  ('Smartphone'),
+  ('Laptop'),
+  ('Tablet'),
+  ('VR')
+RETURNING *;
+
+INSERT INTO products (product_name, category_id)
+VALUES
+  ('iPhone', 1),
+  ('Samsung Galaxy', 1),
+  ('HP Elite', 2),
+  ('Lenovo Thinkpad', 2),
+  ('iPad', 3),
+  ('Kindle Fire', 3)
+RETURNING *;
+```
+
+The `products` table has the following data:
+
+| product_id | product_name    | category_id |
+|------------|-----------------|-------------|
+| 1          | iPhone          | 1           |
+| 2          | Samsung Galaxy  | 1           |
+| 3          | HP Elite        | 2           |
+| 4          | Lenovo Thinkpad | 2           |
+| 5          | iPad            | 3           |
+| 6          | Kindle Fire     | 3           |
+
+The `categories` table has the following data:
+
+| category_id | category_name |
+|-------------|---------------|
+| 1           | Smartphone    |
+| 2           | Laptop        |
+| 3           | Tablet        |
+| 4           | VR            |
+
+## PostgreSQL NATURAL JOIN examples
+
+Let’s explore some examples of using the `NATURAL JOIN` statement.
+
+### 1) Basic PostgreSQL NATURAL JOIN example
+
+The following statement uses the `NATURAL JOIN` clause to join the `products` table with the `categories` table:
+
+```
+SELECT *
+FROM products
+NATURAL JOIN categories;
+```
+
+This statement performs an inner join using the `category_id` column.
+
+Output:
+
+| category_id | product_id | product_name   | category_name |
+|------------|------------|---------------|---------------|
+| 1          | 1          | iPhone        | Smartphone    |
+| 1          | 2          | Samsung Galaxy | Smartphone   |
+| 2          | 3          | HP Elite      | Laptop        |
+| 2          | 4          | Lenovo Thinkpad | Laptop      |
+| 3          | 5          | iPad         | Tablet        |
+| 3          | 6          | Kindle Fire  | Tablet        |
+
+The statement is equivalent to the following statement that uses the `INNER JOIN` clause:
+
+```
+SELECT	*
+FROM products
+INNER JOIN categories USING (category_id);
+```
+
+### 2) Using PostgreSQL NATURAL JOIN to perform a LEFT JOIN
+
+The following example uses the `NATURAL JOIN` clause to perform a `LEFT JOIN` without specifying the matching column:
+
+```
+SELECT *
+FROM categories
+NATURAL LEFT JOIN products;
+```
+
+Output:
+
+| category_id | category_name | product_id | product_name   |
+|------------|---------------|------------|---------------|
+| 1          | Smartphone    | 1          | iPhone        |
+| 1          | Smartphone    | 2          | Samsung Galaxy |
+| 2          | Laptop        | 3          | HP Elite      |
+| 2          | Laptop        | 4          | Lenovo Thinkpad |
+| 3          | Tablet        | 5          | iPad         |
+| 3          | Tablet        | 6          | Kindle Fire  |
+| 4          | VR            | null       | null         |
+
+### 3) Example of using NATURAL JOIN that causes an unexpected result
+
+In practice, you should avoid using the `NATURAL JOIN` whenever possible because sometimes it may cause an unexpected result.
+
+Consider the following `city` and `country` tables from the sample database:
+
+![image](https://github.com/user-attachments/assets/bef94191-0e85-4af5-9204-d7c733621e1d)
+
+![image](https://github.com/user-attachments/assets/2dcdc601-7460-4c82-bd67-92ba6227f25b)
+
+Both tables have the same `country_id` column so you can use the `NATURAL JOIN` to join these tables as follows:
+
+```
+SELECT *
+FROM city
+NATURAL JOIN country;
+```
+
+The query returns an empty result set.
+
+The reason is that both tables have another common column called `last_update`. When the `NATURAL JOIN` clause uses the `last_update` column, it does not find any matches.
+
+## Summary
+
+- Use the PostgreSQL `NATURAL JOIN` clause to query data from two or more tables that have common columns.
