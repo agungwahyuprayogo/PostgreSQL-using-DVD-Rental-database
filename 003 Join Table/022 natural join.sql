@@ -52,6 +52,8 @@ create table products (
 	foreign key (category_id) references categories (category_id)
 );
 
+-- drop table products 
+
 insert into categories (category_name)
 values
 	('Smartphone'),
@@ -70,18 +72,41 @@ values
 	('Kindle Fire', '3')
 returning *;
 
+-- drop table products
+
+-- drop table categories
+
 -- BELAJAR BASIC NATURAL JOIN
-select * from products p natural join categories c -- (default inner join)
+select 
+	* 
+from 
+	products p 
+natural join categories c -- (default inner join) make using
 -- iya kan, ga perlu nulis panjang panjang
 
 -- kalo yang lama kan gini nih
-select * from products p inner join categories c on c.category_id = p.category_id 
+select 
+	* 
+from 
+	products p 
+inner join 
+	categories c on c.category_id = p.category_id 
 -- bedanya kalo yang natural, category_id nya ga muncul 2x, yg ini 2x
 
 -- NATURAL JOIN to perform LEFT JOIN
-select from categories c natural left join products p 
+select 
+	* 
+from 
+	categories c 
+natural left join 
+	products p 
 
 -- coba make sample datavase DVDRental
 -- CONTOH NATURAL JOIN HASILNYA KOSONG
-select * from city c natural join country c2
+select 
+	* 
+from 
+	city c 
+natural join 
+	country c2
 -- kenapa hasilnya kosong? karena ada kolom last_update, last_update ga cocok buat kolom yang lain
