@@ -26,6 +26,9 @@ values
 	(3, 'Watermelon'),
 	(4, 'Pear');
 	
+select * from basket_a ba 
+
+select * from basket_b bb 
 -----------------------------------------------------------------------------------------
 -- INNER JOIN
 /* gampangnya , dari 2 table cuman bakal nampilin data yg sama
