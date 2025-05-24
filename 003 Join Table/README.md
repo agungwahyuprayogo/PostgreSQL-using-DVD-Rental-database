@@ -5,6 +5,7 @@
 - [PostgreSQL JOINS](#postgresql-joins)
 - [PostgreSQL TABLE ALIASES](#postgresql-table-aliases)
 - [PostgreSQL INNER JOIN](#postgresql-inner-join)
+- [PostgreSQL LEFT JOIN](#postgresql-left-join)
 ---
 
 ---
