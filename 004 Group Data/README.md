@@ -6,7 +6,7 @@
 - [PostgreSQL HAVING](#postgresql-having)
 - [PostgreSQL GROUPING SETS](#postgresql-grouping-sets)
 - [PostgreSQL CUBE](#postgresql-cube)
-- [PostgreSQL ROLLUP](#postgresql-roolup)
+- [PostgreSQL ROLLUP](#postgresql-rollup)
 
 # PostgreSQL GROUP BY
 
