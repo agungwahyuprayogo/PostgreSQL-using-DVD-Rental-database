@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Import CSV File Into PostgreSQL Table](#import-csv-file-into-postgresql-table)
+- [Export PostgreSQL Table to CSV File](#export-postgresql-table-to-csv-file)
 
 ---
 
@@ -112,3 +113,100 @@ Finally, wait for the import process to complete. The following shows the dialog
 ![image](https://github.com/user-attachments/assets/d2270492-d6fb-404d-a7b9-e9d40c0a28c2)
 
 In this tutorial, you have learned how to import data from a CSV file into a table on the PostgreSQL database server using the `COPY` statement and pgAdmin tool.
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+# Export PostgreSQL Table to CSV File
+
+**Summary**: in this tutorial, you will learn various techniques to export data from PostgreSQL tables to CSV files.
+
+In the previous tutorial, we showed you how to import data from a CSV file into a table. We will use the same `persons` table for importing data from a CSV file.
+
+![image](https://github.com/user-attachments/assets/2efdaf47-1d9c-4f7b-a766-8416ae35d4d9)
+
+The following statement retrieves the data from the `persons` table.
+
+```sql
+SELECT * FROM persons;
+```
+
+Output:
+
+| id  | first_name | last_name | dob        | email                   |
+|-----|------------|-----------|------------|-------------------------|
+|  1  | John       | Doe       | 1995-01-05 | john.doe@example.com    |
+|  2  | Jane       | Doe       | 1995-02-05 | jane.doe@example.com    |
+
+## Export data from a table to CSV using the COPY statement
+
+The `COPY` statement allows you to export data from a table to a CSV file.
+
+For example, if you want to export the data of the `persons` table to a CSV file named `persons_db.csv` in the `C:\temp` folder, you can use the following statement:
+
+```sql
+COPY persons TO 'C:\temp\persons_db.csv' DELIMITER ',' CSV HEADER;
+```
+
+Output:
+
+```
+COPY 2
+```
+
+The output indicates that the command exported two rows.
+
+In this example, the COPY statement exports all data from all columns of the `persons` table to the `persons_db.csv` file.
+
+![image](https://github.com/user-attachments/assets/6251e651-cb2d-4d0e-9736-3f03e75c10d4)
+
+Sometimes, you may want to export data from some columns of a table to a CSV file. To achieve this, you can specify the column names together with the table name after `COPY` keyword.
+
+For example, the following statement exports data from the `first_name`, `last_name`, and `email` columns of the `persons` table to `person_partial_db.csv`
+
+```sql
+COPY persons(first_name,last_name,email)
+TO 'C:\temp\persons_partial_db.csv' DELIMITER ',' CSV HEADER;
+```
+
+![image](https://github.com/user-attachments/assets/33fdc32a-14ac-41a1-9529-c1b5a3cf1e23)
+
+If you don't want to export the header, which contains the column names of the table, you can remove the `HEADER` flag in the `COPY` statement.
+
+For example, the following statement exports only data from the `email` column of the `persons` table to a CSV file:
+
+```sql
+COPY persons(email)
+TO 'C:\temp\persons_email_db.csv' DELIMITER ',' CSV;
+```
+
+![image](https://github.com/user-attachments/assets/499a9a57-1a90-43b7-9506-5fd84853dcae)
+
+Notice that the CSV file name that you specify in the `COPY` command must be written directly by the server.
+
+It means that the CSV file must reside on the database server machine, not your local machine. The CSV file also needs to be writable by the user that the PostgreSQL server runs as.
+
+## Export data from a table to a CSV file using the \\copy command
+
+If you have access to a remote PostgreSQL database server, but you don't have sufficient privileges to write to a file on it, you can use the PostgreSQL built\-in command `\copy`.
+
+The `\copy` command runs the `COPY` statement behind the scenes. However, instead of the server writing the CSV file, psql writes the CSV file and transfers data from the server to your local file system.
+
+To use `\copy` command, you need to have sufficient privileges to your local machine. It does not require PostgreSQL superuser privileges.
+
+For example, if you want to export all data from the `persons` table into `persons_client.csv` file, you can execute the `\copy` command from the psql client as follows:
+
+```sql
+\copy (SELECT * FROM persons) to 'C:\temp\persons_client.csv' with csv
+```
+
+In this tutorial, we have shown you how to use `COPY` statement and `\copy` command to export data from a table to CSV files.
+
