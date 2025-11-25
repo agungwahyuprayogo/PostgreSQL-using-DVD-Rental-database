@@ -492,15 +492,16 @@ ORDER BY
   num;
 ```
 
-```
-num
-------
-    1
-    2
-    3
- null
+
+| num | 
+|-----|
+|   1 |
+|   2 |
+|   3 |
+| null|
+
 (4 rows)
-```
+
 
 Dalam contoh ini, klausa `ORDER BY` mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan naik. Ini menempatkan `NULL` setelah nilai lainnya.
 
@@ -512,9 +513,10 @@ Perlu dicatat bahwa psql menampilkan null sebagai string kosong secara default. 
 
 Output:
 
-```
-Null display is "null".
-```
+
+| |
+| :--- |
+|  Null display is "null". |
 
 Jika Anda menggunakan opsi `ASC`, klausa `ORDER BY` menggunakan opsi `NULLS LAST` secara default. Oleh karena itu, kueri berikut mengembalikan hasil yang sama:
 
@@ -529,15 +531,15 @@ ORDER BY
 
 Output:
 
-```
-num
-------
-    1
-    2
-    3
- null
+
+| **num**  |
+|------|
+|   1  |
+|   2  |
+|   3  |
+| null |
+
 (4 rows)
-```
 
 Untuk menempatkan `NULL` sebelum nilai lain yang tidak null, gunakan opsi `NULLS FIRST`:
 
@@ -552,15 +554,15 @@ ORDER BY
 
 Output:
 
-```
-num
-------
- null
-    1
-    2
-    3
+| **num**  |
+|------|
+| null |
+|    1 | 
+|    2 |
+|    3 |
+
 (4 rows)
-```
+
 
 Pernyataan berikut mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan turun:
 
@@ -575,15 +577,16 @@ ORDER BY
 
 Output:
 
-```
-num
-------
- null
-    3
-    2
-    1
+
+| **num**  |
+|------|
+| null |
+|    3 |
+|    2 |
+|    1 |
+
 (4 rows)
-```
+
 
 Output menunjukkan bahwa klausa `ORDER BY` dengan opsi `DESC` menggunakan `NULLS FIRST` secara default.
 
@@ -600,15 +603,15 @@ ORDER BY
 
 Output:
 
-```
-num
-------
-    3
-    2
-    1
- null
+
+| **num**  |
+|------|
+|   3  |
+|   2  |
+|   1  |
+| null |
+
 (4 rows)
-```
 
 ### Ringkasan
 - Gunakan klausa `ORDER BY` dalam pernyataan `SELECT` untuk mengurutkan baris dalam kumpulan kueri.
