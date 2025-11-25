@@ -739,15 +739,15 @@ ORDER BY
 
 Output:
 
-```
-bcolor
---------
- blue
- green
- red
- null
+| bcolor |
+|--------|
+| blue |
+| green |
+| red |
+| null |
+
 (4 rows)
-```
+
 
 Kolom `bcolor` memiliki 3 nilai red, dua NULL, 1 nilai green, dan dua nilai blue. DISTINCT menghilangkan dua nilai red, 1 NULL, dan satu blue.
 
@@ -769,17 +769,16 @@ ORDER BY
 
 Output:
 
-```
-bcolor | fcolor
---------+--------
- blue   | blue
- green  | green
- red    | red
- red    | null
- null   | red
- null   | null
+| bcolor | fcolor |
+|--------|--------|
+| blue   | blue |
+| green  | green |
+| red    | red |
+| red    | null |
+| null   | red |
+| null   | null |
+
 (6 rows)
-```
 
 Dalam contoh ini, kueri menggunakan nilai dari kolom `bcolor` dan `fcolor` untuk mengevaluasi keunikan baris.
 
