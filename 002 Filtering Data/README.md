@@ -341,7 +341,7 @@ Output:
 
 | result |
 |--------|
-| null      |
+| null   |
 
 Contoh berikut menggunakan operator `AND` untuk menggabungkan `false` dengan `false`, yang mengembalikan `false`:
 
@@ -457,14 +457,13 @@ Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan true`,
 SELECT true OR true AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- t
+| result |
+|--------|
+| t      |
+
 (1 row)
-```
 
 Pernyataan berikut menggunakan operator `OR` untuk menggabungkan `true dengan false`, yang mengembalikan `true`:
 
@@ -472,14 +471,13 @@ Pernyataan berikut menggunakan operator `OR` untuk menggabungkan `true dengan fa
 SELECT true OR false AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- t
+| result |
+|--------|
+| t      |
+
 (1 row)
-```
 
 Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan null`, yang mengembalikan `true`:
 
@@ -487,14 +485,14 @@ Contoh berikut menggunakan operator `OR` untuk menggabungkan `true dengan null`,
 SELECT true OR null AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- t
+| result |
+|--------|
+| t      |
+
 (1 row)
-```
+
 
 Contoh berikut menggunakan operator `OR` untuk menggabungkan `false dengan false`, yang mengembalikan `false`:
 
@@ -502,14 +500,13 @@ Contoh berikut menggunakan operator `OR` untuk menggabungkan `false dengan false
 SELECT false OR false AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- f
+| result |
+|--------|
+| f      |
+
 (1 row)
-```
 
 Contoh berikut menggunakan operator `OR` untuk `menggabungkan false dengan null`, yang mengembalikan `null`:
 
@@ -517,14 +514,14 @@ Contoh berikut menggunakan operator `OR` untuk `menggabungkan false dengan null`
 SELECT false OR null AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- null
+| result |
+|--------|
+| null    |
+
 (1 row)
-```
+
 
 Contoh berikut menggunakan operator `OR` untuk `menggabungkan null dengan null`, yang mengembalikan `null`:
 
@@ -532,14 +529,14 @@ Contoh berikut menggunakan operator `OR` untuk `menggabungkan null dengan null`,
 SELECT null OR null AS result;
 ```
 
-Keluaran:
+Output:
 
-```
-result
---------
- null
+| result |
+|--------|
+| null   |
+
 (1 row)
-```
+
 
 ### 2) Menggunakan operator OR dalam klausa WHERE
 Kita akan menggunakan tabel `film` dari basis data contoh untuk demonstrasi:
@@ -559,8 +556,7 @@ WHERE
   rental_rate = 2.99;
 ```
 
-Keluaran:
-
+Output:
 
 | title            | rental_rate |
 |------------------|-------------|
@@ -1501,11 +1497,9 @@ WHERE
 
 **Output:**  
 
-
 | first_name | last_name |
 |------------|-----------|
 | (0 rows)   |           |
-
 
 ---
 
@@ -1537,7 +1531,6 @@ ORDER BY
 ```
 
 **Output:**  
-
 
 | first_name | last_name |
 |------------|----------|
