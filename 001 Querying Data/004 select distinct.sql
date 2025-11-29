@@ -1,20 +1,7 @@
-/* jadi select distinct ini fungsi nya buat ngilangin duplikat dalam table
- * misal di table ada 'Agung Wahyu' dan 'Agung Prayogo'
- * dan kita cuman pengen nampilin first_name doang
- * nanti yang muncul cuman 1 Agung
- * karena memang distinct ini buat ngilagin yg sama
- * 
- * kecuali nampilin first_name dan last_name
- * nanti tetep nampil 22nya
- * 
- */
+/* select distinct digunakan untuk menampilkan data yang unique pada suatu kolom 
+singkatnya, jika ada 2 data 'merah' dalam, hanya akan menampilkan 1 merah */
 
-CREATE TABLE colors(
-  id SERIAL PRIMARY KEY,
-  bcolor VARCHAR,
-  fcolor VARCHAR
-);
-
+-- kita buat table colors dulu
 INSERT INTO
   colors (bcolor, fcolor)
 VALUES
@@ -27,21 +14,49 @@ VALUES
   ('blue', 'blue'),
   ('blue', 'blue');
 
--- kita tampilin semua dulu
-select c.bcolor, c.fcolor from colors c 
+-- kita tampilkan seluruh data di table colors
+select * from colors c 
 
--- distinct bcolor
-select distinct c.bcolor from colors c 
+--------------------------------------------------------------------------------------------------
 
-select distinct c.fcolor from colors c 
+-- 1. Select distinct pada satu kolom
+select 
+	distinct bcolor -- awas jangan typo
+from 
+	colors
+	
+-- coba kita bandingkan tampa distinct pada kolom bcolor
+select 
+	bcolor -- awas jangan typo
+from 
+	colors	
+-- masih ada 3 red dan 2 blue
+	
+--------------------------------------------------------------------------------------------------
+	
+-- 2. select distinct pada beberapa kolom
+select 
+	distinct bcolor, fcolor 
+from
+	colors 
+order by -- agar mempermudah melihat perbedaan
+	bcolor, fcolor 
+	
+		
+--------------------------------------------------------------------------------------------------
 
-
--- distinct dua kolom
-select distinct c.bcolor, c.bcolor from colors c 
--- nah beda kan sama ga distinct
-
--- select distinct dalam sample database
-select f.rental_rate from film f 
-
-select distinct f.rental_rate from film f order by f.rental_rate 
-
+-- 3. select distinct pada table `film`
+	
+select 
+	distinct rating 
+from 
+	film
+order by 
+	rating 
+	
+select 
+	distinct rental_rate 
+from 
+	film
+order by 
+	rental_rate 
