@@ -8,8 +8,6 @@
  * 
  * */
 
--- ngetest aja
-
 select null = null as result
 
 select true = null as result
