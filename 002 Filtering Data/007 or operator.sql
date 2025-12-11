@@ -1,29 +1,37 @@
-/* ya mirip and operator
- * tapi kalo di or ini, kalo salah satu nilai terpenuhi nilainya true
- */
+/* 
+Operator OR adalah operator logika yang menggabungkan beberapa ekspresi boolean
 
-select true or true as result -- hasil true [v]
+dalam praktiknya, OR digunakan untuk mengecek apakah ada nilai TRUE dalam komparasi booleanalter */
 
-select true or false as result -- hasil true [v]
+-- 1. Contoh dasar operasi OR 
 
-select true or null as result -- hasil true [v]
+select true or true as result
 
----------------------------------------------------------------------
+select true or false as result
 
-select false or true as result -- hasil true [v]
+select false or true as result
 
-select false or false as result -- hasil false [ ]
+select false or false as result
 
-select false or null as result -- hasil true [NULL]
+-- 2. Menggunakan operasi OR dalam where
+-- mencari film yang biaya sewanya 0.99 atau 2.99
+select 
+	title,
+	rental_rate 
+from 
+	film
+where
+	rental_rate = 0.99 or
+	rental_rate = 2.99
+-- akan menampilkan keseluruhan film yang memiliki biaya sewa 0.99 atau 2.99
+-- karena memang sifat OR akan selalu tampil jika salah satu terpenuhi, bila ada semua maka akan ditampilkan semua
 
---------------------------------------------------------------------
-
-select null or true as result -- hasil [v]
-
-select null or false as result -- hasil [NULL]
-
-select null or null as result -- hasil [NULL]
-
---------------------------------------------------------------------
-
-select f.title, f.length, f.rental_rate from film f where f.rental_rate = 0.99 or f.rental_rate = 1.99
+-- hasil akan kosong atau tidak tampil semisal tidak ada dalam database : 
+select 
+	title,
+	rental_rate 
+from 
+	film
+where
+	rental_rate = 7.99 or
+	rental_rate = 8.00
