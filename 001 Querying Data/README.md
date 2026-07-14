@@ -47,7 +47,7 @@ FROM
 ```
 
 - **Bagian Pertama** (`SELECT`) : Tulis nama kolom yang mau kamu ambil datanya. Kalau kolomnya lebih dari satu, pisahin pakai tanda koma (`,`). Tapi, kalau kamu lagi malas ngetik dan pengen ambil semua kolom yang ada di tabel itu, tinggal ganti aja nama kolomnya pakai tanda bintang (`*`). Di bagian ini, kamu juga bisa masukin rumus matematika atau nilai instan (literal).
-- Bagian Kedua (`FROM`): Tinggal tulis nama tabel tempat data itu disimpan setelah kata kunci FROM.
+- **Bagian Kedua** (`FROM`): Tinggal tulis nama tabel tempat data itu disimpan setelah kata kunci `FROM`.
 
 Oiya, klausa `FROM` ini sebenarnya gak wajib-wajib banget kok. Kalau kamu gak lagi ngambil data dari tabel mana pun (misal cuma mau hitung-hitungan atau manggila fungsi waktu), kamu bisa skip klausa `FROM` ini.
 
@@ -55,7 +55,7 @@ Oiya, klausa `FROM` ini sebenarnya gak wajib-wajib banget kok. Kalau kamu gak la
 
 ![image](https://github.com/user-attachments/assets/35bb63a4-df25-43d1-9a22-cee24e98ed34)
 
-Catatan tambahan: SQL itu sifatnya case-insensitive alias gak pilih kasih sama huruf besar/kecil. Jadi tulisan `SELECT`, `select`, atau `Select` itu sama aja di mata Postgres. Tapi, biar kode kita rapi dan gampang dibaca orang lain, ke depannya kita sepakat pakai huruf **BESAR** semua ya buat kata kunci SQL-nya.
+**Catatan tambahan** : SQL itu sifatnya case-insensitive alias gak pilih kasih sama huruf besar/kecil. Jadi tulisan `SELECT`, `select`, atau `Select` itu sama aja di mata Postgres. Tapi, biar kode kita rapi dan gampang dibaca orang lain, ke depannya kita sepakat pakai huruf **BESAR** semua ya buat kata kunci SQL-nya.
 
 ## Contoh Praktek PostgreSQL SELECT
 
@@ -67,7 +67,7 @@ Kita bakal pakai tabel `customer` yang ada di dalam database latihan `dvdrental`
 
 ### 1) Ngambil Data dari Satu Kolom Saja
 
-Misalkan kita cuma pengen tahu siapa aja sih nama depan (first name) semua pelanggan kita. Query-nya sesimpel ini :
+Misalkan kita cuma pengen tahu siapa aja sih nama depan (`first name`) semua pelanggan kita. Query-nya sesimpel ini :
 
 ```sql
 SELECT first_name FROM customer;
@@ -87,7 +87,7 @@ Nanti output-nya bakal keluar kayak gini (ini cuma sebagian ya) :
 Sadar gak kalau di ujung query tadi ada tanda titik koma (`;`)? Nah, titik koma ini sebenarnya bukan bagian dari aturan sintaks SQL-nya, melainkan tanda buat Postgres kalau perintah kita udah selesai ditulis. Tanda ini juga berguna banget kalau kamu mau ngejalankan beberapa perintah SQL sekaligus dalam satu waktu biar gak dempetan.
 
 ### 2) Ngambil Data dari Beberapa Kolom Sekaligus
-Kalau mau ngambil nama depan, nama belakang, plus email pelanggan secara bersamaan, tinggal pisahin aja nama kolomnya pakai koma:
+Kalau mau ngambil nama depan, nama belakang, plus email pelanggan secara bersamaan, tinggal pisahin aja nama kolomnya pakai koma :
 
 ```sql
 SELECT
@@ -106,11 +106,11 @@ Sebagian output:
 | Mary       | Smith      | mary.smith@sakilacustomer.org       |
 | Patricia   | Johnson    | patricia.johnson@sakilacustomer.org |
 
-Sekarang muncul tiga kolom sekaligus sesuai yang kita minta!
+Sekarang muncul tiga kolom sekaligus sesuai yang kita minta :)
 
 ### 3) Ngambil Semua Kolom yang Ada di Tabel
 
-Kalau pengen lihat semua isi kolom dari tabel `customer` tanpa terkecuali, langsung hajar pakai tanda bintang (`*`) :
+Kalau pengen lihat **semua isi kolom** dari tabel `customer` tanpa terkecuali, langsung hajar pakai tanda bintang (`*`) :
 
 ```sql
 SELECT * FROM customer;
@@ -128,15 +128,15 @@ Sebagian output:
 
 Pakai `SELECT *` ini emang jalan pintas paling enak karena kodenya jadi super pendek.
 
-TAPI INGAT! Menggunakan tanda bintang (`*`) itu dianggap bad practice kalau kamu udah mulai nulis kode SQL di dalam aplikasi beneran (misal digabung ke program Python, Java, atau PHP). Alasan utamanya karena:
+TAPI INGAT! Menggunakan tanda bintang (`*`) itu dianggap _bad practice_ kalau kamu udah mulai nulis kode SQL di dalam aplikasi beneran (misal digabung ke program Python, Java, atau PHP). Alasan utamanya karena :
 
-- **Bikin berat database** : Kebayang gak kalau tabelmu punya 100 kolom dan datanya ada jutaan baris? Perintah `SELECT *` bakal narik semuanya, padahal aplikasi kamu mungkin cuma butuh kolom email-nya doang. Mubazir banget kan?
+- **Bikin berat database** : Kebayang gak kalau tabelmu punya 100 kolom dan datanya ada jutaan baris? Perintah `SELECT *` bakal narik semuanya, padahal aplikasi kamu mungkin cuma butuh kolom `email`-nya doang. Mubazir banget kan?
 - **Aplikasi jadi lemot** : Data melimpah yang gak terlalu penting tadi bakal bikin lalu lintas jaringan antara server database dan server aplikasimu jadi padat. Efeknya? Aplikasi kamu bakal lemot dan gampang _crash_ pas usernya lagi rame.
 
 Jadi, biasakan buat nulis nama kolomnya secara spesifik ya. Selain bikin query efisien, performa aplikasimu juga bakal aman. Tanda bintang (`*`) ini baiknya dipakai pas kita lagi nge-cek atau iseng nyari tahu isi data aja secara langsung (ad-hoc query).
 
 ### 4) Menggunakan Perintah SELECT dengan Ekspresi/Manipulasi
-Kita juga bisa gabungin data antar kolom langsung lewat query loh. Contohnya, kita pengen ngegabungin nama depan dan nama belakang jadi satu kolom "Nama Lengkap":
+Kita juga bisa gabungin data antar kolom langsung lewat query loh. Contohnya, kita pengen ngegabungin nama depan dan nama belakang jadi satu kolom "Full Name" atau "Nama Lengkap" :
 
 ```sql
 SELECT
@@ -160,13 +160,13 @@ Di sini kita pakai operator `||` buat nge-gabungin (_concatenate_) string nama d
 Tapi perhatiin deh output kolom pertamanya, kok namanya malah `?column?` sih? Jelek banget kan. Nah, biar nama kolom hasil manipulasi ini punya nama sementara yang rapi, kita bisa pakai fitur alias kolom dengan kata kunci `AS`:
 
 ```sql
-expression AS column_lias
+expression AS column_alias
 ```
 
 Kata kunci `AS` ini opsional kok, jadi kalau mau disingkat langsung spasi nama aliasnya juga bisa:
 
 ```sql
-expression column_lias
+expression column_alias
 ```
 
 Yuk kita rapiin query gabung nama tadi pakai alias `full_name` :
@@ -216,40 +216,36 @@ Query di atas bakal langsung ngebalikin info tanggal dan jam detik ini juga dari
 
 # PostgreSQL Column Aliases
 
-## Pengenalan kolom alias di PostgreSQL
-Kolom alias memungkinkan Anda untuk memberikan nama sementara pada kolom atau ekspresi dalam daftar pilih pernyataan `SELECT`. Alias kolom ini ada sementara selama eksekusi kueri.
+## Konsep Dasarnya Apa Sih?
+**Alias** itu sederhananya adalah **"nama panggung" atau nama samaran sementara** yang kita berikan pada kolom atau hasil rumus (ekspresi) pas kita lagi nge-`SELECT` data.
+- Alias ini cuma hidup selama query berjalan.
+- Nama kolom asli di dalam database kamu **tidak akan berubah sama sekali**.
+- Tujuan utamanya cuma satu : **Biar judul kolom tabel (heading) pas keluar jadi lebih rapi dan gampang dimengerti.**
 
-Berikut ini adalah sintaks penggunaan alias kolom:
-
-```sql
-SELECT column_name AS alias_name
-FROM table_name;
-```
-
-Dalam sintaks ini, `column_name` diberikan alias `alias_name`. Kata kunci `AS` bersifat opsional, sehingga Anda dapat menghilangkannya seperti ini:
+Sintaks dasarnya ada dua cara :
 
 ```sql
-SELECT column_name alias_name
-FROM table_name;
+-- Cara 1: Pakai kata kunci AS (Direkomendasikan biar rapi)
+SELECT
+   column_name AS alias_name
+FROM
+   table_name;
+
+-- Cara 2: Tanpa AS (Langsung dipisah spasi)
+SELECT
+   column_name alias_name
+FROM
+   table_name;
 ```
 
-Sintaks berikut menunjukkan cara menetapkan alias untuk ekspresi dalam klausa `SELECT`:
+## Contoh Praktek Menggunakan Tabel customer
 
-```sql
-SELECT expression AS alias_name
-FROM table_name;
-```
-
-Tujuan utama dari alias kolom adalah untuk membuat heading output dari kueri menjadi lebih bermakna.
-
-## Contoh alias kolom PostgreSQL
-
-Kita akan menggunakan tabel `customer` dari database sampel untuk menunjukkan cara bekerja dengan alias kolom.
+Di database sampel kita, ada tabel bernama `customer` yang strukturnya seperti gambar di bawah ini:
 
 ![image](https://github.com/user-attachments/assets/9fbc1adb-05f7-49f9-9dda-e1a1f8451e9d)
 
-### 1) Menetapkan alias kolom ke contoh kolom
-Kueri berikut mengembalikan nama depan dan nama belakang semua `customers` dari tabel customer:
+### 1) Menetapkan Alias pada Kolom Asli
+Kalau kita ngambil data nama depan dan nama belakang pake query standar :
 
 ```sql
 SELECT
@@ -260,7 +256,9 @@ FROM customer;
 
 ![image](https://github.com/user-attachments/assets/76fabe41-25c0-40f8-b25d-78676e226c70)
 
-Jika Anda ingin mengganti nama heading `last_name`, Anda dapat memberikan nama baru menggunakan alias kolom seperti ini:
+Hasil judul kolomnya bakal bawaan dari database, yaitu `first_name` dan `last_name` :
+
+Nah, misal kita pengen ngubah judul `last_name` pas tampil biar jadi `surname` (nama keluarga), kodenya begini :
 
 ```sql
 SELECT
@@ -269,11 +267,11 @@ SELECT
 FROM customer;
 ```
 
-Kueri ini menetapkan `surname` sebagai alias dari kolom `last_name`:
+Hasilnya, judul kolom kedua otomatis berubah jadi `surname` :
 
 ![image](https://github.com/user-attachments/assets/8dc0a58f-8746-46e5-a5b5-2d2e60f471d3)
 
-Atau Anda bisa membuatnya lebih pendek dengan menghapus kata kunci AS seperti berikut:
+**Tips** : Kamu juga bisa hapus kata `AS`-nya langsung kayak gini, hasilnya bakalan tetep sama persis:
 
 ```sql
 SELECT
@@ -282,8 +280,9 @@ SELECT
 FROM customer;
 ```
 
-### 2) Memberikan alias kolom untuk ekspresi
-Kueri berikut akan mengembalikan nama lengkap semua pelanggan di table `customer` dengan menggabungkan nama depan, spasi, dan nama belakang:
+### 2) Memberikan Alias untuk Ekspresi (Hasil Gabungan)
+
+Di PostgreSQL, kita bisa gabungin teks/string menggunakan operator `||`. Misal kita mau gabungin `first_name`, spasi (`' '`), dan `last_name` biar langsung jadi nama lengkap :
 
 ```sql
 SELECT
@@ -292,13 +291,12 @@ FROM
    customer;
 ```
 
-Perlu dicatat bahwa di PostgreSQL, Anda menggunakan `||` sebagai operator penggabungan yang menggabungkan satu atau lebih string menjadi satu string.
+Kalau gak dikasih nama alias, Postgres bakal bingung mau ngasih judul apa. 
+Akhirnya dia ngasih judul default yang jelek banget, yaitu `?column?` :
 
 ![image](https://github.com/user-attachments/assets/d676edb7-3fbf-42ab-92f9-fb4539c54b6c)
 
-Seperti yang bisa Anda lihat dari output, heading dari kolom tersebut tidak bermakna `?column?`.
-
-Untuk mengatasi ini, Anda dapat memberikan ekspresi `first_name || ' ' || last_name` sebuah alias kolom, misalnya `full_name`:
+Biar kelihatan profesional, kita wajib kasih nama samaran (alias) menggunakan `AS full_name` :
 
 ```sql
 SELECT
@@ -309,9 +307,13 @@ FROM
 
 ![image](https://github.com/user-attachments/assets/ad649137-0e9e-4416-917e-6f9aef6c1710)
 
-### 3) Alias kolom yang mengandung spasi
+Sekarang, judul kolomnya berubah jadi indah dan jelas : `full_name`.
 
-Jika ingin nama alias kolom mengandung satu atau lebih spasi, Anda perlu mengapitnya dengan tanda kutip ganda seperti ini:
+### 3) Aturan Main Kalau Alias Menggunakan Spasi
+
+Secara default, Postgres bakal eror kalau kamu bikin nama alias yang dipisah pakai spasi biasa (misal: `full name` ).
+
+Solusinya, nama alias tersebut wajib diapit menggunakan Tanda Kutip Ganda (`"`).
 
 ```sql
 column_name AS "column alias"
@@ -328,9 +330,12 @@ FROM
 
 ![image](https://github.com/user-attachments/assets/ea0736ef-c998-434f-bc60-58b1f3899a9e)
 
+Hasil di tabel output-nya nanti judul kolomnya bakal ada spasinya : `full name`.
+
 ### Ringkasan
-- Tetapkan sebuah kolom atau ekspresi dengan alias kolom menggunakan sintaks `column_name AS alias_name` atau `expression AS alias_name`. Kata kunci `AS` bersifat opsional.
-- Gunakan tanda kutip ganda (`"`) untuk mengapit alias kolom yang mengandung spasi.
+- Alias = Nama panggung sementara buat judul kolom pas di-tampilkan.
+- Kata kunci `AS` itu opsional (boleh ditulis, boleh langsung spasi).
+- Gunakan tanda kutip dua (`"`) kalau nama alias yang kamu pengen itu mengandung spasi. Jangan tertukar dengan kutip satu (`'`) yang dipakai khusus untuk ngisi teks data (kayak spasi pemisah nama di atas).
   
 ---------------------------------------------------------------------------------------------------------------------------------
 
