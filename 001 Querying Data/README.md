@@ -346,11 +346,11 @@ Hasil di tabel output-nya nanti judul kolomnya bakal ada spasinya : `full name`.
 
 # PostgreSQL ORDER BY
 
-Ketika Anda mengambil data dari sebuah tabel, pernyataan `SELECT` mengembalikan baris dalam urutan yang tidak ditentukan. Untuk mengurutkan baris hasil kueri, Anda menggunakan klausa `ORDER BY` dalam pernyataan `SELECT`.
+Pas kita narik data dari tabel pake perintah `SELECT`, hasil baris datanya sering kali keluar acak-acakan alias gak berurutan. Nah, biar datanya rapi dan enak dibaca, kita bisa pake klausa `ORDER BY`.
 
-Klausa `ORDER BY` memungkinkan Anda mengurutkan baris yang dikembalikan oleh klausa `SELECT` dalam urutan naik atau turun berdasarkan ekspresi urutan.
+Klausa `ORDER BY` ini fungsinya buat ngurutin baris data hasil query, bisa dari yang terkecil ke terbesar (_ascending_) atau sebaliknya dari yang terbesar ke terkecil (_descending_).
 
-Berikut adalah sintaks klausa `ORDER BY`:
+Begini cara nulis klausa `ORDER BY` yang bener:
 
 ```sql
 SELECT
@@ -363,14 +363,17 @@ ORDER BY
   ...;
 ```
 
-Dalam sintaks ini:
+Penjelasan Gampangnya : 
 
-- Pertama, tentukan ekspresi urutan, yang bisa berupa kolom atau ekspresi, yang ingin Anda urutkan setelah kata kunci `ORDER BY`. Jika Anda ingin mengurutkan hasil kueri berdasarkan beberapa kolom atau ekspresi, Anda perlu menempatkan koma (`,`) antara dua kolom atau ekspresi untuk memisahkannya.
-- Kedua, Anda menggunakan opsi `ASC` untuk mengurutkan baris dalam urutan naik dan opsi `DESC` untuk mengurutkan baris dalam urutan turun. Jika Anda menghilangkan opsi `ASC` atau `DESC`, `ORDER BY` menggunakan `ASC` secara default.
+- `sort_expression` : Kolom atau rumus yang mau kita jadikan acuan buat ngurutin data. Kalau mau ngurutin pake beberapa kolom sekaligus, tinggal pisahin pake tanda koma (`,`).
+- `ASC` (_Ascending_) : Ngurutin dari yang paling kecil ke besar (contoh: A ke Z, atau 1 ke 10). Ini adalah setelan bawaan (default). Jadi kalau gak ditulis apa-apa, PostgreSQL bakal otomatis pake `ASC`.
+- `DESC` (_Descending_) : Ngurutin dari yang paling besar ke kecil (contoh: Z ke A, atau 10 ke 1).
 
-PostgreSQL mengevaluasi klausa dalam pernyataan `SELECT` dalam urutan berikut: `FROM`, `SELECT`, dan `ORDER BY`.
+Di balik layar, PostgreSQL ngerjain perintah kita dengan urutan kayak gini :
 
-Karena urutan evaluasi, jika Anda memiliki alias kolom dalam klausa `SELECT`, Anda bisa menggunakannya dalam klausa `ORDER BY`.
+$$\text{FROM} \rightarrow \text{SELECT} \rightarrow \text{ORDER BY}$$
+
+**Info Penting** : Karena proses `SELECT` jalan duluan sebelum `ORDER BY`, kalau kita bikin nama alias (nama samaran) kolom di bagian `SELECT`, nama alias itu udah bisa langsung kita panggil dan pake di bagian `ORDER BY`.
 
 Mari kita ambil beberapa contoh penggunaan klausa `ORDER BY` di PostgreSQL.
 
@@ -378,9 +381,9 @@ Mari kita ambil beberapa contoh penggunaan klausa `ORDER BY` di PostgreSQL.
 
 Kita akan menggunakan tabel `customer` dalam database sampel untuk demonstrasi.
 
-### 1) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan satu kolom
+### 1) Ngurutin Pake Satu Kolom (Ascending / Dari Kecil ke Besar)
 
-Kueri berikut menggunakan klausa `ORDER BY` untuk mengurutkan pelanggan berdasarkan nama depan mereka dalam urutan naik:
+Query ini dipakai buat ngurutin data pelanggan berdasarkan nama depan (`first_name`) dari abjad A ke Z:
 
 ```sql
 SELECT
@@ -392,7 +395,9 @@ ORDER BY
   first_name ASC;
 ```
 
-Karena opsi `ASC` adalah default, Anda bisa menghilangkannya dalam klausa `ORDER BY` seperti ini:
+<img width="327" height="360" alt="image" src="https://github.com/user-attachments/assets/d141dd06-55ac-4731-bf5d-63b61f0bdc5d" />
+
+Karena `ASC` itu setelan default bawaan pabrik, kita juga bisa hapus tulisan `ASC`-nya. Hasilnya bakal tetep sama persis :
 
 ```sql
 SELECT
@@ -404,9 +409,9 @@ ORDER BY
   first_name;
 ```
 
-### 2) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan satu kolom dalam urutan turun
+### 2) Ngurutin Pake Satu Kolom (Descending / Dari Besar ke Kecil)
 
-Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nilai di kolom nama belakang dalam urutan turun:
+Kalau mau balik urutannya dari abjad Z ke A berdasarkan nama belakang (`last_name`), kita tinggal tambah kata `DESC` di belakangnya :
 
 ```sql
 SELECT
@@ -418,9 +423,13 @@ ORDER BY
   last_name DESC;
 ```
 
-### 3) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan beberapa kolom
+Output setelah kolom `last_name` diurutkan secara _descending_ :
 
-Pernyataan berikut memilih nama depan dan nama belakang dari tabel `customer` dan mengurutkan baris berdasarkan nama depan dalam urutan naik dan nama belakang dalam urutan turun:
+<img width="328" height="408" alt="image" src="https://github.com/user-attachments/assets/3611468e-f6bd-4342-8af3-28ee58bcbb9b" />
+
+### 3) Ngurutin Pake Banyak Kolom Sekaligus
+
+Query di bawah ini bakal ngurutin data berdasarkan nama depan (`first_name`) dari A-Z dulu. Nah, kalau ada nama depan yang sama (misalnya ada dua orang namanya "`Kelly`"), barulah mereka diurutin berdasarkan nama belakangnya (`last_name`) dari Z-A :
 
 ```sql
 SELECT
@@ -433,13 +442,15 @@ ORDER BY
   last_name DESC;
 ```
 
+<img width="347" height="515" alt="image" src="https://github.com/user-attachments/assets/23877d36-b676-42d3-b93e-516db1171fff" />
+
 Dalam contoh ini, klausa `ORDER BY` mengurutkan baris berdasarkan nilai di kolom nama depan terlebih dahulu. Kemudian mengurutkan baris yang sudah diurutkan berdasarkan nilai di kolom nama belakang.
 
-### 4) Menggunakan klausa ORDER BY untuk mengurutkan baris berdasarkan ekspresi
+### 4) Ngurutin Pake Rumus (Ekspresi) & Alias
 
-Fungsi `LENGTH()` menerima string dan mengembalikan panjang string tersebut.
+Fungsi `LENGTH()` dipakai buat ngitung jumlah huruf di dalam teks.
 
-Pernyataan berikut memilih nama depan dan panjangnya. Mengurutkan baris berdasarkan panjang nama depan:
+Kueri di bawah ini bakal ngitung panjang karakter dari nama depan, kita kasih nama alias `len`, terus kita urutin dari nama yang paling panjang ke yang paling pendek :
 
 ```sql
 SELECT
@@ -451,26 +462,29 @@ ORDER BY
   len DESC;
 ```
 
-Karena klausa `ORDER BY` dievaluasi setelah klausa `SELECT`, alias kolom `len` tersedia dan bisa digunakan dalam klausa `ORDER BY`.
+<img width="260" height="338" alt="image" src="https://github.com/user-attachments/assets/aea05101-d177-4ac9-88fb-bbae991345b7" />
+
+Karena proses `ORDER BY` jalan paling akhir, alias `len` yang kita bikin di `SELECT` tadi udah aman dan sah buat langsung dipake.
 
 ## PostgreSQL ORDER BY dan NULL
-Dalam dunia database, `NULL` adalah penanda yang menunjukkan data yang hilang atau data yang tidak diketahui pada saat pencatatan.
+Di dunia database, `NULL` itu artinya data kosong alias belum diisi (bukan angka 0, dan bukan juga spasi kosong).
 
-Ketika Anda mengurutkan baris yang mengandung `NULL`, Anda bisa menentukan urutan `NULL` dengan nilai lain yang tidak null menggunakan opsi `NULLS FIRST` atau `NULLS LAST` dalam klausa `ORDER BY`:
+Pas kita ngurutin data yang ada nilai `NULL`-nya, kita bisa atur posisinya mau ditaruh di mana pake perintah `NULLS FIRST` atau `NULLS LAST` :
 
 ```sql
 ORDER BY sort_expresssion [ASC | DESC] [NULLS FIRST | NULLS LAST]
 ```
 
-Opsi `NULLS FIRST` menempatkan `NULL` sebelum nilai lain yang tidak null dan opsi `NULLS LAST` menempatkan `NULL` setelah nilai lain yang tidak null.
+- `NULLS FIRST` : Taruh baris kosong (`NULL`) di paling atas.
+- `NULLS LAST` : Taruh baris kosong (`NULL`) di paling bawah.
 
-Mari kita buat tabel untuk demonstrasi.
+Biar gampang dibayangin, yuk buat tabel kecil bernama sort_demo dulu buat latihan :
 
 ```sql
--- membuat tabel baru
+-- bikin tabel baru
 CREATE TABLE sort_demo(num INT);
 
--- memasukkan beberapa data
+-- Masukin data contoh (angka 1, 2, 3, dan satu data kosong)
 INSERT INTO sort_demo(num)
 VALUES
   (1),
@@ -479,9 +493,9 @@ VALUES
   (null);
 ```
 
-Jika Anda belum familiar dengan pernyataan `CREATE TABLE` dan `INSERT`, Anda bisa mengeksekusinya dari `pgAdmin` atau `psql` untuk membuat tabel `sort_demo` dan memasukkan data ke dalamnya.
+#### A. Aturan Bawaan pas Urutan Naik (ASC)
 
-Kueri berikut mengembalikan data dari tabel `sort_demo`:
+Secara default, kalau kita ngurutin data secara naik (`ASC`), PostgreSQL bakal naruh nilai `NULL` di **paling akhir** (`NULLS LAST`) :
 
 ```sql
 SELECT
@@ -492,7 +506,6 @@ ORDER BY
   num;
 ```
 
-
 | num | 
 |-----|
 |   1 |
@@ -502,23 +515,7 @@ ORDER BY
 
 (4 rows)
 
-
-Dalam contoh ini, klausa `ORDER BY` mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan naik. Ini menempatkan `NULL` setelah nilai lainnya.
-
-Perlu dicatat bahwa psql menampilkan null sebagai string kosong secara default. Untuk membuat null lebih jelas, Anda bisa mengeksekusi perintah berikut untuk mengubah string kosong menjadi null:
-
-```sql
-\pset null null
-```
-
-Output:
-
-
-| |
-| :--- |
-|  Null display is "null". |
-
-Jika Anda menggunakan opsi `ASC`, klausa `ORDER BY` menggunakan opsi `NULLS LAST` secara default. Oleh karena itu, kueri berikut mengembalikan hasil yang sama:
+Hasil di atas sama aja kayak kita nulis perintahnya lengkap pake `NULLS LAST` kayak gini :
 
 ```sql
 SELECT
@@ -529,19 +526,7 @@ ORDER BY
   num NULLS LAST;
 ```
 
-Output:
-
-
-| **num**  |
-|------|
-|   1  |
-|   2  |
-|   3  |
-| null |
-
-(4 rows)
-
-Untuk menempatkan `NULL` sebelum nilai lain yang tidak null, gunakan opsi `NULLS FIRST`:
+Nah, kalau mau maksa data `NULL`-nya pindah ke paling atas, kita pake `NULLS FIRST` :
 
 ```sql
 SELECT
@@ -563,8 +548,9 @@ Output:
 
 (4 rows)
 
+#### B. Aturan Bawaan pas Urutan Turun (DESC)
 
-Pernyataan berikut mengurutkan nilai di kolom `num` dari tabel `sort_demo` dalam urutan turun:
+Sebaliknya, kalau kita ngurutin data secara turun (`DESC`), PostgreSQL secara default bakal naruh nilai `NULL` di paling atas (`NULLS FIRST`) :
 
 ```sql
 SELECT
@@ -588,9 +574,7 @@ Output:
 (4 rows)
 
 
-Output menunjukkan bahwa klausa `ORDER BY` dengan opsi `DESC` menggunakan `NULLS FIRST` secara default.
-
-Untuk membalikkan urutan, gunakan opsi `NULLS LAST`:
+Kalau mau maksa data `NULL`-nya ngalah dan turun ke paling bawah, kita tinggal tambah `NULLS LAST` di ujungnya :
 
 ```sql
 SELECT
@@ -614,10 +598,11 @@ Output:
 (4 rows)
 
 ### Ringkasan
-- Gunakan klausa `ORDER BY` dalam pernyataan `SELECT` untuk mengurutkan baris dalam kumpulan kueri.
-- Gunakan opsi `ASC` untuk mengurutkan baris dalam urutan naik dan opsi `DESC` untuk mengurutkan baris dalam urutan turun.
-- Klausa `ORDER BY` menggunakan opsi `ASC` secara default.
-- Gunakan opsi `NULLS FIRST` dan `NULLS LAST` untuk secara eksplisit menentukan urutan `NULL` dengan nilai lain yang tidak null.
+- Pake `ORDER BY` di bagian paling bawah query buat ngurutin data.
+- `ASC` = Urutin dari kecil ke besar (Default bawaan).
+- `DESC` = Urutin dari besar ke kecil.
+- Kita bisa ngurutin pake nama alias kolom karena proses `SELECT` jalan duluan sebelum `ORDER BY`.
+- Atur posisi data kosong pake `NULLS FIRST` atau `NULLS LAST` biar posisi `NULL` gak ngacak sesuai kemauan kita.
 
 
 ---------------------------------------------------------------------------------------------------------------------------------
