@@ -616,12 +616,13 @@ Output:
 
 # PostgreSQL SELECT DISTINCT
 
-## Pengenalan klausa PostgreSQL SELECT DISTINCT
-`SELECT DISTINCT` menghilangkan baris duplikat dari hasil kueri. Klausa `SELECT DISTINCT` mempertahankan satu baris untuk setiap grup duplikat.
+Saat kita menarik data dari database, sering kali ada banyak data yang sama atau kembar (duplikat) di dalam tabel. Nah, biar hasil pencarian kita bersih dan cuma menampilkan data-data yang unik saja, kita bisa menggunakan klausa `SELECT DISTINCT`.
 
-Klausa `SELECT DISTINCT` dapat diterapkan pada satu atau lebih kolom dalam daftar pilih pernyataan `SELECT`.
+Klausa `SELECT DISTINCT` bakal menyaring hasil query dan hanya menyisakan satu baris perwakilan untuk setiap kelompok data yang sama. Kita bisa menerapkan klausa ini pada satu kolom, beberapa kolom sekaligus, atau bahkan ke seluruh kolom di dalam tabel.
 
-Berikut adalah sintaks penggunaan klausa `DISTINCT`:
+## Sintaks Dasar
+
+Begini cara menggunakan klausa `SELECT DISTINCT` :
 
 ```sql
 SELECT
@@ -630,9 +631,9 @@ FROM
   table_name;
 ```
 
-Dalam sintaks ini, `SELECT DISTINCT` menggunakan nilai dalam kolom `column1` untuk mengevaluasi duplikat.
+Pada sintaks ini, `SELECT DISTINCT` hanya melihat nilai di dalam `column1` untuk mencari dan menghapus data yang kembar.
 
-Jika Anda menentukan beberapa kolom, klausa `SELECT DISTINCT` akan mengevaluasi duplikat berdasarkan kombinasi nilai-nilai dalam kolom-kolom tersebut. Contohnya:
+## Menyaring data unik dari kombinasi beberapa kolom
 
 ```sql
 SELECT
@@ -641,26 +642,28 @@ FROM
    table_name;
 ```
 
-Dalam sintaks ini, `SELECT DISTINCT` menggunakan kombinasi nilai dalam kolom `column1` dan `column2` untuk mengevaluasi duplikat.
+Kalau kita memasukkan beberapa kolom seperti ini, `SELECT DISTINCT` bakal mengevaluasi duplikat berdasarkan gabungan nilai dari `column1` dan `column2`. Jadi, baris data baru dianggap duplikat kalau kombinasi kedua kolom tersebut persis sama dengan baris lainnya.
 
-Perhatikan bahwa PostgreSQL juga menawarkan klausa `DISTINCT ON` yang mempertahankan entri unik pertama dari sebuah kolom atau kombinasi kolom dalam hasil kueri.
+**Info Tambahan** : PostgreSQL juga punya klausa khusus bernama `DISTINCT ON` yang berfungsi untuk mengambil baris unik pertama dari suatu kolom atau kombinasi kolom tertentu.
 
-Jika Anda ingin menemukan nilai unik dari semua kolom dalam tabel, Anda dapat menggunakan `SELECT DISTINCT *`:
+## Menyaring data unik dari semua kolom di tabel
 
 ```sql
 SELECT DISTINCT *
 FROM table_name;
 ```
 
-Tanda bintang (`*`) berarti semua kolom dari `table_name`.
+Tanda bintang (`*`) artinya kita menyuruh PostgreSQL untuk mengecek keunikan data berdasarkan seluruh kolom yang ada di dalam `table_name`.
 
-# Contoh PostgreSQL SELECT DISTINCT
+## Contoh Praktek PostgreSQL
 
-Mari kita buat tabel baru untuk latihan menggunakan klausa `SELECT DISTINCT`.
+Biar lebih mudah dipahami, yuk kita buat tabel baru bernama `colors` sebagai tempat latihan.
 
-Perhatikan bahwa Anda akan belajar cara membuat tabel dan memasukkan data ke dalamnya dalam tutorial selanjutnya. Dalam tutorial ini, Anda perlu menjalankan pernyataan di psql atau pgAdmin untuk menjalankan pernyataan.
+_(Untuk materi cara membuat tabel dan memasukkan data secara detail akan dibahas pada tutorial terpisah. Sekarang, silakan langsung eksekusi kueri di bawah ini lewat pgAdmin atau DBeaver)._
 
-Pertama, buat tabel `colors` yang memiliki tiga kolom: `id`, `bcolor` dan `fcolor` menggunakan pernyataan `CREATE TABLE` berikut:
+### Langkah 1 : Bikin Tabel `colors`
+
+Tabel ini memiliki tiga kolom, yaitu `id`, `bcolor` (warna latar belakang), dan `fcolor` (warna tulisan/font).
 
 ```sql
 CREATE TABLE colors(
@@ -670,7 +673,8 @@ CREATE TABLE colors(
 );
 ```
 
-Kedua, masukkan beberapa baris ke dalam tabel `colors`:
+## Langkah 2: Masukkan Data Sampel
+Kita masukkan beberapa baris warna, termasuk data kosong (`NULL`) dan beberapa data yang sengaja dibuat kembar:
 
 ```sql
 INSERT INTO
@@ -686,7 +690,9 @@ VALUES
   ('blue', 'blue');
 ```
 
-Ketiga, ambil data dari tabel `colors` menggunakan pernyataan `SELECT`:
+## Langkah 3: Cek Semua Data Bawaan
+
+Mari kita lihat isi asli tabel `colors` sebelum disaring:
 
 ```sql
 SELECT
@@ -697,7 +703,7 @@ FROM
   colors;
 ```
 
-Output:
+Output asli :
 
 | id | bcolor | fcolor |
 |----|--------|--------|
@@ -710,8 +716,9 @@ Output:
 |  7 | blue   | blue   |
 |  8 | blue   | blue   |
 
-### 1) Contoh PostgreSQL SELECT DISTINCT satu kolom
-Pernyataan berikut memilih nilai unik dari kolom `bcolor` dari tabel `t1` dan mengurutkan hasil kueri dalam urutan alfabetis menggunakan klausa `ORDER BY`.
+### 1) Contoh SELECT DISTINCT pada Satu Kolom
+
+Sekarang kita coba ambil nilai unik dari kolom `bcolor` saja, sekalian kita urutkan secara alfabetis menggunakan `ORDER BY` :
 
 ```sql
 SELECT
@@ -726,21 +733,20 @@ Output:
 
 | bcolor |
 |--------|
-| blue |
-| green |
-| red |
-| null |
+| blue   |
+| green  |
+| red    |
+| null   |
 
 (4 rows)
 
+Kalau kita lihat data aslinya, kolom `bcolor` punya 3 nilai _red_, 2 nilai `NULL`, 1 nilai _green_, dan 2 nilai _blue_. Begitu dipasang `DISTINCT`, PostgreSQL langsung otomatis membuang 2 nilai _red_ yang kembar, 1 nilai _blue_ yang kembar, dan 1 nilai `NULL` yang kembar.
 
-Kolom `bcolor` memiliki 3 nilai red, dua NULL, 1 nilai green, dan dua nilai blue. DISTINCT menghilangkan dua nilai red, 1 NULL, dan satu blue.
+**Aturan Main `NULL`** : Di PostgreSQL, `NULL` (data kosong) juga dianggap sebagai data duplikat. Makanya, sebanyak apa pun data `NULL` yang ada di kolom tersebut, `SELECT DISTINCT` hanya akan menyisakan satu `NULL` saja.
 
-Perhatikan bahwa PostgreSQL menganggap `NULL` sebagai duplikat sehingga mempertahankan satu `NULL` untuk semua `NULL` ketika Anda menerapkan klausa `SELECT DISTINCT`.
+### 2) Contoh SELECT DISTINCT pada Beberapa Kolom
 
-### 2) SELECT DISTINCT pada beberapa kolom
-
-Pernyataan berikut menerapkan klausa `SELECT DISTINCT` pada kolom `bcolor` dan `fcolor`:
+Sekarang kita coba terapkan `SELECT DISTINCT` ke dua kolom sekaligus, yaitu `bcolor` dan `fcolor` :
 
 ```sql
 SELECT
@@ -765,17 +771,15 @@ Output:
 
 (6 rows)
 
-Dalam contoh ini, kueri menggunakan nilai dari kolom `bcolor` dan `fcolor` untuk mengevaluasi keunikan baris.
+Perhatikan baris data _red_. Di sini nilai `red | red` dan `red | null` tetap muncul dua-duanya. Kenapa? Karena `SELECT DISTINCT` mengevaluasi keunikan dari kombinasi pasangan kedua kolom tersebut. Pasangan `red dan red` jelas berbeda dengan pasangan `red dan null`, jadi keduanya dianggap sebagai data unik yang sah.
 
-### 3) Menggunakan klausa SELECT DISTINCT dalam praktik
+### 3) Contoh Penggunaan SELECT DISTINCT di Dunia Nyata
 
-Dalam praktiknya, Anda sering menggunakan klausa `SELECT DISTINCT` untuk menganalisis keunikan nilai dalam sebuah kolom.
+Di dalam pekerjaan sehari-hari, kita bakal sering banget menggunakan `SELECT DISTINCT` untuk menganalisis variasi data unik pada suatu kolom.
 
-Misalnya, Anda mungkin ingin mengetahui berapa banyak tarif sewa untuk film dari tabel `film`:
+Misalnya, kita punya tabel `film` dan ingin tahu ada variasi harga tarif sewa (_rental rate_) apa saja sih yang kita punya untuk semua film?
 
 ![image](https://github.com/user-attachments/assets/3f578cbf-d4f5-4771-9039-72a68e504134)
-
-Untuk mencapainya, Anda bisa menentukan kolom `rental_rate` dalam klausa `SELECT DISTINCT` sebagai berikut:
 
 ```sql
 SELECT DISTINCT
@@ -794,7 +798,7 @@ Output:
 | 2.99        |
 | 4.99        |
 
-Output menunjukkan bahwa hanya ada tiga tarif sewa yang unik yaitu 0.99, 2.99, dan 4.99.
+Meskipun tabel `film` mungkin punya ribuan baris data, output di atas menunjukkan dengan sangat jelas kalau bisnis kita sebenarnya cuma punya tiga jenis tarif sewa unik, yaitu `0.99`, `2.99`, dan `4.99`.
 
 ### Ringkasan
-- Gunakan `SELECT DISTINCT` untuk menghilangkan baris duplikat dari hasil kueri.
+- Fungsi utama `SELECT DISTINCT` adalah untuk menyaring dan membuang baris-baris data yang duplikat (kembar) dari hasil kueri kita.
