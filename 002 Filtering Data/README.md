@@ -13,8 +13,9 @@
 
 # PostgreSQL WHERE
 
-## Introduction to PostgreSQL WHERE clause
-Pernyataan `SELECT` mengembalikan semua baris dari satu atau lebih kolom dalam sebuah tabel. Untuk mengambil baris yang memenuhi kondisi tertentu, kamu menggunakan klausa `WHERE`.
+##Pengenalan Klausa PostgreSQL WHERE
+
+Perintah `SELECT` biasa bakal menampilkan semua baris data dari kolom yang kita pilih di dalam tabel. Nah, kalau kita cuma mau mengambil baris data yang memenuhi kriteria atau kondisi tertentu saja, kita harus pakai klausa `WHERE`.
 
 Sintaks klausa PostgreSQL `WHERE` adalah sebagai berikut:
 
@@ -29,15 +30,17 @@ ORDER BY
   sort_expression;
 ```
 
-Dalam sintaks ini, klausa `WHERE` ditempatkan tepat setelah klausa `FROM` dari pernyataan `SELECT`.
+Dalam sintaks ini : 
+- Klausa `WHERE` ditulis tepat setelah klausa `FROM` pada pernyataan `SELECT`.
+- Klausa `WHERE` menggunakan `condition` (kondisi) untuk memfilter baris data yang ditarik dari klausa `SELECT`.
+- `condition` ini berupa ekspresi boolean yang hasilnya cuma ada tiga kemungkinan: `True` (benar), `False` (salah), atau `Unknown` (tidak diketahui).
+- Query cuma bakal menampilkan baris data yang memenuhi `condition` pada klausa `WHERE`. Dengan kata lain, cuma baris yang bikin condition bernilai `True` aja yang bakal muncul di hasil akhir.
 
-Klausa `WHERE` menggunakan `kondisi` untuk memfilter baris yang dikembalikan dari klausa `SELECT`.
+### Urutan Eksekusi Query di PostgreSQL :
 
-`kondisi` adalah ekspresi boolean yang mengevaluasi ke true, false, atau unknown.
+Di balik layar, PostgreSQL mengevaluasi klausa `WHERE` setelah klausa `FROM`, tapi sebelum klausa `SELECT` dan `ORDER BY`.
 
-Query hanya mengembalikan baris yang memenuhi `kondisi` dalam klausa `WHERE`. Dengan kata lain, query hanya akan menyertakan baris yang menyebabkan `kondisi` dievaluasi menjadi true dalam hasil.
-
-PostgreSQL mengevaluasi klausa `WHERE` setelah klausa `FROM` tetapi sebelum klausa `SELECT` dan `ORDER BY`.
+<img width="640" height="74" alt="image" src="https://github.com/user-attachments/assets/0b56bb9f-4200-4c70-ad3e-e5fa325a48ea" />
 
 Jika kamu menggunakan alias kolom dalam klausa `SELECT`, kamu tidak dapat menggunakannya dalam klausa `WHERE`.
 
@@ -64,7 +67,9 @@ Untuk membentuk kondisi dalam klausa `WHERE`, kamu menggunakan operator perbandi
 ## Contoh Klausa PostgreSQL WHERE 
 Mari kita berlatih dengan beberapa contoh penggunaan klausa `WHERE`.
 
-Kita akan menggunakan tabel customer dari database contoh untuk demonstrasi.
+Kita akan menggunakan tabel `customer` dari database contoh untuk demonstrasi.
+
+<img width="206" height="256" alt="image" src="https://github.com/user-attachments/assets/6d9815a3-3fce-46e7-bf88-28441aea8f42" />
 
 ### 1)  Menggunakan klausa WHERE dengan contoh operator sama dengan (=)
 Pernyataan berikut menggunakan klausa `WHERE` untuk mencari pelanggan yang nama depannya adalah `Jamie`:
