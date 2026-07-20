@@ -2,20 +2,39 @@
 
 -- 1. mengambil data dari satu kolom
 
-select first_name from customer c 
+select 
+	first_name 
+from 
+	customer c 
 
-select last_name from customer
+select 
+	last_name 
+from 
+	customer
 
 ----------------------------------------------------------
 
 -- 2. mengambil data lebih dari satu kolom
 -- menggunakan ' , ' sebagai pemisah tiap kolom
 
-select first_name, last_name from actor
+select 
+	first_name, 
+	last_name 
+from 
+	actor
 
-select first_name, last_name, email from customer
+select 
+	first_name, 
+	last_name, 
+	email 
+from 
+	customer
 
-select country, country_id  from country 
+select 
+	country, 
+	country_id  
+from 
+	country 
 
 ----------------------------------------------------------
 
@@ -32,10 +51,10 @@ select * from country c
 
 -- 4. ekspresi
 
-SELECT
+select 
    first_name || ' ' || last_name, -- nama kolom masih `?column?`
    email
-FROM
+from 
    customer;
 
 SELECT
@@ -55,3 +74,4 @@ FROM
 -- 5. Syntax select tanpa 'from'
 
 SELECT NOW(); -- untuk liat jam dan hari ini
+
