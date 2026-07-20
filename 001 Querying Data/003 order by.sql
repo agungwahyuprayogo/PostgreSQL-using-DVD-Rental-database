@@ -1,96 +1,73 @@
--- biasanya, ketika kita menampilkan data dengan 'select', urutan data yang dikeluarkan tampil secara acak, 
--- nah kita bisa mengurutkan datanya menggunakan klausa 'order by'
-
----------------------------------------------------------------------------------------
-
--- 1. Menggunakan 'order by' pada 1 kolom
--- menggunakan klausa 'asc' untuk kolom first name urutan naik (A-Z)
-select 
-	first_name "nama depan",
-	last_name "nama belakang"
-from 
-	customer
-order by 
-	first_name asc -- dengan asc
--- nama depan / first name menggunakan urutan A -> Z
--- namun tanpa kita tulis 'asc', secara default SQL sudah mengurutkan dengan asc
-	
-select 
-	first_name "nama depan",
-	last_name "nama belakang"
-from 
-	customer
-order by 
-	first_name -- tanpa asc
-	
-	
----------------------------------------------------------------------------------------
-	
--- 2. menggunakan 'order by' dari huruf belakang (Z -> A) menggunakan 'desc'
-	
-select 
-	first_name, 
+-- 1. Ngurutin data make satu kolom aja
+-- ngurutin nama dari abjad A - Z firts_name
+select
+	first_name,
 	last_name 
 from 
 	customer
 order by
-	first_name desc -- first name dari urutan Z - A
+	first_name asc  -- ga wajib karena defaultnya asc (urutan dari A - Z)
 	
-select 
-	first_name, 
+
+select
+	first_name,
 	last_name 
 from 
 	customer
 order by
-	last_name desc -- last name dari urutan Z - A
+	first_name -- hasilnya akan sama dengan yang sebelumnya.
 	
+------------------------------------------------------------------------------------------------------
+	
+-- 2. Ngurutin data make satu kolom (descending / dari besar ke kecil)
+-- kalo mau dibalik urutannya dari abjad Z - A, atau angka dari yang terbesar ke terkecil,, gunakan desc
 
----------------------------------------------------------------------------------------
-	
--- 3. menggunakan klausah 'order by' pada beberapa kolom (lebih dari satu kolom)
+-- ngurutin nama dari abjad Z - A di last_name
 	
 select 
-	first_name "nama depan",
-	last_name "nama belakang"
+	first_name,
+	last_name
 from 
 	customer
 order by 
-	first_name asc, -- jangan lupa gunakan tanda koma ( , )
+	last_name desc -- liat last_name, urutannya dari abjad belakang dulu (Z Y X)
+
+------------------------------------------------------------------------------------------------------
+
+-- 3. Ngurutin nama make banyak kolom (campuran ascending dan descending)
+select 
+	first_name,
+	last_name 
+from 
+	customer
+order by
+	first_name asc,
 	last_name desc
--- untuk melihat perbedaan first_name asc dengan last_name desc, coba lihat urutan 259
--- Jamie di dahului oleh Jamie Waugh, baru setelah itu Jamie Rice
--- W abjad urutan ke 23 , sedangkan R abjad urutan 18
+-- Ada 2 orang yang namanya "Kelly", last_name nya dari "T" dulu baru "K"
 	
----------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 	
--- 4. Menggunakan 'order by' untuk mengurutkan baris berdasarkan ekspresi
-select 
-	first_name, 
-	length(first_name) jumlah_huruf
+-- 4. ngurutin data berdasarkan rumus (ekspresi) & alias
+-- semisal kita pengen nampilin data yang huruf first_name - nya paling banyak
+	
+select
+	first_name,
+	length(first_name) as len -- length menghitung jumlah karakter huruf, "len" adalah nama alias
 from 
 	customer
-
-SELECT 
-    first_name
-FROM 
-    customer
-ORDER BY 
-    RIGHT(first_name, 1) ASC; -- Mengambil 1 huruf dari kanan
-    	
----------------------------------------------------------------------------------------
-
--- 5. Order by dan Null
-    
-/* Dalam dunia database, NULL adalah penanda yang menunjukkan data yang hilang atau data yang tidak diketahui pada saat pencatatan.
-
-Ketika Anda mengurutkan baris yang mengandung NULL, Anda bisa menentukan urutan NULL dengan nilai lain yang tidak null 
-menggunakan opsi NULLS FIRST atau NULLS LAST dalam klausa ORDER BY: */
-    
--- kita buat table baru untuk demonstrasi
--- membuat tabel baru
+order by
+	len desc	-- kita urutkan dari yang paling banyak
+	
+------------------------------------------------------------------------------------------------------
+	
+-- ORDER BY AND NULLS
+-- Di dunia database, NULL itu artinya data kosong alias belum diisi (bukan angka 0, dan bukan juga spasi kosong).
+	
+-- buat table demo dulu
+-- bikin tabel baru
 CREATE TABLE sort_demo(num INT);
 
--- memasukkan beberapa data
+-- Masukin data contoh (angka 1, 2, 3, dan satu data kosong)
 INSERT INTO sort_demo(num)
 VALUES
   (1),
@@ -98,50 +75,52 @@ VALUES
   (3),
   (null);
 
--- uji mengembalikan data dari table `sort_demo`
-select 
-	num 
-from 
-	sort_demo 
-	
--- menggunakan `nulls last` sebagai ganti `asc` untuk menempatkan null di akhir 
-select 
-	num 
-from 
-	sort_demo 
-order by 
-	num nulls last -- `nulls` menggunakan `s`
-	
--- menempatkan null diatas, maka gunakan `nulls first
-select 
-	num 
-from 
-	sort_demo 
-order by 
-	num nulls first
+------------------------------------------------------------------------------------------------------
 
--- jika kita menggunakan `desc`, maka urutan data dari yang terbesar - terkecil, 
--- lalu baru null di akhir data / baris yang di tampilkan
+-- A. Aturan default / bawaan (asc)
 select 
 	num 
 from 
-	sort_demo sd 
-order by 
-	num desc
+	sort_demo
+order by
+	num -- NULLS ada di posisi terakhir
 	
--- namun.. kalo ingin mengurutkan null diakhir setelah mengurutkan data angka dari terbesar - terkecil
--- kita bisa menambahkan `nulls last`
+-----
+	
 select 
 	num 
 from 
-	sort_demo sd 
-order by 
+	sort_demo
+order by
+	num nulls last -- hasilnya sama kaya sebelumnya
+	
+-----
+	
+-- kalo mau mindah NULLS diatas :
+select 
+	num 
+from 
+	sort_demo
+order by
+	num nulls first -- NULLS jadi diatas
+	
+----------------------------------------------------------------------------------------------------------------------
+
+-- B. Aturan bawaan pas urutan turun (desc)
+-- sebaliknya, kalo kita ngurutin data secara turun (desc) NULLS akan jadi di paling atas
+
+select
+	num
+from 
+	sort_demo
+order by
+	num desc -- NULL akan di posisi paling atas
+	
+-- kalo mau maksa NULLS ada di bawah dan urutan dari yang terbesar, bisa set NULLS LAST
+	
+select
+	num
+from 
+	sort_demo
+order by
 	num desc nulls last
-	
-	
--- Ringkasan -- 
--- Gunakan klausa ORDER BY dalam pernyataan SELECT untuk mengurutkan baris dalam kumpulan kueri.
--- Gunakan opsi ASC untuk mengurutkan baris dalam urutan naik dan opsi DESC untuk mengurutkan baris dalam urutan turun.
--- Klausa ORDER BY menggunakan opsi ASC secara default.
--- Gunakan opsi NULLS FIRST dan NULLS LAST untuk secara eksplisit menentukan urutan NULL dengan nilai lain yang tidak null.
-	
