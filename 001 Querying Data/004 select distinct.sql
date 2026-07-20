@@ -1,9 +1,9 @@
 /* select distinct digunakan untuk menampilkan data yang unique pada suatu kolom 
-singkatnya, jika ada 2 data 'merah' dalam, hanya akan menampilkan 1 merah */
+singkatnya, jika ada 2 data 'merah' dalam satu kolom, hanya akan menampilkan 1 merah */
 
--- kita buat table colors dulu
+-- kita buat table colors dulu buat praktek
 INSERT INTO
-  colors (bcolor, fcolor)
+  colors (bcolor, fcolor)  -- bcolor (background color), fcolor (font color)
 VALUES
   ('red', 'red'),
   ('red', 'red'),
