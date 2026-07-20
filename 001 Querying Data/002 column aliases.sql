@@ -1,79 +1,78 @@
-----------------------------------------------------------
+-----------------------------------------------------------------------------------------
 
--- 1. mengambil data dari satu kolom
+-- 1. Memberi nama alias pada salah satu kolom
 
+-- normalnya kan gini
 select 
-	first_name 
-from 
-	customer c 
-
-	
-	
-select 
+	first_name,
 	last_name 
 from 
 	customer
-
-----------------------------------------------------------
-
--- 2. mengambil data dari beberapa kolom
--- menggunakan ' , ' sebagai pemisah tiap kolom
-
+	
+-- contoh alias pada kolom
+-- usahakan menggunakan tanda underscore -> _
 select 
-	first_name, 
-	last_name 
-from 
-	actor
-
-select 
-	first_name, 
-	last_name, 
-	email 
+	first_name as nama_depan, -- dari first name menjadi nama depan
+	last_name
 from 
 	customer
 
 select 
-	country, 
-	country_id  
+	first_name,
+	last_name as nama_belakang -- 
 from 
-	country 
-
-----------------------------------------------------------
-
--- 3. mengambil data dari semua kolom
-
-select * from actor a 
-
-select * from customer c 
-
-select * from country c 
-
-
-----------------------------------------------------------
-
--- 4. ekspresi
+	customer
 
 select 
-   first_name || ' ' || last_name, -- nama kolom masih berupa -> ?column?
-   email
+	first_name as nama_depan,
+	last_name as nama_belakang 
 from 
-   customer;
+	customer
+	
+select 
+	first_name nama_depan, -- bisa juga tanpa kata "as"
+	last_name nama_belakang 
+from 
+	customer
 
+-----------------------------------------------------------------------------------------
+
+-- 2. nama alias untuk ekspresi
+	
 SELECT
-   first_name || ' ' || last_name as full_name, -- nama kolom yang sebelumnya "?column?" menjadi "full_name"
-   email
+    first_name || ' ' || last_name as full_name
 FROM
-   customer;
+    customer;
 
+-- bisa juga tanpa harus menulis 'as'
 SELECT
-   first_name || ' ' || last_name nama_lengkap, -- ganti alias tanpa "as", tapi tidak disarankan
-   email
+    first_name || ' ' || last_name nama_lengkap
 FROM
-   customer;
+    customer;
 
-------------------------------------
 
--- 5. Syntax select tanpa 'from'
+-----------------------------------------------------------------------------------------
 
-SELECT NOW(); -- untuk liat jam dan hari ini
+-- 3. Nama alias kolom yang mengandung spasi
+-- kita beri 2 tanda petik -> " ... "
 
+-- contoh sebelum tanda petik (salah)
+select 
+	first_name as nama depan, -- error
+	last_name as nama belakang, -- error
+	first_name || ' ' || last_name as nama lengkap -- error
+from 
+	customer 
+
+-- contoh menggunakan tanda 2 petik (benar) -> " "
+select 
+	first_name as "nama depan", -- bisa menggunakan spasi
+	last_name as "nama belakang"
+from 
+	customer 
+
+-- contoh ekspresi
+select 
+	first_name || ' ' || last_name as "nama lengkap"
+from 
+	customer 
