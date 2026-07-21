@@ -13,7 +13,7 @@
 
 # PostgreSQL WHERE
 
-##Pengenalan Klausa PostgreSQL WHERE
+## Pengenalan Klausa PostgreSQL WHERE
 
 Perintah `SELECT` biasa bakal menampilkan semua baris data dari kolom yang kita pilih di dalam tabel. Nah, kalau kita cuma mau mengambil baris data yang memenuhi kriteria atau kondisi tertentu saja, kita harus pakai klausa `WHERE`.
 
@@ -44,35 +44,35 @@ Di balik layar, PostgreSQL mengevaluasi klausa `WHERE` setelah klausa `FROM`, ta
 
 Jika kamu menggunakan alias kolom dalam klausa `SELECT`, kamu tidak dapat menggunakannya dalam klausa `WHERE`.
 
-Selain pernyataan `SELECT`, kamu juga bisa menggunakan klausa `WHERE` dalam pernyataan `UPDATE` dan `DELETE` untuk menentukan baris yang akan diupdate dan dihapus.
+Selain pada perintah `SELECT`, kamu juga bisa pakai klausa `WHERE` di perintah `UPDATE` dan `DELETE` buat menentukan baris data mana aja yang mau diubah atau dihapus.
 
-Untuk membentuk kondisi dalam klausa `WHERE`, kamu menggunakan operator perbandingan dan logis:
+Untuk menyusun kondisi di dalam klausa `WHERE`, kita bisa pakai operator perbandingan dan logika berikut :
 
-| Operator | Deskripsi |
-|----------|----------|
-| = | Sama dengan |
-| > | Lebih besar dari |
-| < | Lebih kecil dari |
-| >= | Lebih besar atau sama dengan |
-| <= | Lebih kecil atau sama dengan |
-| <> atau != | Tidak sama dengan |
-| AND | Operator Logika AND |
-| OR | Operator Logika OR |
-| IN | Mengembalikan true jika nilai cocok dengan salah satu nilai dalam daftar |
-| BEETWEEN | Mengembalikan true jika nilai berada di antara rentang nilai |
-| LIKE | Mengembalikan true jika nilai cocok dengan pola |
-| IS NULL | Mengembalikan true jika nilai adalah NULL |
-| NOT | Menegasikan hasil dari operator lain |
+| Operator   | Deskripsi                                                                 |
+|------------|---------------------------------------------------------------------------|
+| =          | Sama dengan                                                               |
+| >          | Lebih besar dari                                                          |
+| <          | Lebih kecil dari                                                          |
+| >=         | Lebih besar atau sama dengan                                              |
+| <=         | Lebih kecil atau sama dengan                                              |
+| <> atau != | Tidak sama dengan                                                         |
+| AND        | Operator Logika AND (kedua kondisi harus bernilai true)                   |
+| OR         | Operator Logika OR (salah satu kondisi bernilai true)                     |
+| IN         | Bernilai true kalau datanya cocok dengan salah satu nilai di dalam daftar |
+| BEETWEEN   | Bernilai true kalau datanya ada di antara rentang nilai tertentu          |
+| LIKE       | Bernilai true kalau datanya cocok dengan pola teks tertentu               |
+| IS NULL    | Bernilai true kalau nilainya adalah NULL (kosong)                         |
+| NOT        | Membalikkan hasil dari operator lain                                      |
 
 ## Contoh Klausa PostgreSQL WHERE 
-Mari kita berlatih dengan beberapa contoh penggunaan klausa `WHERE`.
+Yuk, langsung kita coba praktekkan penggunaan klausa `WHERE` lewat beberapa contoh!
 
-Kita akan menggunakan tabel `customer` dari database contoh untuk demonstrasi.
+Kita bakal pakai tabel `customer` dari sampel database buat demonstrasi.
 
 <img width="206" height="256" alt="image" src="https://github.com/user-attachments/assets/6d9815a3-3fce-46e7-bf88-28441aea8f42" />
 
-### 1)  Menggunakan klausa WHERE dengan contoh operator sama dengan (=)
-Pernyataan berikut menggunakan klausa `WHERE` untuk mencari pelanggan yang nama depannya adalah `Jamie`:
+### 1)  Pakai Operator Sama Dengan (=)
+Query berikut menggunakan klausa `WHERE` buat mencari data pelanggan yang nama depannya adalah "`Jamie`" :
 
 ```sql
 SELECT
@@ -93,8 +93,8 @@ Output:
 
 (2 rows)
 
-### 2) Menggunakan klausa WHERE dengan contoh operator AND
-Contoh berikut menggunakan klausa `WHERE` dengan operator logika `AND` untuk mencari pelanggan yang nama depan dan nama belakangnya adalah `Jamie` dan `Rice`:
+### 2) Pakai Operator AND
+Contoh berikut menggunakan klausa `WHERE` ditambah operator logika `AND` buat mencari pelanggan yang nama depan DAN nama belakangnya persis "`Jamie`" dan "`Rice`" :
 
 ```sql
 SELECT
@@ -115,8 +115,8 @@ Output:
 
 (1 row)
 
-### 3) Menggunakan klausa WHERE dengan contoh operator OR
-Contoh berikut menggunakan klausa `WHERE` dengan operator `OR` untuk mencari pelanggan yang nama belakangnya adalah `Rodriguez` atau nama depannya adalah `Adam`:
+### 3) Pakai Operator OR
+Contoh berikut menggunakan klausa `WHERE` dengan operator `OR` buat mencari pelanggan yang nama belakangnya `Rodriguez` ATAU nama depannya `Adam` :
 
 ```sql
 SELECT
@@ -138,10 +138,10 @@ Output:
 
 (2 rows)
 
-### 4) Menggunakan klausa WHERE dengan contoh operator IN
-Jika kamu ingin menemukan nilai dalam daftar nilai, kamu bisa menggunakan operator `IN`.
+### 4) Pakai Operator IN
+Kalau kamu mau mencocokkan data dari sekumpulan daftar nilai, kamu bisa pakai operator `IN`.
 
-Contoh berikut menggunakan klausa `WHERE` dengan operator `IN` untuk mencari pelanggan dengan nama depan dalam daftar `Ann`, `Anne`, dan `Annie`:
+Contoh berikut menggunakan klausa `WHERE` dengan operator `IN` buat mencari pelanggan yang nama depannya ada di dalam daftar `Ann`, `Anne`, atau `Annie` :
 
 ```sql
 SELECT
@@ -161,10 +161,10 @@ Output:
 | Anne       | Powell    |
 | Annie      | Russell   |
 
-### 5) Menggunakan klausa WHERE dengan contoh operator LIKE
-Untuk menemukan string yang cocok dengan pola tertentu, kamu menggunakan operator `LIKE`.
+### 5) Pakai Operator LIKE
+Buat mencari teks yang cocok dengan pola tertentu, kita bisa pakai operator `LIKE`.
 
-Contoh berikut menggunakan operator `LIKE` dalam klausa `WHERE` untuk menemukan pelanggan yang nama depannya dimulai dengan kata `Ann..`:
+Contoh berikut menggunakan operator `LIKE` di dalam klausa `WHERE` buat mencari pelanggan yang nama depannya diawali dengan kata `Ann..` :
 
 ```sql
 SELECT
@@ -185,27 +185,28 @@ Output:
 | Anne       | Powell    |
 | Annie      | Russell   |
 | Annette    | Olson     |
+| ...        | ...       |
 
 (5 rows)
 
 
-`%` disebut wildcard yang cocok dengan string apa pun. Pola `'Ann%'` cocok dengan string apa pun yang dimulai dengan `'Ann'`.
+Tanda `%` di sini disebut _wildcard_, yang artinya bisa mencocokkan karakter teks apa saja setelahnya. Jadi pola `'Ann%'` bakal cocok dengan teks apa pun yang diawali oleh kata `'Ann'`.
 
-### 6) Menggunakan klausa WHERE dengan contoh operator BETWEEN
-Contoh berikut menemukan pelanggan yang nama depannya dimulai dengan huruf `A` dan terdiri dari 3 hingga 5 karakter dengan menggunakan operator `BETWEEN`.
+### 6) Pakai Operator BETWEEN
+Contoh berikut dipakai buat mencari pelanggan yang nama depannya diawali huruf `A` dan panjang karakternya berjumlah antara 3 sampai 5 huruf menggunakan operator `BETWEEN`.
 
-Operator `BETWEEN` mengembalikan true jika nilai berada dalam rentang nilai.
+Operator `BETWEEN` ini bakal bernilai true kalau nilainya ada di dalam rentang yang ditentukan.
 
 ```sql
 SELECT
   first_name,
-  LENGTH(first_name) name_length
+  LENGTH(first_name) as name_length
 FROM
   customer
 WHERE
-  first_name LIKE 'A%'
-  AND LENGTH(first_name) BETWEEN 3
-  AND 5
+    first_name LIKE 'A%'
+  AND
+    LENGTH(first_name) BETWEEN 3 AND 5
 ORDER BY
   name_length;
 ```
@@ -226,11 +227,13 @@ Output:
 | Alan       |           4 |
 | Alex       |           4 |
 | Angel      |           5 |
+| ...        | ...         |
 
-Dalam contoh ini, kita menggunakan fungsi `LENGTH()` untuk mendapatkan jumlah karakter dari string input.
 
-### 7) Menggunakan klausa WHERE dengan contoh operator tidak sama dengan (<>)
-Contoh ini menemukan pelanggan yang nama depannya dimulai dengan `Bra` dan nama belakangnya bukan `Motley`:
+Di contoh ini, kita menggunakan fungsi `LENGTH()` untuk menghitung total jumlah karakter dari teks nama depan.
+
+### 7) Pakai Operator Tidak Sama Dengan (<>)
+Contoh ini dipakai buat mencari pelanggan yang nama depannya diawali dengan kata `Bra..`, tapi nama belakangnya **BUKAN** `Motley` :
 
 ```sql
 SELECT
@@ -240,7 +243,8 @@ FROM
   customer
 WHERE
   first_name LIKE 'Bra%'
-  AND last_name <> 'Motley';
+    AND
+  last_name <> 'Motley';
 ```
 
 Output:
@@ -250,12 +254,13 @@ Output:
 | Brandy     | Graves    |
 | Brandon    | Huey      |
 | Brad       | Mccurdy   |
+| ...        | ...       |
 
 
-Perlu dicatat bahwa kamu bisa menggunakan operator `!=` dan operator `<>` secara bergantian karena mereka setara.
+**FYI** : Kamu bisa pakai operator `!=` atau `<>` secara bergantian karena fungsi keduanya persis sama (tidak sama dengan).
 
 #### Summary
-- Gunakan klausa `WHERE` dalam pernyataan `SELECT` untuk memfilter baris dari query berdasarkan satu atau lebih kondisi.
+- Pakai klausa `WHERE` di dalam perintah `SELECT` untuk menyaring dan mengambil baris data berdasarkan satu atau beberapa kondisi tertentu.
 
 --------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------
