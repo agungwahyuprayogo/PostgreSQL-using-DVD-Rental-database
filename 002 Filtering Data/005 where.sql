@@ -1,6 +1,7 @@
 /* 
  
-where digunakan untuk memfilter baris berdasarkan kondisi tertentu
+where digunakan untuk memfilter baris berdasarkan kondisi tertentu.
+Untuk filter berdasarkan kondisi tertentu, kita bisa menggunakan operator ini :
  
 Operator	Deskripsi
 =			Sama dengan
@@ -21,7 +22,7 @@ NOT			Menegasikan hasil dari operator lain
 
 -------------------------------------------------------------------------------------------------------------------
 
--- 1. Menggunakan where dengan contoh operator `=`
+-- 1. Pakai operator sama dengan (=)
 
 select 
 	first_name, 
@@ -35,7 +36,7 @@ where
 	
 -------------------------------------------------------------------------------------------------------------------
 	
--- 2. Menggunakan where dengan contoh operator `and`
+-- 2. Pakai operator AND
 -- AND, terdapat dua kondisi atau lebih, dimana semua harus terpenuhi
 
 select 
@@ -50,7 +51,7 @@ where
 	
 -------------------------------------------------------------------------------------------------------------------
 	
--- 3. Menggunakan WHERE dengan contoh operator OR
+-- 3. Pakai operator OR
 -- ada 2 kondisi atau lebih, dimana hanya salah satu saja yang terpenuhi
 	
 
@@ -66,7 +67,7 @@ where
 		
 -------------------------------------------------------------------------------------------------------------------
 	
--- 4. Where dengan operator IN
+-- 4. Pakai operator IN
 -- IN adalah jalan pintas selain OR, dibandingkan dengan cara ini :
 select 
 	first_name ,
@@ -93,7 +94,7 @@ where
 	
 -------------------------------------------------------------------------------------------------------------------
 	
--- 5. WHERE dengan operator LIKE
+-- 5. Pakai operator LIKE
 -- LIKE digunakan untuk mencari data yang cocok dengan pola tertentu (pattern matching)
 	
 select 
@@ -109,12 +110,26 @@ where
 -------------------------------------------------------------------------------------------------------------------
 	
 
--- 6. WHERE dengan operator BETWEEN
+-- 6. Pakai operator BETWEEN
 -- BETWEEN , digunakan untuk menguji apakah suatu nilai berada di dalam rentang nilai tertentu 
+	
+SELECT
+  first_name,
+  LENGTH(first_name) as name_length
+FROM
+  customer
+WHERE
+  first_name LIKE 'A%'
+  AND
+    LENGTH(first_name) BETWEEN 3 AND 5
+ORDER BY
+  name_length;
+
+---
 	
 select 
 	first_name || ' ' || last_name, 
-	length(first_name || ' ' || last_name) panjang_karakter
+	length(first_name || ' ' || last_name) as panjang_karakter
 from 
 	customer
 where 
@@ -127,7 +142,7 @@ order by
 		
 -------------------------------------------------------------------------------------------------------------------
 	
--- 7. WHERE dengan operator tidak sama dengan <> 
+-- 7. Pakai operator tidak sama dengan (<>)
 -- <>, kita tidak ingin mengeluarkan data itu
 	
 select
@@ -138,5 +153,5 @@ from
 where 
 	first_name like 'Bra%'
 		and
-	last_name <> 'Motley' -- tidak ingin menegluarkan data Bra Motley
+	last_name <> 'Motley' -- tidak ingin menegluarkan data last_name = Bra Motley
 	
