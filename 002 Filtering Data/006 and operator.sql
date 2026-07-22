@@ -56,5 +56,7 @@ select
 from 
 	film
 where 
-	length > 180 and rental_rate < 1
+	length > 180 
+		and 
+	rental_rate < 1
 	
