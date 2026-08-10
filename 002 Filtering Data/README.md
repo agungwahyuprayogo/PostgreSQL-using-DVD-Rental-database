@@ -436,22 +436,24 @@ Output:
 
 # PostgreSQL OR Operator
 
-## Pengenalan Operator OR pada PostgreSQL
+## Kenalan sama Operator OR di PostgreSQL
 
-Operator `OR` adalah operator logika yang digunakan untuk menggabungkan dua atau lebih kondisi (ekspresi boolean). Cara tulis (sintaks) dasarnya seperti ini :
+Gampangnya, operator `OR` itu dipake pas kamu mau ngebanggungin dua kondisi atau lebih. Cara nulis dasarnya simpel banget :
+
+SQL :
 
 ```sql
 ekspresi1 OR ekspresi2
 ```
 
-Di sintaks ini, `ekspresi1` dan `ekspresi2` adalah pernyataan/kondisi yang nilainya bisa berupa `true` (benar), `false` (salah), atau `null` (kosong/tidak ada nilai).
+Di sini, `ekspresi1` sama `ekspresi2` itu cuma patokan kondisi yang hasilnya cuma ada 3 kemungkinan: `true` (benar), `false` (salah), atau `null` (kosong/nggak ada nilai).
 
-Prinsip kerja operator `OR` itu simpel :
-- Hasilnya bakal `true` kalau salah satu saja dari ekspresi itu bernilai true.
-- Hasilnya baru bakal `false` kalau kedua ekspresi nilainya sama-sama false.
-- Kalau tidak memenuhi dua kondisi di atas, hasilnya adalah `null`.
+Cara kerja `OR` itu  simple banget :
+- `true` : Asal salah satu aja kondisi bernilai `true`, hasil akhirnya bakal langsung jadi `true`.
+- `false` : Hasilnya baru bakal `false` kalau semua kondisinya emang sama-sama `false`.
+- `null` : Kalau nggak masuk ke dua aturan di atas (misal gabungan `false` sama `null`), hasilnya jadi `null`.
 
-Tabel di bawah ini menunjukkan hasil dari operator `OR` saat kamu menggabungkan `true`, `false`, dan `null` :
+Biar makin kebayang, ini tabel patokan (_truth table_) pas kamu ngegabungin `true`, `false`, dan `null` pake `OR` :
 
 | **OR** | **True** | **False** | **Null** |
 |------|------|-------|------|
@@ -459,13 +461,15 @@ Tabel di bawah ini menunjukkan hasil dari operator `OR` saat kamu menggabungkan 
 | **False** | True | False | Null |
 | **Null** | True | Null  | Null |
 
-Dalam praktiknya, kamu bakal sering menggunakan operator `OR` di dalam bagian `WHERE`. Tujuannya supaya PostgreSQL menampilkan data baris tersebut selama satu saja dari kondisi yang kamu tentukan bernilai `true`.
+Pas ngetik kueri SQL sehari-hari, kamu bakal sering banget naro `OR` di bagian `WHERE`. Gunanya simpel : biar PostgreSQL nampilin data yang penting salah satu syaratnya keturut.
 
-## Contoh Penggunaan Operator OR di PostgreSQL
-Yuk, kita lihat beberapa contoh langsung penggunaan operator `OR`.
+## Contoh Langsung Penggunaan Operator OR
+Yuk, langsung kita bedah contohnya dari yang paling dasar sampai ke tabel database beneran!
 
-### 1) Contoh Dasar Operator OR
-Contoh pertama, kita pakai operator `OR` untuk menggabungkan `true` dengan `true`. Hasilnya adalah `true` :
+### 1) Uji Coba Logika Dasar OR
+Nih contoh cara kerja `OR` kalau kita tes langsung pake perintah `SELECT` :
+
+- Gabungin `true` sama `true` (Hasilnya tetep `true`) :
 
 ```sql
 SELECT true OR true AS result;
@@ -479,7 +483,7 @@ Output:
 
 (1 row)
 
-Perintah berikut menggunakan operator `OR` untuk menggabungkan `true` dengan `false`. Hasilnya tetap `true` :
+- Gabungin `true` sama `false` (Hasilnya tetep `true`, karena udah ada satu yang benar) :
 
 ```sql
 SELECT true OR false AS result;
@@ -493,7 +497,7 @@ Output:
 
 (1 row)
 
-Contoh berikut menggabungkan `true` dengan `null`. Hasilnya tetap `true`:
+- Gabungin `true` sama `null` (Hasilnya tetep `true`, karena yang penting udah ada `true`-nya) :
 
 ```sql
 SELECT true OR null AS result;
@@ -508,7 +512,7 @@ Output:
 (1 row)
 
 
-Contoh berikut menggabungkan `false` dengan `false`. Karena dua-duanya salah, hasilnya jadi `false` :
+- Gabungin `false` sama `false` (Hasilnya jadi `false`, karena dua-duanya nggak ada yang benar) :
 
 ```sql
 SELECT false OR false AS result;
@@ -522,7 +526,7 @@ Output:
 
 (1 row)
 
-Contoh berikut menggabungkan `false` dengan `null`. Hasilnya adalah `null` :
+- Gabungin `false` sama `null` (Hasilnya jadi `null`, soalnya PostgreSQL bingung nggak bisa mastiin) :
 
 ```sql
 SELECT false OR null AS result;
@@ -537,7 +541,7 @@ Output:
 (1 row)
 
 
-Contoh berikut menggabungkan `null` dengan `null`. Hasilnya adalah `null` :
+Gabungin `null` sama `null` (Hasilnya tetep `null`) :
 
 ```
 SELECT null OR null AS result;
@@ -552,13 +556,13 @@ Output:
 (1 row)
 
 
-### 2) Menggunakan Operator OR dalam Klausa WHERE
+### 2) Pake Operator `OR` di Dalam Klausa `WHERE`
 
-Untuk latihan ini, kita akan pakai tabel bernama `film` dari database contoh :
+Sekarang kita coba di data beneran. Kita pake tabel `film` yang strukturnya kaya gambar ini:
 
 ![image](https://github.com/user-attachments/assets/e8f25316-623d-4f23-aba7-ef0229accaba)
 
-Contoh berikut menggunakan operator `OR` di dalam klausa `WHERE` untuk mencari film-film yang harga sewanya (`rental_rate`) bernilai `0.99` ATAU `2.99` :
+Misalkan kamu lagi nyari daftar `film` yang harga sewanya (`rental_rate`) `0.99` ATAU `2.99`. Kamu tinggal tulis SQL-nya kaya gini :
 
 ```sql
 SELECT
@@ -580,9 +584,11 @@ Output:
 | Affair Prejudice |        2.99 |
 | African Egg      |        2.99 |
 
+**Penjelasan** : Kueri di atas bakal ngecek setiap baris di tabel `film`. Pas ketemu `film` yang harganya `0.99` atau `2.99`, baris itu bakal langsung ditarik dan ditampilin di layar.
+
 
 #### Ringkasan
-- Gunakan operator `OR` kalau kamu mau menggabungkan beberapa kondisi (ekspresi boolean) dan cukup salah satu saja yang terpenuhi.
+- Pake operator `OR` kalau kamu mau nyaring data yang pilihan syaratnya fleksibel, cukup salah satu syarat aja yang cocok, datanya langsung keluar.
 
 --------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------
