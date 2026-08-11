@@ -596,10 +596,11 @@ Output:
 
 # PostgreSQL LIMIT
 
-## Pengenalan Klausa PostgreSQL 'LIMIT'  
-PostgreSQL `'LIMIT'` adalah klausa opsional dalam pernyataan `'SELECT'` yang membatasi jumlah baris yang dikembalikan oleh kueri.
+## Kenalan sama Klausa 'LIMIT' di PostgreSQL
 
-Berikut adalah sintaks dasar dari klausa `'LIMIT'`:
+Gampangnya, klausa `LIMIT` di PostgreSQL itu perintah tambahan opsional (boleh dipakai, boleh enggak) di dalam perintah `SELECT`. Gunanya buat membatasi berapa banyak baris data yang mau kamu tampilin dari hasil kueri.
+
+Bentuk dasar nulis klausa `LIMIT` itu kaya gini :
 
 ```sql
 SELECT
@@ -612,9 +613,12 @@ LIMIT
   row_count;
 ```
 
-Pernyataan ini mengembalikan `row_count` baris yang dihasilkan oleh kueri. Jika `row_count` adalah nol, kueri akan mengembalikan kumpulan data kosong. Jika `row_count` bernilai `NULL`, hasil kueri akan sama seperti saat tidak menggunakan klausa `'LIMIT'`.
+Perintah ini bakal nampilin data sebanyak angka yang kamu tulis di `row_count`.
+- Kalau `row_count` kamu isi angka nol (`0`), kueri bakal nampilin hasil yang kosong melompong (nggak ada data sama sekali).
+- Tapi kalau `row_count` bernilai `NULL`, kuerinya bakal jalan normal seolah-olah kamu nggak pakai klausa `LIMIT` sama sekali (semua data ditarik).
 
-Jika kamu ingin melewati sejumlah baris sebelum mengembalikan `row_count` baris, kamu dapat menggunakan klausa `'OFFSET'` yang ditempatkan setelah klausa `'LIMIT'`:
+### Kombinasi dengan Klausa 'OFFSET'
+Nah, kalau kamu mau ngelewatin/melompati beberapa baris data dulu sebelum nampilin `row_count` baris yang kamu mau, kamu bisa gabungin sama klausa `OFFSET`. Posisinya ditaro persis setelah `LIMIT` :
 
 ```sql
 SELECT
@@ -629,25 +633,22 @@ OFFSET
   row_to_skip;
 ```
 
-Pernyataan ini pertama-tama melewati `row_to_skip` baris sebelum mengembalikan `row_count` baris yang dihasilkan oleh kueri.
+Perintah di atas bakal **ngelewatin sebanyak `row_to_skip` baris dulu**, baru deh **mengambil data sebanyak `row_count` baris**.
+- Kalau `row_to_skip` bernilai nol (`0`), hasilnya bakal sama aja kaya kamu nggak pakai klausa `OFFSET`.
+- Penting buat diingat : Secara sistem, PostgreSQL bakal memproses klausa `OFFSET` dulu baru kemudian nge-proses klausa `LIMIT`.
 
-Jika `row_to_skip` bernilai nol, maka pernyataan tersebut akan berfungsi seolah-olah tidak memiliki klausa `'OFFSET'`.
+**Catatan Penting Soal Urutan Data!**
+PostgreSQL itu pada dasarnya nyimpen data di dalam tabel tanpa urutan yang pasti. Makanya, tiap kali kamu mau pakai `LIMIT`, sangat disarankan buat selalu pakai `ORDER BY`. Kalau kamu nggak pakai `ORDER BY`, hasil baris data yang dibatasi sama `LIMIT` bakal keluar secara acak/tidak terduga.
 
-Penting untuk dicatat bahwa PostgreSQL mengevaluasi klausa `'OFFSET'` sebelum klausa `'LIMIT'`.
+### Contoh Penggunaan Klausa 'LIMIT' di PostgreSQL
 
-PostgreSQL menyimpan baris dalam tabel tanpa urutan yang ditentukan. Oleh karena itu, saat menggunakan klausa `'LIMIT'`, kamu harus selalu menggunakan klausa `'ORDER BY'` untuk mengontrol urutan baris yang dihasilkan.
-
-Jika kamu tidak menggunakan klausa `'ORDER BY'`, maka hasil kueri mungkin berisi baris dalam urutan yang tidak ditentukan.
-
-### Contoh Klausa PostgreSQL 'LIMIT'
-
-Mari kita lihat beberapa contoh penggunaan klausa PostgreSQL `'LIMIT'`. Kita akan menggunakan tabel `'film'` dalam database contoh untuk demonstrasi.
+Biar langsung paham, yuk kita bedah beberapa contohnya! Kita bakal pakai tabel `film` dari database latihan buat contoh ini :
 
 ![image](https://github.com/user-attachments/assets/b698e255-a938-4132-bc01-ce067166af74)
 
-### 1) Menggunakan PostgreSQL 'LIMIT' untuk Membatasi Jumlah Baris yang Dikembalikan
+### 1) Membatasi Jumlah Baris Data yang Diambil
 
-Pernyataan berikut menggunakan klausa `'LIMIT'` untuk mengambil lima film pertama yang diurutkan berdasarkan `'film_id'`:
+Contoh pertama ini kita pakai klausa `LIMIT` buat ngambil 5 `film` pertama yang diurutkan berdasarkan `film_id` :
 
 ```sql
 SELECT
@@ -662,8 +663,9 @@ LIMIT
   5;
 ```
 
-**Output:**  
-Pernyataan ini akan mengembalikan **lima film pertama** berdasarkan `'film_id'`, dengan urutan dari nilai terkecil ke terbesar.
+**Hasil Output** :
+
+Perintah di atas bakal nampilin 5 film paling atas berdasarkan `film_id` (diurutkan dari ID terkecil ke terbesar).
 
 | film_id | title            | release_year |
 |---------|------------------|--------------|
@@ -673,16 +675,16 @@ Pernyataan ini akan mengembalikan **lima film pertama** berdasarkan `'film_id'`,
 | 4       | Affair Prejudice | 2006         |
 | 5       | African Egg      | 2006         |
 
-### Cara Kerjanya
+### Cara Kerjanya di Belakang Layar :
 
-- Pertama, urutkan film berdasarkan `'film_id'` dalam **urutan menaik** menggunakan klausa `'ORDER BY film_id'`.  
-- Kedua, ambil **5 film pertama** dari atas menggunakan klausa `'LIMIT 5'`.
+- Pertama, PostgreSQL mengurutkan semua film berdasarkan `film_id` dari kecil ke besar (ascending) pakai `ORDER` BY `film_id`. 
+- Kedua, sistem langsung memotong dan mengambil 5 baris teratas saja pakai `LIMIT` 5.
 
 ---
 
-### 2) Menggunakan Klausa 'LIMIT' dengan Klausa 'OFFSET'
+### 2) Menggabungkan Klausa 'LIMIT' dengan 'OFFSET'
 
-Untuk mengambil **4 film** mulai dari **film keempat**, yang diurutkan berdasarkan `'film_id'`, kamu bisa menggunakan klausa `'LIMIT'` dan `'OFFSET'` seperti berikut:
+Misalkan kamu mau ngambil 4 film, tapi mau dimulai dari film keempat (melewati 3 film pertama). Kalau diurutkan berdasarkan `film_id`, kamu bisa tulis gabungan `LIMIT` dan `OFFSET` kaya gini :
 
 ```sql
 SELECT
@@ -696,7 +698,7 @@ ORDER BY
 LIMIT 4 OFFSET 3;
 ```
 
-**Output:**  
+**Hasil Output :**  
 
 | film_id | title            | release_year |
 |---------|------------------|--------------|
@@ -705,17 +707,24 @@ LIMIT 4 OFFSET 3;
 | 6       | Agent Truman     |         2006 |
 | 7       | Airplane Sierra  |         2006 |
 
-### Cara Kerjanya  
+### Cara Kerjanya di Belakang Layar :
 
-- Pertama, **urutkan film berdasarkan `'film_id'`** dalam **urutan menaik**.  
-- Kedua, **lewati 3 baris pertama** menggunakan klausa `'OFFSET 3'`.  
-- Ketiga, **ambil 4 baris berikutnya** menggunakan klausa `'LIMIT 4'`.
+- Pertama, PostgreSQL mengurutkan data berdasarkan `film_id` dari kecil ke besar.
+- Kedua, sistem melewati/melompati 3 baris pertama (`film_id` `1`, `2`, dan `3`) gara-gara ada `OFFSET 3`.
+- Ketiga, sistem mengambil 4 baris berikutnya (`film_id` `4`, `5`, `6`, dan `7`) gara-gara ada `LIMIT 4`.
 
-### 3) Menggunakan 'LIMIT OFFSET' untuk Mendapatkan N Baris Teratas/Bawah  
+**Penjelasan Tambahan (Fitur Pagination)** :
+Teknik kombinasi `LIMIT` dan `OFFSET` ini biasanya dipakai pas kamu mau bikin sistem halaman (pagination) di aplikasi atau website! 
 
-Biasanya, kamu sering menggunakan klausa `'LIMIT'` untuk memilih baris dengan nilai **tertinggi atau terendah** dari sebuah tabel.  
+Misal : 
+- Halaman 1 isi 10 data (`LIMIT 10 OFFSET 0`)
+- Halaman 2 isi 10 data berikutnya (`LIMIT 10 OFFSET 10`), dan seterusnya.
 
-Contoh berikut menggunakan klausa `'LIMIT'` untuk mengambil **10 film dengan biaya sewa tertinggi**:
+### 3) Mencari Data N Teratas (Top N) atau N Terbawah (Bottom N) 
+
+Biasanya, kita sering banget pakai `LIMIT` buat nyari data dengan nilai paling tinggi atau paling rendah.
+
+Contohnya, query di bawah ini memakai `LIMIT` buat ngambil 10 film dengan biaya sewa (`rental_rate`) paling mahal :
 
 ```sql
 SELECT
@@ -730,9 +739,11 @@ LIMIT
   10;
 ```
 
-Dengan perintah ini, kita mengambil **10 film paling mahal** berdasarkan `'rental_rate'`, diurutkan dalam **urutan menurun** (dari harga tertinggi ke terendah). Jika ingin mendapatkan **10 film termurah**, cukup ubah `'DESC'` menjadi `'ASC'` dalam klausa `'ORDER BY'`.
+Lewat perintah ini, kita menarik 10 film termahal berdasarkan `rental_rate` yang diurutkan secara menurun / dari besar ke kecil (`DESC`).
 
-Output:
+_(Tips: Kalau kamu mau ngambil 10 film paling murah, kamu tinggal ganti kodenya dari `DESC` jadi `ASC` di bagian `ORDER BY`)._
+
+Hasil Output :
 
 | film_id | title               | rental_rate |
 |---------|---------------------|-------------|
@@ -750,13 +761,13 @@ Output:
 (10 rows)
 
 
-### Cara Kerjanya  
+### Cara Kerjanya di Belakang Layar :
 
-- Pertama, **urutkan semua film berdasarkan biaya sewa** dari **yang tertinggi ke terendah** menggunakan klausa `'ORDER BY rental_rate DESC'`.  
-- Kedua, **ambil hanya 10 baris teratas** menggunakan klausa `'LIMIT 10'`.  
+- Pertama, PostgreSQL mengurutkan dulu seluruh data film berdasarkan harga sewanya (`rental_rate`) dari yang paling mahal ke paling murah pakai `ORDER BY rental_rate DESC`.
+- Kedua, sistem tinggal mengambil 10 baris teratas dari hasil urutan tersebut pakai `LIMIT 10`.
 
-#### **Ringkasan**  
-Gunakan klausa PostgreSQL `'LIMIT OFFSET'` untuk mengambil sebagian dari kumpulan baris yang dikembalikan oleh kueri.
+#### **Ringkasan Singkat**  
+Gunakan kombinasi klausa `LIMIT` dan `OFFSET` di PostgreSQL saat kamu mau mengambil sebagian/potongan baris data tertentu saja dari hasil kueri kamu.
 
 
 --------------------------------------------------------------------------------------------------------------------------------
