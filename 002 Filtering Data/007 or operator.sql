@@ -5,13 +5,28 @@ dalam praktiknya, OR digunakan untuk mengecek apakah ada nilai TRUE dalam kompar
 
 -- 1. Contoh dasar operasi OR 
 
+
+-- kalo ada 2 true, hasilnya dah pasti true
 select true or true as result
 
+
+-- minimal ada 1 true dalam 'or', hasilnya akan true
 select true or false as result
 
+
+-- minimal ada 1 true, hasilnya true
 select false or true as result
 
+-- kalo ga ada sama sekali true, hasilnya false
 select false or false as result
+
+-- kalo ga ada true dan hanya ada null, hasilnya null
+select false or null as result
+
+-- selama ada true di dalam or, hasilnya akan true
+-- true or null
+select true or null as result
+
 
 -- 2. Menggunakan operasi OR dalam where
 -- mencari film yang biaya sewanya 0.99 atau 2.99
