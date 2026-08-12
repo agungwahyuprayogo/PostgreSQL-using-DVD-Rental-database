@@ -9,32 +9,41 @@ select
 from 
 	film 
 order by 
-	film_id limit 10
+	film_id 
+limit 
+	10
 	
 -- 2. menggunakan limit dan offset 
+-- semisal kita pengen nampilin 4 film, tapi dimulai dari film keempat ( melewati 3 film pertama ), 
+-- kalo diurutin berdasarkan film_id, bisa make cara gini :
+	
 select 
-  film_id,
-  title,
-  release_year
+  film_id, title, release_year
 from 
   film
 order by 
   film_id -- urutkan berdasarkan film_id
-limit 4 offset 3; -- skip bari 1 sampai 3, makanya langsung ke 4 hasilnya
+limit 4 -- bates 4 baris aja
+offset 3 -- 3 film pertama di skip
+
 
 -- 3) Menggunakan 'LIMIT OFFSET' untuk Mendapatkan N Baris Teratas/Bawah
+-- semisal nampilin daftar film yang harga serwanya paling mahal
 
 SELECT
-  film_id,
-  title,
-  rental_rate
+  film_id, title, rental_rate
 FROM
   film
 ORDER BY
   rental_rate DESC
-LIMIT
-  10;
+limit 10;
 
---Dengan perintah ini, kita mengambil 10 film paling mahal berdasarkan 'rental_rate', 
---diurutkan dalam urutan menurun (dari harga tertinggi ke terendah). 
---Jika ingin mendapatkan 10 film termurah, cukup ubah 'DESC' menjadi 'ASC' dalam klausa 'ORDER BY'.
+-- kalau mau nampilin harga sewa film termurah, tinggal ganti 'desc' jadi asc
+
+select 
+	film_id , title , rental_rate 
+from 
+	film
+order by 
+	rental_rate asc
+limit 10
