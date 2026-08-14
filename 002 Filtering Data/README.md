@@ -776,19 +776,19 @@ Gunakan kombinasi klausa `LIMIT` dan `OFFSET` di PostgreSQL saat kamu mau mengam
 
 # PostgreSQL FETCH 
 
-**Ringkasan:** Dalam tutorial ini, kamu akan belajar cara menggunakan klausa PostgreSQL `'FETCH'` untuk mengambil sebagian baris yang dikembalikan oleh kueri.
+**Ringkasan** : Di tutorial ini, kamu bakal belajar cara pakai klausa `FETCH` di PostgreSQL buat ngambil sebagian baris data yang dihasilkan oleh kueri.
 
-## **Pengenalan Klausa PostgreSQL 'FETCH'**  
+## **Kenalan sama Klausa `FETCH` di PostgreSQL**  
 
-Untuk melewati sejumlah baris dan mengambil jumlah baris tertentu, kamu sering menggunakan klausa `'LIMIT'` dalam pernyataan `'SELECT'`.  
+Biar bisa ngelewatin beberapa baris dan ngambil data dalam jumlah tertentu, kamu pasti udah familiar sama klausa `LIMIT` di dalam perintah `SELECT`.
 
-Klausa `'LIMIT'` banyak digunakan oleh berbagai Sistem Manajemen Basis Data Relasional (RDBMS) seperti MySQL, H2, dan HSQLDB. Namun, `'LIMIT'` bukanlah bagian dari standar SQL.
+Klausa `LIMIT` ini emang populer banget dan dipakai di banyak database (RDBMS) kaya MySQL, H2, sama HSQLDB. Tapi perlu kamu tahu, `LIMIT` itu sebenarnya bukan bagian dari standar SQL resmi!
 
-Agar sesuai dengan standar SQL, PostgreSQL mendukung klausa `'FETCH'`, yang memungkinkan melewati sejumlah baris tertentu lalu mengambil sejumlah baris spesifik.
+Nah, biar sesuai sama standar SQL internasional, PostgreSQL juga mendukun klausa `FETCH`. Fungsinya persis sama: buat ngelewatin beberapa baris data dulu, terus ngambil sejumlah baris yang kamu butuhin.
 
-Perlu diketahui bahwa klausa `'FETCH'` diperkenalkan sebagai bagian dari **standar SQL:2008**.
+Sebagai informasi tambahan, klausa `FETCH` ini pertama kali dikenalkan di standar SQL:2008.
 
-Berikut adalah sintaks dari klausa `'FETCH'` dalam PostgreSQL:
+Nih, bentuk penulisan (sintaks) klausa `FETCH` di PostgreSQL:
 
 
 ```sql
@@ -796,35 +796,32 @@ OFFSET row_to_skip { ROW | ROWS }
 FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY
 ```
 
+Penjelasan simpel dari sintaks di atas:
 
-Dalam sintaks ini:
+- Pertama, tentuin berapa banyak baris yang mau dilewati (`row_to_skip`) di belakang kata kunci `OFFSET`. Angkanya harus nol atau bilangan positif, dan default-nya adalah `0` (artinya nggak ada baris yang dilewati). 
+- Kalau misal `row_to_skip` angkanya lebih besar dari total baris yang ada di tabel, ya kuerinya bakal ngasilin data kosong melompong.
+- Kedua, tentuin berapa baris yang mau ditarik/diambil (`row_count`) di dalam klausa `FETCH`. Angkanya harus `1` atau lebih besar, dan secara bawaan (default) nilainya adalah 1.
+- Kata `ROW` dan `ROWS` itu sama aja (sinonim), begitu juga `FIRST` dan `NEXT`. Kamu bebas mau pakai yang mana aja, hasilnya bakal tetep sama.
 
-- **Pertama**, tentukan jumlah baris yang akan dilewati (`row_to_skip`) setelah kata kunci `'OFFSET'`. Nilai ini harus berupa bilangan bulat **nol atau positif**, dengan nilai default 0 (artinya tidak melewati baris).  
-- Jika `row_to_skip` lebih besar dari jumlah total baris dalam tabel, kueri tidak akan mengembalikan hasil apa pun.  
-- **Kedua**, tentukan jumlah baris yang ingin diambil (`row_count`) dalam klausa `'FETCH'`. Nilai ini harus berupa **bilangan bulat 1 atau lebih besar**, dengan nilai default **1**.  
-- `'ROW'` adalah sinonim dari `'ROWS'`, sedangkan `'FIRST'` adalah sinonim dari `'NEXT'`, sehingga bisa digunakan secara bergantian.
+**Tips Penting** : Karena PostgreSQL nyimpen baris data tanpa urutan yang pasti, selalu gunakan klausa `ORDER BY` tiap kali kamu pakai `FETCH` biar urutan datanya konsisten dan gak acak-acakan.
 
-Karena PostgreSQL menyimpan baris dalam urutan yang tidak ditentukan, **selalu gunakan klausa `'ORDER BY'`** saat menggunakan `'FETCH'`, agar urutan hasil konsisten.
-
-Catatan: Dalam SQL:2008, klausa `'OFFSET'` harus muncul sebelum `'FETCH'`. Namun, dalam PostgreSQL, kedua klausa ini bisa muncul dalam urutan **apa pun**.
+**Catatan unik** : Di standar SQL:2008, klausa `OFFSET` harus ditulis sebelum `FETCH`. Tapi di PostgreSQL, urutannya bebas banget—kamu mau tulis `FETCH` duluan baru `OFFSET` juga tetep jalan!
 
 ---
 
 ## **FETCH vs. LIMIT**  
 
-Klausa `'FETCH'` memiliki fungsi yang sama dengan klausa `'LIMIT'`. Jika kamu ingin membuat aplikasi yang **kompatibel dengan berbagai sistem basis data**, sebaiknya gunakan `'FETCH'`, karena klausa ini mengikuti standar SQL.
+Secara fungsi, `FETCH` dan `LIMIT` itu 100% kembar identik. Bedanya cuma di "penyesuaian standar". Kalau kamu lagi bikin aplikasi yang pengen mudah dipindahin (kompatibel) ke berbagai jenis database lain, sangat disaranin pakai `FETCH` karena dia ngikutin standar SQL resmi.
 
----
+## **Contoh Penggunaan `FETCH` di PostgreSQL**  
 
-## **Contoh Penggunaan PostgreSQL 'FETCH'**  
-
-Kita akan menggunakan tabel `'film'` dalam database contoh untuk demonstrasi.
+Biar langsung kebayang, kita bakal coba praktek pakai tabel `film` dari database latihan berikut:
 
 ![image](https://github.com/user-attachments/assets/a358c66a-5373-4ead-8b59-58756768f75c)
 
-### Klausa PostgreSQL 'FETCH'
+### 1. Ngambil 1 Data Teratas
 
-Pernyataan berikut menggunakan klausa `'FETCH'` untuk memilih **film pertama** yang diurutkan berdasarkan judul dalam **urutan menaik**:
+Perintah berikut pakai klausa `FETCH` buat ngambil 1 `film` pertama setelah diurutkan berdasarkan judul dari A ke Z (ascending) :
 
 ```sql
 SELECT
@@ -843,8 +840,7 @@ FETCH FIRST ROW ONLY;
 |---------|------------------|
 | 1       | Academy Dinosaur |
 
-
-Pernyataan ini setara dengan kueri berikut:
+_FYI_, perintah di atas itu sama persis artinya kalau kamu tulis secara lengkap kayak gini :
 
 ```sql
 SELECT
@@ -857,9 +853,9 @@ ORDER BY
 FETCH FIRST 1 ROW ONLY;
 ```
 
----
+### 2. Ngambil Beberapa Data Teratas
 
-Pernyataan berikut menggunakan klausa `'FETCH'` untuk memilih **lima film pertama** yang diurutkan berdasarkan judul:
+Kalau kamu mau ngambil 5 film pertama yang diurutkan berdasarkan judul, kuerinya tinggal diubah dikit jadi gini :
 
 ```sql
 SELECT
@@ -882,10 +878,9 @@ FETCH FIRST 5 ROW ONLY;
 | 4       | Affair Prejudice |
 | 5       | African Egg      |
 
+### 3. Kombinasi dengan OFFSET (Melompati Data)
 
----
-
-Pernyataan berikut mengambil **lima film berikutnya** setelah lima film pertama yang diurutkan berdasarkan judul:
+Nah, kalau kamu mau ngambil 5 film berikutnya (yaitu urutan ke-6 sampai ke-10) setelah ngelewatin 5 film pertama, kamu tinggal tambahin `OFFSET 5 ROWS` :
 
 ```sql
 SELECT
@@ -910,7 +905,7 @@ FETCH FIRST 5 ROW ONLY;
 | 10      | Aladdin Calendar |
 
 ### **Ringkasan**  
-Gunakan klausa PostgreSQL `'FETCH'` untuk melewati sejumlah baris dan mengambil sejumlah baris tertentu dari hasil kueri.
+Gunakan klausa `FETCH` di PostgreSQL kalau kamu mau melompati sejumlah baris data tertentu lalu menarik sebagian baris saja dari hasil kueri sesuai standar SQL resmi.
 
 --------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------
