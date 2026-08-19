@@ -1040,7 +1040,7 @@ WHERE
 | ...        |  ...   | ...                        |
 
 Penjelasan Tambahan Soal Tipe Data Waktu (timestamp) :
-- Kolom payment_date di database itu biasanya bertipe timestamp (artinya berisi paket lengkap: **Tanggal + Jam/Menit/Detik**).
+- Kolom `payment_date` di database itu biasanya bertipe timestamp (artinya berisi paket lengkap: **Tanggal + Jam/Menit/Detik**).
 - Supaya jamnya diabaikan dan PostgreSQL cuma mencocokkan tanggalnya aja, kita perlu **mengubah (konversi) format datanya jadi tipe Tanggal (_date_) saja**.
 - Caranya yaitu dengan menambahkan operator ubah tipe _data/cast_ berupa tanda `::date` di belakang nama kolom :
 
