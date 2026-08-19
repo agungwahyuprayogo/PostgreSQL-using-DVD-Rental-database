@@ -913,44 +913,42 @@ Gunakan klausa `FETCH` di PostgreSQL kalau kamu mau melompati sejumlah baris dat
 
 # PostgreSQL IN
 
-## **Pengenalan Operator PostgreSQL 'IN'**  
+## Kenalan sama Operator 'IN' di PostgreSQL 
 
-Operator `'IN'` memungkinkan kamu untuk memeriksa apakah suatu **nilai cocok** dengan **salah satu nilai** dalam daftar.
+Bayangin kamu lagi nyari barang di dalam daftar belanjaan. Daripada mengecek barang satu per satu secara terpisah, operator `IN` di PostgreSQL mempermudah kamu untuk mengecek apakah sebuah data cocok dengan salah satu pilihan dari daftar yang kamu buat.
 
-Berikut adalah sintaks dasar dari operator `'IN'`:
+Penulisan dasarnya simpel banget :
 
 ```sql
 value IN (value1, value2, ...)
 ```
 
-Operator `'IN'` akan mengembalikan **true** jika `'value'` sama dengan salah satu nilai dalam daftar, seperti `'value1'` dan `'value2'`.
+- Operator `IN` bakal menghasilkan jawaban `TRUE` (benar) kalau data yang dicari (value) cocok sama salah satu isi pilihan di dalam tanda kurung, misalnya `value1` atau `value2`.
+- Pilihan di dalam daftar itu bisa berupa **nilai langsung** (_literal value_), seperti angka, kata (string), atau tanggal.
+- Nanti saat belajar _Subquery_, kamu juga bakal tahu kalau isi di dalam daftar kurung itu bisa berasal dari hasil kueri pencarian lain.
 
-Daftar nilai dapat berupa **nilai literal**, termasuk angka dan string.
-
-Selain nilai literal, operator `'IN'` juga dapat menerima daftar nilai yang dihasilkan dari suatu kueri. Kamu akan belajar lebih lanjut tentang penggunaan operator `'IN'` dengan kueri dalam tutorial subquery.
-
-Secara fungsional, operator `'IN'` setara dengan **kombinasi beberapa ekspresi boolean** yang digabungkan dengan operator `'OR'`:
+Secara cara kerja, operator `IN` ini sebenarnya sama persis seperti kamu menulis banyak kondisi `OR` (atau) yang digabung jadi satu:
 
 ```sql
 value = value1 OR value = value2 OR ...
 ```
 
----
 
-## **Contoh Penggunaan Operator PostgreSQL 'IN'**  
+## Contoh Cara Pakai Operator 'IN'
 
-Kita akan menggunakan tabel `'film'` dari database contoh.
+Biar lebih makin kebayang, yuk lihat contoh-contoh praktisnya pakai tabel data latihan di bawah ini!
+
+### 1. Menggunakan 'IN' dengan Daftar Angka
+
+Kita bakal pakai tabel `film` :
 
 ![image](https://github.com/user-attachments/assets/882709fd-617d-4b33-8742-cb16cf421d46)
-
-### **1) Menggunakan Operator PostgreSQL 'IN' dengan Daftar Angka**
 
 Contoh berikut menggunakan operator `'IN'` untuk mengambil informasi tentang film dengan `'film_id'` 1, 2, dan 3:
 
 ```sql
 SELECT
-  film_id,
-  title
+  film_id, title
 FROM
   film
 WHERE
@@ -967,12 +965,11 @@ WHERE
 
 ---
 
-Pernyataan berikut menggunakan operator `'='` dan `'OR'` sebagai pengganti operator `'IN'`, yang setara dengan kueri di atas:
+Kalau kamu gak pakai `IN`, kamu harus mengetik kueri panjang yang menggabungkan operator `=` dan `OR` seperti ini :
 
 ```sql
 SELECT
-  film_id,
-  title
+  film_id, title
 FROM
   film
 WHERE
@@ -983,23 +980,21 @@ WHERE
 
 ---
 
-Kueri yang menggunakan operator `'IN'` lebih **pendek** dan **mudah dibaca** dibandingkan kueri yang menggunakan operator `'='` dan `'OR'`.
+#### Keuntungan Pakai Operator `IN` :
+- Kode tulisan kamu jadi jauh lebih pendek dan enak dibaca.
+- Dari sisi performa, **PostgreSQL memproses kueri dengan `IN` jauh lebih cepat** dibanding harus membaca banyak operator `OR` satu per satu.
 
-Selain itu, PostgreSQL **mengeksekusi kueri dengan operator `'IN'` lebih cepat** daripada kueri yang menggunakan banyak operator `'OR'`.
+### Menggunakan 'IN' dengan Daftar Teks / Kata (String)
 
-### **2) Menggunakan Operator PostgreSQL 'IN' dengan Daftar String**  
-
-Kita akan menggunakan tabel `'actor'` dari database contoh:  
+Kali ini kita bakal coba pakai tabel `actor` : 
 
 ![image](https://github.com/user-attachments/assets/d04c04d6-e365-467b-99e7-88006c0a44a5)
   
-
-Contoh berikut menggunakan operator `'IN'` untuk menemukan aktor yang memiliki nama belakang dalam daftar `'Allen'`, `'Chase'`, dan `'Davis'`:
+Misalkan kamu mau mencari aktor yang nama belakangnya (`last_name`) adalah 'Allen', 'Chase', atau 'Davis':
 
 ```sql
 SELECT
-  first_name,
-  last_name
+  first_name, last_name
 FROM
   actor
 WHERE
@@ -1021,15 +1016,13 @@ ORDER BY
 | Jennifer   | Davis    |
 | Susan      | Davis    |
 
-### 3) Menggunakan Operator PostgreSQL 'IN' dengan Daftar Tanggal
+### 3) Menggunakan 'IN' dengan Daftar Tanggal
 
-Pernyataan berikut menggunakan operator `'IN'` untuk menemukan pembayaran dengan tanggal pembayaran dalam daftar tanggal: `'2007-02-15'` dan `'2007-02-16'`:
+Di contoh ketiga ini, kita mau mencari data pembayaran dari tabel `payment` yang transaksi pembayarannya terjadi pada tanggal `'2007-02-15'` atau `'2007-02-16'` :
 
 ```sql
 SELECT
-  payment_id,
-  amount,
-  payment_date
+  payment_id, amount, payment_date
 FROM
   payment
 WHERE
@@ -1046,34 +1039,31 @@ WHERE
 | 17512      |  4.99  | 2007-02-16 00:10:50.996577 |
 | ...        |  ...   | ...                        |
 
-
-Dalam contoh ini, kolom `'payment_date'` memiliki tipe `'timestamp'`, yang terdiri dari bagian **tanggal** dan **waktu**.
-
-Agar nilai dalam kolom `'payment_date'` cocok dengan daftar tanggal, kamu perlu **mengonversinya ke tipe tanggal saja**.  
-
-Untuk melakukannya, gunakan operator **cast (`::`)**:
+Penjelasan Tambahan Soal Tipe Data Waktu (timestamp) :
+- Kolom payment_date di database itu biasanya bertipe timestamp (artinya berisi paket lengkap: **Tanggal + Jam/Menit/Detik**).
+- Supaya jamnya diabaikan dan PostgreSQL cuma mencocokkan tanggalnya aja, kita perlu **mengubah (konversi) format datanya jadi tipe Tanggal (_date_) saja**.
+- Caranya yaitu dengan menambahkan operator ubah tipe _data/cast_ berupa tanda `::date` di belakang nama kolom :
 
 ```sql
 payment_date::date
 ```
 
-Sebagai contoh, jika nilai timestamp adalah `'2007-02-15 22:25:46.996577'`, operator cast akan mengonversinya menjadi **`2007-02-15`**.
+Misal datanya semula berisi `'2007-02-15 22:25:46.996577'`, setelah diberi `::date`, PostgreSQL bakal memotongnya sehingga cuma membaca bagian `2007-02-15` saja.
 
 ---
 
-## **PostgreSQL 'NOT IN' Operator**  
+## Operator 'NOT IN' (Kebalikan dari 'IN')
 
-Untuk meniadakan operator `'IN'`, gunakan **operator `'NOT IN'`**.  
+Kalau operator `IN` buat nyari yang cocok, operator `NOT IN` dipakai untuk pengecualian (mencari data yang **TIDAK** ada di dalam daftar).
 
-Berikut adalah sintaks dasar dari operator `'NOT IN'`:
+Penulisan dasarnya :
 
 ```sql
 value NOT IN (value1, value2, ...)
 ```
 
-Operator `'NOT IN'` akan **mengembalikan true** jika `'value'` **tidak sama** dengan salah satu nilai dalam daftar, seperti `'value1'` dan `'value2'`. Jika ada kecocokan, operator ini akan mengembalikan **false**.
-
-Secara fungsional, operator `'NOT IN'` setara dengan **kombinasi beberapa ekspresi boolean** yang digabungkan dengan operator `'AND'`:
+- Operator `NOT IN` akan menghasilkan `TRUE` (benar) kalau data (`value`) TIDAK sama dengan semua daftar pilihan di dalam kurung. Tapi kalau datanya ada yang cocok satu aja, dia bakal bernilai FALSE (salah).
+- Sama kaya sebelumnya, secara cara kerja operator `NOT IN` ini merupakan gabungan dari kondisi tidak sama dengan (`<>`) yang dihubungkan dengan operator `AND` :
 
 ```sql
 value <> value1 AND value <> value2 AND ...
@@ -1081,14 +1071,13 @@ value <> value1 AND value <> value2 AND ...
 
 ---
 
-## **Contoh Penggunaan PostgreSQL 'NOT IN'**  
+## Contoh Penggunaan Operator 'NOT IN'
 
-Pernyataan berikut menggunakan operator `'NOT IN'` untuk mengambil film yang **id-nya bukan 1, 2, atau 3**:
+Misalkan kamu mau menampilkan semua data film yang ID-nya **BUKAN** `1`, `2`, atau `3`:
 
 ```sql
 SELECT
-  film_id,
-  title
+  film_id, title
 FROM
   film
 WHERE
@@ -1111,12 +1100,11 @@ ORDER BY
 
 ---
 
-Kueri berikut mengambil hasil yang **sama**, tetapi menggunakan **operator tidak sama (`<>`)** dan operator **AND**:
+Kueri di atas kalau ditulis pakai operator tidak sama dengan (`<>`) dan gabungan ``AND` hasilnya bakal sama persis seperti ini :
 
 ```sql
 SELECT
-  film_id,
-  title
+  film_id, title
 FROM
   film
 WHERE
@@ -1130,8 +1118,8 @@ ORDER BY
 ---
 
 ### **Ringkasan**  
-✅ Gunakan operator `'IN'` untuk memeriksa apakah suatu nilai cocok dengan salah satu nilai dalam daftar.  
-✅ Gunakan operator `'NOT IN'` untuk **meniadakan** operator `'IN'`.  
+- Pakai operator `IN` kalau kamu mau menyaring data yang cocok dengan salah satu isi pilihan di dalam daftar.
+- Pakai operator `NOT IN` kalau kamu mau menyaring data yang **TIDAK** boleh sama dengan semua pilihan yang ada di dalam daftar (pengecualian).
 
 --------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------
