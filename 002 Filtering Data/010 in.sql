@@ -1,47 +1,108 @@
-# sebenernya ini pernah di pelajarin di sebelum sebelumnya ya
-# cuman biar lebih memperdalam lagi 
-# jadi kita pengen latihan 'in'
-# jadi 'in' itu operator yang digunakan untuk mengecek apapun hasil sesuai value yang dicari
+-- Gampangnya sih IN disini mempermudah kita buat nge list
+-- dari pada make OR atau AND
 
-# langsung ke contohnya aja biar ga pusing
+-- LANGSUNG PRAKTEK AJA
 
-select film_id, title from film f where film_id in (0, 2, 3)
--- disini emang sengaja make 0, biar ngeliatin kalo misalkan 0 itu ga ada ya gpp
--- ga ditampilin tapi ga error
--- tapi kalo selain 0 ada, ya itu doang yang di tampilin
+-- 1. IN untuk daftar angka
+-- semisal kita pengen nyari film berdasarkan id 1, 2 dan 3
 
-select film_id, title from film f where film_id = 1 or film_id = 2 or film_id = 3
--- untuk hasilnya mah sama, cuman kan dari query disini terlihat lebih banyak dari pada diatas
+select 
+	film_id , title
+from 
+	film
+where 
+	film_id in (1, 2, 3)
+	
+	
+-- cara diatas kalo ga make in, make `or` dan `=` kaya gini :
 
+select 
+	film_id, title 
+from 
+	film
+where 
+	film_id = 1 or
+	film_id = 2 or
+	film_id = 3
+	
+-- silahkan run ulang, hasilnya sama dengan query sebelumnya.
+	
+/*
+ Keuntungan Make IN :
+ - lebih enak dilihat dan lebih mudah dibaca 
+ - dari performa lebih cepat make in dari pada make or satu per satu
+ */
+	
+---------------------------------------------------------------------------------------------
+	
+-- 2. Penggunaan IN make string atau teks
+-- semisal kita pengen cari aktor yang nama belakangnya adalah `Allen`,, `Chase` atau `Davis`
+	
+select 
+	first_name, last_name 
+from 
+	actor 
+where 
+	last_name in ('Allen', 'Chase', 'Davis') 
+order by 
+	last_name 
+	
+---------------------------------------------------------------------------------------------
+	
+-- 3. IN dalam daftar tanggal
+-- sekarang make table payment,, kita pengen cari transaksi yang ada di tanggal '2007-02-15' atau '2007-02-16'
+	
+select 
+	payment_id, amount, payment_date
+from 
+	payment
+where
+	payment_date::date in ('2007-02-15', '2007-02-16')
 
+/*
 
+Penjelasan tambahan soal tipe data waktu :
+- tipe data date kaya di 'payment_date' tuh biasanya lengkap dari tanggal + waktu (Jam/Menit/Detik)
+- biar jam nya di abaikan,, kita make tanggal aja dengan cara ::date di belakang kolom :
 
-# trus bagaimana kalo make string? 
-# ya sama aja kaya diatas, bedanya cuman kasih tanda petik
+payment_date::date
+ 
+dari yang sebelumnya '2007-02-15 22:25:46.996577' jadi '2007-02-15'
+*/
+	
+	
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+	
+/*
+NOT IN
+kebalikan dari in, not in digunakan untuk pengecualian atau di hilangkan dari daftar
 
-select first_name, last_name from actor a where last_name in ('Allen', 'Chase', 'Davis') order by last_name 
--- ternyata banyak kan yg nama belakanya Allen, Chase dan Davis
+Langsung ke contoh penggunan-nya :
+semisal kita pengen GA NAMPILIN film dengan ID 1, 2 dan 3
+*/
 
-select first_name, last_name from actor a where last_name = 'Allen' or last_name = 'Chase' or last_name = 'Davis' order by last_name 
--- hasilnya sama kan? cuman kalo make make string jauh lebih panjang, jadi make in aja biar ga terlalu banyak
+select 
+	film_id, title
+from 
+	film
+where
+	film_id not in (1, 2, 3)
+order by
+	film_id 
+	
+-- query diatas ada cara lain, tapi ribet karena make operato <> serta AND
 
+select 
+	film_id, title
+from 
+	film
+where
+	film_id <> 1 and 
+	film_id <> 2 and
+	film_id <> 3 
+order by 
+	film_id 
+	
 
-
-# bisa juga tanggal 
-
-select payment_id, amount, payment_date from payment p where payment_date::date in ('2007-02-15', '2007-02-16') order by payment_date 
--- dari rentang tanggal sekian sampe tanggal sekian
-
-
-
-
-# not in, ya bedanya kalo in di atas kan minta di tampilin
-# kalo ini kita justru ga pengen nampilin
-# misal kita ga pengen nampilin 1,2 dan 3. ya brarti not in 1,2,3
-
-select film_id, title from film f where film_id not in (1,2,3) order by film_id 
--- bisa kan yang 1, 2, dan 3 ga di tampilin
--- kalo contoh diatas in bisa make operator or dan =
--- kalo not in make operator and dan <>
-
-select film_id, title from film f where film_id <> 1 and film_id <> 2 and film_id <> 3 order by film_id 
+	
