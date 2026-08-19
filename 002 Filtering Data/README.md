@@ -984,7 +984,7 @@ WHERE
 - Kode tulisan kamu jadi jauh lebih pendek dan enak dibaca.
 - Dari sisi performa, **PostgreSQL memproses kueri dengan `IN` jauh lebih cepat** dibanding harus membaca banyak operator `OR` satu per satu.
 
-### Menggunakan 'IN' dengan Daftar Teks / Kata (String)
+### 2. Menggunakan 'IN' dengan Daftar Teks / Kata (String)
 
 Kali ini kita bakal coba pakai tabel `actor` : 
 
@@ -1016,7 +1016,7 @@ ORDER BY
 | Jennifer   | Davis    |
 | Susan      | Davis    |
 
-### 3) Menggunakan 'IN' dengan Daftar Tanggal
+### 3. Menggunakan 'IN' dengan Daftar Tanggal
 
 Di contoh ketiga ini, kita mau mencari data pembayaran dari tabel `payment` yang transaksi pembayarannya terjadi pada tanggal `'2007-02-15'` atau `'2007-02-16'` :
 
