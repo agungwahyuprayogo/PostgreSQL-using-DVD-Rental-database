@@ -1048,7 +1048,7 @@ Penjelasan Tambahan Soal Tipe Data Waktu (timestamp) :
 payment_date::date
 ```
 
-Misal datanya semula berisi `'2007-02-15 22:25:46.996577'`, setelah diberi `::date`, PostgreSQL bakal memotongnya sehingga cuma membaca bagian `2007-02-15` saja.
+Misal datanya semula berisi `'2007-02-15 22:25:46.996577'`, setelah diberi `::date`, PostgreSQL bakal memotongnya sehingga cuma membaca bagian `'2007-02-15'` saja.
 
 ---
 
@@ -1100,7 +1100,7 @@ ORDER BY
 
 ---
 
-Kueri di atas kalau ditulis pakai operator tidak sama dengan (`<>`) dan gabungan ``AND` hasilnya bakal sama persis seperti ini :
+Kueri di atas kalau ditulis pakai operator tidak sama dengan (`<>`) dan gabungan `AND` hasilnya bakal sama persis seperti ini :
 
 ```sql
 SELECT
