@@ -1303,7 +1303,7 @@ first_name LIKE 'Jen%'
 ```
 Bagian ini terdiri dari :
 - Kolom `first_name` (data yang mau dicari),
-- Operator LIKE, dan
+- Operator `LIKE` dan
 - Teks pola `'Jen%'` (disebut _pattern_).
 Maksud dari pola `'Jen%'` adalah : _"Cari nama yang **diawali dengan `'Jen'`**, dan setelahnya **bebas mau diikuti oleh huruf/karakter apa saja.**_"
 
@@ -1311,7 +1311,7 @@ Kueri ini akan **mengembalikan baris** di mana nilai dalam kolom `'first_name'` 
 
 ## Simbol Sakti (Wildcard) dalam PostgreSQL 'LIKE'
 
-Untuk membuat pola pencarian, kamu bisa menggabungkan teks biasa dengan karakter **khusus yang dinamakan _Wildcard._**
+Untuk membuat pola pencarian, kamu bisa menggabungkan teks biasa dengan **karakter khusus yang dinamakan _Wildcard._**
 
 PostgreSQL menyediakan **dua karakter wildcard utama** :  
 
@@ -1540,24 +1540,22 @@ Output:
 
 ## PostgreSQL 'LIKE' dengan Opsi 'ESCAPE'
 
--------------- BARU SAMPE SINI YA -----------------------
+Terkadang, data yang mau kamu cari di dalam database memang benar-benar mengandung simbol `%` atau `_` asli. 
 
-Terkadang, data yang mau kamu cari di dalam database memang benar-benar mengandung simbol % atau _ asli. :  
+Contoh kalimat di _database_ :
 
-```
-The rents are now 10% higher than last month  
-The new film will have _ in the title  
-```
+1. `"The rents are now 10% higher than last month"` _(Ada simbol `%` asli)_
+2. `"The new film will have _ in the title"` _(Ada simbol _ asli)_
 
-Untuk **menginstruksikan operator `'LIKE'` agar memperlakukan karakter wildcard** `'%'` dan `'_'` sebagai **karakter biasa**, gunakan **opsi 'ESCAPE'** dalam operator `'LIKE'` :
+Gimana caranya nyari angka `'10%'` tanpa bikin PostgreSQL bingung dan menganggap `%` sebagai wildcard?
+
+Jawabannya : Gunakan opsi `ESCAPE`!
 
 ```sql
 string LIKE pattern ESCAPE escape_character;
 ```
 
----
-
-### Membuat Tabel untuk Demonstrasi
+### Mari Buat Tabel Latihan Dulu:
 
 ```sql
 CREATE TABLE t(
@@ -1573,18 +1571,17 @@ SELECT message FROM t;
 
 ---
 
-Output :
+Output Tabel `t` :
 
 | message                                      |
 |----------------------------------------------|
 | The rents are now 10% higher than last month |
 | The new film will have _ in the title        |
 
----
 
-### Menggunakan Operator 'LIKE' dengan 'ESCAPE'
+### Cara Pakai 'ESCAPE' buat Nyari Simbol `%` Asli:
 
-Pernyataan berikut menggunakan **operator 'LIKE' dengan opsi 'ESCAPE'** untuk memperlakukan `'%'` yang muncul setelah angka `'10'` sebagai **karakter biasa** :
+Kita tentukan satu karakter bebas (misalnya tanda dollar `$`) sebagai karakter penyelamat (_escape character_). Karakter wildcard yang berada tepat di belakang tanda `$` bakal dianggap sebagai **teks biasa**, bukan simbol wildcard lagi.
 
 ```sql
 SELECT * FROM t
@@ -1599,16 +1596,19 @@ Output :
 |----------------------------------------------|
 | The rents are now 10% higher than last month |
 
-Dalam pola `' %10$%% '`, karakter `'%'` pertama dan terakhir **berfungsi sebagai wildcard**, sedangkan `'%'` setelah karakter **escape `$`** dianggap sebagai **karakter biasa**.
+Bedah Pola `'%10$%%'` :
+- `%` pertama = Wildcard (sebelum angka 10 bebas teks apa aja).
+- `10` = Teks angka 10.
+- `$%` = Karena ada tanda `$`, maka simbol `%` ini **dianggap karakter persen biasa**, bukan wildcard!
+- `%` terakhir = Wildcard (setelah tanda persen bebas teks apa aja).
 
----
 
-#### **Ringkasan**  
-- Gunakan operator `'LIKE'` untuk mencocokkan data berdasarkan pola.  
-- Gunakan operator `'NOT LIKE'` untuk **meniadakan** operator `'LIKE'`.  
-- Gunakan wildcard `'%`' untuk mencocokkan **nol atau lebih karakter**.  
-- Gunakan wildcard `'_'` untuk mencocokkan **satu karakter tunggal**.  
-- Gunakan opsi `'ESCAPE'` untuk menentukan karakter pelolosan (escape).  
+#### Ringkasan
+- Gunakan operator `'LIKE'` untuk mencari data sesuai pola tertentu.
+- Gunakan operator `'NOT LIKE'` untuk mencari data yang **TIDAK** cocok dengan pola. 
+- Wildcard `'%`' dipakai buat mencocokkan **banyak karakter** (0 atau lebih). 
+- Wildcard `'_'` dipakai buat mencocokkan **tepat 1 karakter**. 
+- Gunakan `'ESCAPE'` kalau mau pencocokan pola yang **tidak peduli huruf besar/kecil**.
 - Gunakan operator `'ILIKE'` untuk **pencocokan tanpa peka huruf besar/kecil**.
 
 
