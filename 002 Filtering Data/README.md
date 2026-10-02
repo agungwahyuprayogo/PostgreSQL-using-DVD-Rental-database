@@ -1620,9 +1620,10 @@ Bedah Pola `'%10$%%'` :
 # PostgreSQL IS NULL
 
 ## Pengantar tentang NULL
-Dalam dunia basis data, `NULL` berarti informasi yang hilang atau tidak berlaku. `NULL` bukanlah sebuah nilai, sehingga Anda tidak dapat membandingkannya dengan nilai lain seperti angka atau string.
 
-Perbandingan antara `NULL` dengan sebuah nilai akan selalu menghasilkan `NULL`. Selain itu, `NULL` tidak sama dengan `NULL`, sehingga ekspresi berikut akan menghasilkan `NULL`:
+Dalam dunia basis data, NULL berarti informasi yang hilang, belum diisi, atau tidak berlaku. Hal penting yang perlu diingat adalah NULL bukanlah sebuah nilai, jadi kamu tidak bisa membandingkannya dengan nilai lain seperti angka, teks, atau bahkan sesama NULL menggunakan operator pembanding biasa.
+
+Perbandingan antara NULL dengan nilai apa pun akan selalu menghasilkan NULL. Oleh karena itu, jika kamu menjalankan perintah berikut:
 
 ```sql
 SELECT null = null AS result;
@@ -1636,8 +1637,9 @@ Output:
 
 Total row: 1
 
-## Operator IS NULL
-Untuk memeriksa apakah sebuah nilai adalah NULL atau bukan, Anda tidak dapat menggunakan operator sama dengan (`=`) atau tidak sama dengan (`<>`). Sebagai gantinya, gunakan operator `IS NULL`.
+## Operator IS NULL dan IS NOT NULL
+
+Karena operator sama dengan (`=`) atau tidak sama dengan (`<>`) tidak bisa digunakan untuk mengecek NULL, PostgreSQL menyediakan operator khusus yaitu `IS NULL` dan `IS NOT NULL`.
 
 Berikut sintaks dasar dari operator `IS NULL`:
 
@@ -1645,33 +1647,48 @@ Berikut sintaks dasar dari operator `IS NULL`:
 value IS NULL
 ```
 
-Operator `IS NULL` akan mengembalikan true jika `value` adalah NULL dan false jika tidak.
+### Operator IS NULL
 
-Untuk meniadakan operator `IS NULL`, gunakan operator `IS NOT NULL`:
+Sintaks dasar untuk mengecek nilai yang tidak NULL :
+
+```sql
+value IS NULL
+```
+
+Operator `IS NULL` akan mengembalikan nilai `true` jika value bernilai `NULL`, dan `false` jika ada isinya.
+
+### Operator IS NOT NULL
 
 ```sql
 value IS NOT NULL
 ```
 
-Operator `IS NOT NULL` akan mengembalikan true jika nilai tidak NULL dan false jika sebaliknya.
+Operator `IS NOT NULL` akan mengembalikan nilai `true` jika nilai tersebut tidak `NULL`, dan `false` jika bernilai `NULL`.
 
-Untuk mempelajari cara menangani NULL dalam proses pengurutan, lihat tutorial *ORDER BY*.
-
-PostgreSQL menawarkan beberapa fungsi berguna untuk menangani NULL secara efektif, seperti NULLIF, ISNULL, dan COALESCE.
-
-Untuk memastikan bahwa sebuah kolom tidak mengandung NULL, gunakan constraint NOT NULL.
+Hal Penting Lainnya tentang NULL :
+- Untuk mengatur urutan data `NULL` saat menampilkan query, kamu bisa melihat tutorial `ORDER BY` yang menyediakan opsi `NULLS FIRST` atau `NULLS LAST`.
+- PostgreSQL menyediakan beberapa fungsi berguna untuk menangani NULL secara efektif, seperti `COALESCE`, `NULLIF`, dan `ISNULL`.
+- Jika ingin memastikan sebuah kolom di tabel tidak boleh kosong, kamu bisa menambahkan constraint NOT NULL saat pembuatan struktur tabel.
 
 ## Contoh penggunaan operator PostgreSQL IS NULL
-Kita akan menggunakan tabel `address` dari database sampel:
+
+Pada praktek kali ini, kita akan menggunakan skema dari tabel address seperti berikut :
 
 ![image](https://github.com/user-attachments/assets/8d21a191-174a-43fc-b391-f4a2e3ad138f)
 
+Secara default, program psql di terminal menampilkan NULL sebagai string atau teks kosong. Agar tidak bingung membedakan antara NULL dan teks kosong saat belajar di terminal, kamu bisa menjalankan perintah ini terlebih dahulu :
+
+```bash
+\pset null null
+```
+
+Perintah di atas akan memaksa terminal psql menampilkan tulisan null secara jelas saat menemukan data bernilai NULL.
+
 ---
 
-Harap diperhatikan bahwa program `psql` menampilkan `NULL` sebagai string kosong secara default. Untuk mengubah cara `psql` menampilkan `NULL` di terminal, gunakan perintah: `\pset null null`. Perintah ini akan menampilkan `NULL` sebagai null.
+### 1) Contoh Dasar Penggunaan Operator IS NULL
 
-### 1) Contoh dasar penggunaan operator IS NULL
-Contoh berikut menggunakan operator `IS NULL` untuk mencari alamat dari tabel `address` yang memiliki kolom `address2` bernilai `NULL`:
+Contoh berikut menggunakan operator IS NULL untuk mencari data alamat dari tabel address yang kolom address2 nya bernilai NULL :
 
 ```sql
 SELECT
@@ -1686,16 +1703,17 @@ WHERE
 Output:
 
 | address              | address2 |
-|----------------------|---------|
-| 47 MySakila Drive   | null    |
-| 28 MySQL Boulevard  | null    |
-| 23 Workhaven Lane   | null    |
-| 1411 Lillydale Drive | null    |
+|----------------------|----------|
+| 47 MySakila Drive    | null     |
+| 28 MySQL Boulevard   | null     |
+| 23 Workhaven Lane    | null     |
+| 1411 Lillydale Drive | null     |
 
 Total row: 4
 
-### 2) Contoh penggunaan operator IS NOT NULL
-Contoh berikut menggunakan operator `IS NOT NULL` untuk mengambil alamat yang memiliki nilai `address2` yang bukan NULL:
+### 2) Contoh Penggunaan Operator IS NOT NULL
+
+Contoh berikut menggunakan operator IS NOT NULL untuk mengambil data alamat yang kolom address2 nya memiliki isi (bukan NULL) :
 
 ```sql
 SELECT
@@ -1710,19 +1728,19 @@ WHERE
 Output:
 
 | address               | address2 |
-|-----------------------|---------|
-| 1913 Hanoi Way       |         |
-| 1121 Loja Avenue     |         |
-| 692 Joliet Street    |         |
-| 1566 Inegl Manor     |         |
+|-----------------------|----------|
+| 1913 Hanoi Way        |          |
+| 1121 Loja Avenue      |          |
+| 692 Joliet Street     |          |
+| 1566 Inegl Manor      |          |
 
 Total row: 4
 
-Perhatikan bahwa `address2` kosong, bukan NULL. Ini adalah contoh *bad practice* dalam penyimpanan string kosong dan NULL dalam kolom yang sama.
+Perhatikan bahwa kolom address2 pada output di atas terlihat kosong dan bukan berisi tulisan null. Ini menandakan data tersebut disimpan sebagai string kosong (`""`), bukan NULL. Menyimpan string kosong dan NULL secara bersamaan dalam kolom yang sama merupakan contoh bad practice dalam perancangan basis data karena bisa membingungkan proses analisis data.
 
 #### Ringkasan
-- Dalam basis data, NULL berarti informasi yang hilang atau tidak berlaku.
-- Operator `IS NULL` mengembalikan true jika sebuah nilai adalah NULL dan false jika tidak.
-- Operator `IS NOT NULL` mengembalikan true jika sebuah nilai bukan NULL dan false jika sebaliknya.
+- Dalam basis data, NULL mewakili data yang hilang atau tidak berlaku.
+- Gunakan operator IS NULL untuk mengecek apakah sebuah nilai bernilai NULL.
+- Gunakan operator IS NOT NULL untuk mengecek apakah sebuah nilai tidak bernilai NULL.
 
 ---
