@@ -38,4 +38,4 @@ jika suatu nilai NULL atau salah jika sebaliknya.
 Gunakan operator IS NOT NULL yang mengembalikan nilai benar 
 jika suatu nilai bukan NULL atau salah jika sebaliknya.
  * 
- */*/
+ */
