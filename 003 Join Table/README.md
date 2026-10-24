@@ -16,15 +16,15 @@
 ---
 # PostgreSQL Joins
 
-**Summary**: in this tutorial, you will learn about various kinds of PostgreSQL JOINS including `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, and `FULL OUTER JOIN`.
+**Ringkasan** : Di tutorial ini, kamu bakal belajar berbagai jenis JOIN di PostgreSQL, mulai dari `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, sampai `FULL OUTER JOIN`.
 
-PostgreSQL join is used to combine columns from one `self join` or more tables based on the values of the common columns between related tables. The common columns are typically the `primary key` columns of the first table and the `foreign key` columns of the second table.
+Fitur JOIN di PostgreSQL dipakai buat menggabungkan kolom dari dua tabel (atau lebih) berdasarkan nilai kolom yang saling berhubungan. Kolom yang dipakai buat menghubungkan ini biasanya berupa `primary key` di tabel pertama dan `foreign key` di tabel kedua.
 
-PostgreSQL supports `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL OUTER JOIN`, `CROSS JOIN`, `NATURAL JOIN`, and a special kind of join called SELF JOIN.
+PostgreSQL mendukung beberapa jenis JOIN, yaitu: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL OUTER JOIN`, `CROSS JOIN`, `NATURAL JOIN`, serta tipe JOIN khusus yang dinamakan `SELF JOIN`.
 
-## Setting up Sample Tables
+## Persiapan Contoh Tabel
 
-Suppose you have two tables called `basket_a` and `basket_b` that store fruits:
+Bayangkan kamu punya dua tabel bernama `basket_a` dan `basket_b` yang isinya daftar buah-buahan :
 
 ```sql
 CREATE TABLE basket_a (
@@ -52,9 +52,9 @@ VALUES
     (4, 'Pear');
 ```
 
-The tables have some common fruits such as `apple` and `orange`.
+Kedua tabel ini punya beberapa buah yang sama, yaitu `Apple` (Apel) dan `Orange` (Jeruk).
 
-The following statement returns data from the `basket_a` table:
+Query berikut dipakai buat menampilkan data dari tabel `basket_a`:
 
 ```sql
 SELECT * FROM basket_a;
@@ -91,18 +91,14 @@ Output:
 
 (4 rows)
 
----
-
 ## Inner Join
 
-The following statement joins the first table (`basket_a`) with the second table (`basket_b`) by matching the values in the `fruit_a` and `fruit_b` columns:
+Query di bawah ini menghubungkan tabel pertama (`basket_a`) dengan tabel kedua (`basket_b`) dengan mencocokkan nilai di kolom `fruit_a` dan `fruit_b` :
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 INNER JOIN basket_b
@@ -118,9 +114,9 @@ Output:
 
 (2 rows)
 
-The `INNER JOIN` examines each row in the first table (`basket_a`). It compares the value in the `fruit_a` column with the value in the `fruit_b` column of each row in the second table (`basket_b`). If these values are equal, the inner join creates a new row that contains columns from both tables and adds this new row to the result set.
+Cara kerjanya : `INNER JOIN` bakal mengecek setiap baris di tabel pertama (`basket_a`), lalu membandingkan isi kolom `fruit_a` dengan kolom `fruit_b` di tabel kedua (`basket_b`). Kalau nilainya sama persis, `INNER JOIN` akan menggabungkan data dari kedua tabel tersebut ke dalam satu baris baru di hasil query.
 
-The following diagram illustrates the `INNER JOIN`:
+Diagram di bawah ini menggambarkan cara kerja `INNER JOIN` :
 
 ![image](https://github.com/user-attachments/assets/ec3326ff-3dbd-48e0-aa48-16572fc0973f)
 
@@ -128,14 +124,12 @@ The following diagram illustrates the `INNER JOIN`:
 
 ## Left Join
 
-The following statement uses the `LEFT JOIN` clause to join the `basket_a` table with the `basket_b` table. In the left join context, the first table is called the left table and the second table is called the right table.
+Query berikut menggunakan klausa `LEFT JOIN` untuk menggabungkan tabel `basket_a` dengan `tabel basket_b`. Dalam konteks `LEFT JOIN`, **tabel pertama disebut tabel kiri** (_left table_) dan **tabel kedua disebut tabel kanan** (_right table_).
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 LEFT JOIN basket_b
@@ -154,24 +148,21 @@ Output:
 
 (4 rows)
 
-The left join starts selecting data from the left table. It compares values in the `fruit_a` column with the values in the `fruit_b` column in the `basket_b` table.
+Cara kerjanya : `LEFT JOIN` mengambil semua data dari tabel kiri dulu. Setelah itu, nilainya dibandingkan antara kolom `fruit_a` dengan `fruit_b` yang ada di tabel `basket_b`.
 
-If these values are equal, the LEFT JOIN creates a new row that contains columns of both tables and adds this new row to the result set. (see the row #1 and #2 in the result set).
+- Jika nilainya cocok, data dari kedua tabel akan ditampilkan bersisian (lihat baris #1 dan #2).
+- Jika nilainya **tidak cocok**, data dari tabel kiri tetap akan ditampilkan, tapi kolom yang berasal dari tabel kanan (`basket_b`) bakal diisi dengan nilai `null` (lihat baris #3 dan #4).
 
-In case the values do not equal, the left join also creates a new row that contains columns from both tables and adds it to the result set. However, it fills the columns of the right table (`basket_b`) with null. (see the row #3 and #4 in the result set).
-
-The following diagram illustrates the left join:
+Diagram di bawah ini menggambarkan cara kerja `LEFT JOIN` :
 
 ![image](https://github.com/user-attachments/assets/cd1ee5de-31b6-4d02-a468-fc6dc853125c)
 
-To select rows from the left table that do not have matching rows in the right table, you use the left join with a `WHERE` clause. For example:
+Kalau kamu cuma mau mengambil data dari tabel kiri yang **tidak punya pasangan/kembaran** di tabel kanan, kamu tinggal menambahkan filter `WHERE`. Contohnya seperti ini :
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 LEFT JOIN basket_b
@@ -188,9 +179,9 @@ The output is:
 
 (2 rows)
 
-Note that the `LEFT JOIN` is the same as the `LEFT OUTER JOIN` so you can use them interchangeably.
+**Catatan** : Perintah `LEFT JOIN` itu sama saja dengan `LEFT OUTER JOIN`, jadi kamu bebas mau pakai sintaks yang mana.
 
-**Left Anti-Join:** The following diagram illustrates the left join that returns rows from the left table that do not have matching rows from the right table:
+**Left Anti-Join** : Diagram berikut memperlihatkan konsep _Left Anti-Join_, yaitu mengambil data dari tabel kiri yang tidak ada padanannya sama sekali di tabel kanan:
 
 ![image](https://github.com/user-attachments/assets/de5c5bbf-8851-436d-87a5-5201dafb0fb3)
 
@@ -198,20 +189,17 @@ Note that the `LEFT JOIN` is the same as the `LEFT OUTER JOIN` so you can use th
 
 ## Right Join
 
-The `RIGHT JOIN` is a reversed version of the left join. The `RIGHT JOIN` starts selecting data from the right table. It compares each value in the `fruit_b` column of every row in the right table with each value in the `fruit_a` column of every row in the `fruit_a` table.
+`RIGHT JOIN` adalah kebalikan dari `LEFT JOIN`. Perintah ini memulai proses pencocokan dari **tabel kanan**. `RIGHT JOIN` membandingkan setiap nilai di kolom `fruit_b` milik tabel kanan dengan nilai di kolom `fruit_a` milik tabel kiri.
 
-If these values are equal, the right join creates a new row that contains columns from both tables.
+- Jika nilainya sama, gabungan data dari kedua tabel akan ditampilkan.
+- Jika tidak ada yang cocok, data dari tabel kanan tetap ditampilkan, sedangkan kolom dari tabel kiri akan diisi dengan `NULL`.
 
-In case these values are not equal, the right join also creates a new row that contains columns from both tables. However, it fills the columns in the left table with `NULL`.
-
-The following statement uses the right join to join the `basket_a` table with the `basket_b` table:
+Contoh penerapan `RIGHT JOIN` untuk menggabungkan `basket_a` dan `basket_b` :
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 RIGHT JOIN basket_b ON fruit_a = fruit_b;
@@ -229,18 +217,16 @@ Here is the output:
 (4 rows)
 
 
-The following Venn diagram illustrates the right join:
+Diagram Venn berikut menggambarkan cara kerja `RIGHT JOIN` :
 
 ![image](https://github.com/user-attachments/assets/5d43ba7a-f7f3-466c-b66d-1c630230044b)
 
-Similarly, you can get rows from the right table that do not have matching rows from the left table by adding a `WHERE` clause as follows:
+Sama seperti sebelumnya, kalau kamu cuma mau mengambil data dari tabel kanan yang **tidak punya pasangan di tabel kiri**, tinggal tambahkan klausa `WHERE` :
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 RIGHT JOIN basket_b
@@ -258,22 +244,21 @@ Output:
 (2 rows)
 
 
-The `RIGHT JOIN` and `RIGHT OUTER JOIN` are the same therefore you can use them interchangeably.
+**Catatan** : Sebutan `RIGHT JOIN` dan `RIGHT OUTER JOIN` itu sama persis dan bisa dipakai bergantian.
 
-The following diagram illustrates the right join that returns rows from the right table that do not have matching rows in the left table:
+Diagram berikut menampilkan konsep _Right Anti-Join_, yaitu menyaring data tabel kanan yang tidak memiliki kecocokan di tabel kiri :
 
-![image](https://github.com/user-attachments/assets/fff671d0-0c6c-4b15-a9eb-70d0f692f4e2)
+<img width="640" height="320" alt="image" src="https://github.com/user-attachments/assets/9e39fb14-e905-45c6-91a6-35151a25554e" />
+
 
 ## Full Outer Join
 
-The `FULL OUTER JOIN` or `FULL JOIN` returns a result set that contains all rows from both left and right tables, with the matching rows from both sides if available. In case there is no match, the columns of the table will be filled with `NULL`.
+`FULL OUTER JOIN` (atau singkatnya `FULL JOIN`) bakal menampilkan **semua data** dari tabel kiri maupun tabel kanan. Jika ada data yang cocok di antara kedua tabel, nilainya disandingkan. Tapi kalau ada data yang tidak punya pasangan di salah satu sisi, bagian yang kosong itu akan diisi dengan `NULL`.
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 FULL OUTER JOIN basket_b
@@ -293,18 +278,16 @@ Output:
 
 (6 rows)
 
-The following diagram illustrates the `FULL OUTER JOIN`:
+Diagram berikut menggambarkan cara kerja `FULL OUTER JOIN` :
 
 ![image](https://github.com/user-attachments/assets/9b990af8-e841-4dd5-a6e6-f1450fc4a26f)
 
-To return rows in a table that do not have matching rows in the other, you use the full join with a `WHERE` clause like this:
+Jika kamu ingin mengambil data yang **benar-benar unik** saja (hanya ada di salah satu tabel dan tidak saling berhubungan), kamu bisa menambahkan kondisi `WHERE` seperti berikut :
 
 ```sql
 SELECT
-    a,
-    fruit_a,
-    b,
-    fruit_b
+    a, fruit_a,
+    b, fruit_b
 FROM
     basket_a
 FULL JOIN basket_b
@@ -324,15 +307,15 @@ Here is the result:
 (4 rows)
 
 
-The following Venn diagram illustrates the full outer join that returns rows from a table that do not have the corresponding rows in the other table:
+Diagram Venn berikut memperlihatkan hasil `FULL OUTER JOIN` yang difilter untuk mengambil data yang tidak saling beririsan :
 
 ![image](https://github.com/user-attachments/assets/9ee23d54-0e4d-47da-b60b-c988f9e21fc9)
 
-The following picture shows all the PostgreSQL joins that we discussed so far with the detailed syntax:
+Gambar di bawah ini adalah ringkasan seluruh jenis JOIN di PostgreSQL yang sudah dibahas beserta struktur sintaks kodenya :
 
-![image](https://github.com/user-attachments/assets/1cff1cc2-7a97-4feb-92ec-8a1524287864)
+<img width="927" height="1024" alt="image" src="https://github.com/user-attachments/assets/67beecbe-bac0-41d0-9a72-7b05a82c9973" />
 
-In this tutorial, you have learned how to use various kinds of PostgreSQL joins to combine data from multiple related tables.
+Sampai di sini, kamu sudah paham cara menggunakan berbagai variasi PostgreSQL JOIN untuk menggabungkan data dari beberapa tabel yang saling berhubungan.
 
 ---
 ---
