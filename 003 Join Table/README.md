@@ -329,47 +329,48 @@ Sampai di sini, kamu sudah paham cara menggunakan berbagai variasi PostgreSQL JO
 ---
 
 
-# PostgreSQL TABLE ALIASES
+# PostgreSQL TABLE ALIASES (Nama Samaran Tabel)
 
-**Summary**: in this tutorial, you will learn about the PostgreSQL table aliases and their practical applications.
+**Ringkasan** : Di tutorial ini, kamu bakal belajar tentang *table aliases* (nama samaran tabel) di PostgreSQL beserta penerapan praktisnya.
 
-## Introduction to the PostgreSQL table aliases
+## Pengenalan Table Aliases di PostgreSQL
 
-A table alias is a feature in SQL that allows you to assign a temporary name to a table during the execution of a query.
+*Table alias* adalah fitur di SQL yang memungkinkan kamu untuk memberikan nama sementara pada suatu tabel selama *query* dijalankan.
 
-The following illustrates the syntax of defining a table alias:
+Sintaks dasarnya seperti ini :
 
 ```sql
 table_name AS alias_name
 ```
 
-In this syntax:
+Penjelasan sintaks :
 
-- `table_name`: Specify the name of the table that you want to give an alias.
-- `alias_name`: Provide the alias for the table.
+- `table_name` : Nama tabel asli yang mau kamu kasih nama samaran.
+- `alias_name` : Nama samaran yang kamu tentukan untuk tabel tersebut.
 
-Like column aliases, the `AS` keyword is optional, meaning that you can omit it like this:
+Sama seperti alias pada kolom, kata kunci `AS` ini sifatnya opsional. Jadi, kamu bisa langsung tulis tanpa `AS` seperti ini :
 
 ```sql
 table_name alias_name
 ```
 
-## PostgreSQL table alias examples
+## Contoh Penggunaan Table Aliases di PostgreSQL
 
-Let’s take some examples of using table aliases.
+Yuk, balik ke contoh praktik biar lebih jelas!
 
-### 1) Basic PostgreSQL table alias example
+### 1) Contoh Dasar Penggunaan Table Alias
 
-The following example uses a table alias to retrieve five titles from the `film` table:
+Contoh berikut menggunakan nama samaran tabel untuk mengambil 5 judul film dari tabel `film` :
 
 ```sql
 SELECT
-      f.title
+    f.title
 FROM
-      film AS f
+    film AS f
 ORDER BY
-      f.title
-LIMIT 5;
+    f.title
+LIMIT
+    5;
 ```
 
 Output:
@@ -385,40 +386,41 @@ Output:
 (5 rows)
 
 
-In this example, we assign the `film` table an alias `f` and use the table alias to fully qualify the `title` column.
+Pada contoh di atas, kita memberi nama samaran `f` untuk tabel `film`. Lalu, kita pakai `f`. di depan kolom `title` (`f.title`) untuk memperjelas dari mana kolom tersebut berasal.
 
-Since the `AS` keyword is optional, you can remove it as follows:
+Karena kata kunci `AS` itu opsional, kamu juga bisa tulis lebih simpel seperti ini :
 
 ```sql
 SELECT
-     f.title
+    f.title
 FROM
-     film f
+    film f
 ORDER BY
-     f.title
-LIMIT 5;
+    f.title
+LIMIT
+    5;
 ```
 ---
 
-### 2) Using table aliases in join clauses
+### 2) Menggunakan Table Aliases pada Klausa JOIN
 
-Typically, you use table aliases in a query that has a join clause to retrieve data from multiple related tables that share the same column name.
+Biasanya, *table alias* sangat berguna saat kamu menjalankan *query* yang menggunakan `JOIN` (menggabungkan beberapa tabel yang saling berhubungan dan punya nama kolom yang sama).
 
-If you use the same column name that comes from multiple tables in the same query without fully qualifying them, you will get an error.
+Kalau kamu memanggil kolom dengan nama yang sama dari dua tabel berbeda tanpa memperjelas nama tabel asalnya, database bakal bingung dan mengembalikan *error* (ambigu).
 
-To avoid this error, you can qualify the columns using the following syntax:
+Biar enggak *error*, kamu perlu panggil kolom tersebut dengan sintaks ini :
 
 ```sql
 table_name.column_name
 ```
 
-If the table has an alias, you can qualify its column using the alias:
+Nah, kalau tabelnya sudah dikasih nama samaran (*alias*), kamu cukup panggil lewat nama samarannya saja :
 
 ```sql
 alias.column_name
 ```
 
-For example, the following query uses an `INNER JOIN` clause to retrieve data from the `customer` and `payment` tables:
+Contohnya, *query* di bawah ini menggunakan `INNER JOIN` untuk mengambil data dari tabel `customer` dan tabel `payment` :
 
 ```sql
 SELECT
@@ -443,15 +445,15 @@ Output:
 | 263         | Hilda      | 0.99   | 2007-05-14 13:44:29.996577 |
 | 252         | Mattie     | 4.99   | 2007-05-14 13:44:29.996577 |
 
-Note that you’ll learn about `INNER JOIN` in the upcoming tutorial.
+*(Catatan: Materi mendalam soal INNER JOIN bakal kita bahas di tutorial berikutnya).*
 
 ---
 
-### 3) Using table aliases in self-join
+### 3) Menggunakan Table Aliases pada Self-Join
 
-When you join a table to itself (a.k.a self-join), you need to use table aliases. This is because referencing the same table multiple times within a query will result in an error.
+Saat kamu menggabungkan sebuah tabel dengan dirinya sendiri (*Self-Join*), kamu **wajib** menggunakan *table alias*. Soalnya, memanggil tabel yang sama beberapa kali dalam satu *query* tanpa alias bakal bikin database kebingungan dan menyebabkan *error*.
 
-The following example shows how to reference the `film` table twice in the same query using the table aliases:
+Contoh berikut menunjukkan cara memanggil tabel `film` sebanyak dua kali dalam satu query menggunakan *table alias* (`f1` dan `f2`):
 
 ```sql
 SELECT
@@ -478,12 +480,11 @@ Output:
 | Grosse Wonderful   | Heavenly Gun            | 49     |
 | Grosse Wonderful   | Doors President         | 49     |
 
-
-Note that you’ll learn about self-join in the upcoming tutorial.
+*(Catatan: Detail mengenai Self-Join juga akan dibahas di tutorial berikutnya).*
 
 ## Summary
 
-- Use PostgreSQL table aliases to assign a temporary name to a table during the execution of a query.
+- Gunakan *table alias* di PostgreSQL untuk memberikan nama sementara pada tabel selama *query* dijalankan, sehingga kode *query* jadi lebih ringkas, bersih, dan mencegah *error* saat mengawinkan beberapa tabel.
 
 
 ---
